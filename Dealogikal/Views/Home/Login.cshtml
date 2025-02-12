@@ -1,0 +1,70 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DTR Login</title>
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/bs-brain@2.0.4/components/logins/login-3/assets/css/login-3.css">
+    <link rel="icon" type="image/png" sizes="32x32" href="/Assets/img/dealogikal.png">
+    <link rel="icon" type="image/x-icon" href="/Assets/img/dealogikal.ico">
+
+    <style>
+        body {
+            background: url('/Assets/img/background.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+
+        .login-container {
+            max-width: 850px;
+            min-height: 450px;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.90);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body class="d-flex align-items-center justify-content-center min-vh-100">
+        <input type="hidden" name="ReturnUrl" value="@ViewBag.ReturnUrl" />
+        <div class="container login-container p-4">
+            <div class="row">
+                <!-- Logo Section -->
+                <div class="col-md-6 d-flex flex-column justify-content-center p-4">
+                    <a class="mx-auto my-3" href="http://www.dealogikal.com" target="_blank"><img class="img-fluid rounded" loading="lazy" src="~/Assets/img/dealogikal-logo.png" width="245" height="80" alt="Dealogikal Logo"></a>
+                    <a class="mx-auto my-3" href="http://www.knotticalpower.com" target="_blank"><img class="img-fluid rounded" loading="lazy" src="~/Assets/img/kpec-logo.png" width="245" height="80" alt="KPEC Logo"></a>
+                </div>
+                <!-- Form Section -->
+                <div class="col-md-6 p-4">
+                    <div class="p-3">
+                        <h3 class="mb-4">Log in</h3>
+                        <form action="@Url.Action("Login", "Home")" method="post">
+                            <div class="mb-3">
+                                <label for="employeeId" class="form-label">ID Number <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" name="employeeId" id="employeeId" placeholder="123456" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                                <input type="password" class="form-control" name="password" id="password" required>
+                            </div>
+                            <div class="d-grid">
+                                <button class="btn btn-secondary btn-xs" type="submit">Log in</button>
+                            </div>
+                        </form>
+                        <hr class="mt-4">
+                        <div class="text-end">
+                            <a href="#!" class="link-secondary text-decoration-none">Forgot password?</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- Login Section -->
+</body>
+</html>

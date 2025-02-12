@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="d2174c1a873240418e93b36df6bf16e1" Name="Diagram1" ZoomLevel="73">
+        <EntityTypeShape EntityType="DeologikalDTRModel.dtrRecords" Width="1.5" PointX="3" PointY="3.125" />
+        <EntityTypeShape EntityType="DeologikalDTRModel.employeeInfo" Width="1.5" PointX="0.75" PointY="3" />
+        <EntityTypeShape EntityType="DeologikalDTRModel.role" Width="1.5" PointX="3.75" PointY="0.75" />
+        <EntityTypeShape EntityType="DeologikalDTRModel.userAccount" Width="1.5" PointX="6" PointY="3.375" />
+        <EntityTypeShape EntityType="DeologikalDTRModel.vw_Role" Width="1.5" PointX="0.75" PointY="7.25" />
+        <AssociationConnector Association="DeologikalDTRModel.FK_dtrRecords_employeeInfo" />
+        <AssociationConnector Association="DeologikalDTRModel.FK_userAccount_employeeInfo" />
+        <AssociationConnector Association="DeologikalDTRModel.FK_userAccount_role" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

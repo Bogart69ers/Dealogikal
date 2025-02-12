@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DeologikalDTRModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="dtrRecords">
+    <Key>
+      <PropertyRef Name="recordId" />
+    </Key>
+    <Property Name="recordId" Type="int" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="date" Type="date" Nullable="false" />
+    <Property Name="timeIn" Type="datetime" />
+    <Property Name="breakOut" Type="datetime" />
+    <Property Name="breakIn" Type="datetime" />
+    <Property Name="timeOut" Type="datetime" />
+    <Property Name="createdAt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="employeeInfo">
+    <Key>
+      <PropertyRef Name="employeeId" />
+    </Key>
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="firstName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="lastName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="email" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="position" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="department" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="dateHired" Type="date" Nullable="false" />
+    <Property Name="status" Type="int" />
+    <Property Name="createdAt" Type="datetime" />
+  </EntityType>
+  <EntityType Name="role">
+    <Key>
+      <PropertyRef Name="roleId" />
+    </Key>
+    <Property Name="roleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="roleName" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="userAccount">
+    <Key>
+      <PropertyRef Name="userId" />
+    </Key>
+    <Property Name="userId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="password" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="role" Type="int" Nullable="false" />
+    <Property Name="createdAt" Type="datetime" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="vw_Role">
+    <Key>
+      <PropertyRef Name="userId" />
+      <PropertyRef Name="employeeId" />
+    </Key>
+    <Property Name="userId" Type="int" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="roleName" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <Association Name="FK_dtrRecords_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1" />
+    <End Role="dtrRecords" Type="Self.dtrRecords" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="dtrRecords">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_userAccount_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="userAccount" Type="Self.userAccount" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="userAccount">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_userAccount_role">
+    <End Role="role" Type="Self.role" Multiplicity="1" />
+    <End Role="userAccount" Type="Self.userAccount" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="role">
+        <PropertyRef Name="roleId" />
+      </Principal>
+      <Dependent Role="userAccount">
+        <PropertyRef Name="role" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DeologikalDTRModelStoreContainer">
+    <EntitySet Name="dtrRecords" EntityType="Self.dtrRecords" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="employeeInfo" EntityType="Self.employeeInfo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="role" EntityType="Self.role" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="userAccount" EntityType="Self.userAccount" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="vw_Role" EntityType="Self.vw_Role" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vw_Role].[userId] AS [userId], 
+    [vw_Role].[employeeId] AS [employeeId], 
+    [vw_Role].[roleName] AS [roleName]
+    FROM [dbo].[vw_Role] AS [vw_Role]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_dtrRecords_employeeInfo" Association="Self.FK_dtrRecords_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="dtrRecords" EntitySet="dtrRecords" />
+    </AssociationSet>
+    <AssociationSet Name="FK_userAccount_employeeInfo" Association="Self.FK_userAccount_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="userAccount" EntitySet="userAccount" />
+    </AssociationSet>
+    <AssociationSet Name="FK_userAccount_role" Association="Self.FK_userAccount_role">
+      <End Role="role" EntitySet="role" />
+      <End Role="userAccount" EntitySet="userAccount" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
