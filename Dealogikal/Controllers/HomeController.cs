@@ -91,5 +91,12 @@ namespace Dealogikal.Controllers
 
         }
 
+        [AllowAnonymous]
+        public ActionResult Logout()
+        {
+            Session.Clear();
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Login");
+        }
     }
 }
