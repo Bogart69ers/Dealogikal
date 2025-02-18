@@ -1450,6 +1450,9 @@
     <Content Include="scripts\popper.js.map" />
     <Content Include="scripts\popper-utils.min.js.map" />
     <Content Include="scripts\popper-utils.js.map" />
+    <Content Include="Views\Home\Dtr.cshtml" />
+    <Content Include="Views\Home\LeaveRequest.cshtml" />
+    <Content Include="Views\Home\OvertimeRequest.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

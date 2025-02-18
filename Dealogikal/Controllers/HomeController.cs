@@ -101,6 +101,24 @@ namespace Dealogikal.Controllers
         }
 
 
+        [Authorize]
+        public ActionResult Dtr()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public ActionResult LeaveRequest()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public ActionResult OvertimeRequest()
+        {
+            return View();
+        }
+
 
 
         [AllowAnonymous]

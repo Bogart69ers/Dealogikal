@@ -95,3 +95,4 @@ C:\Users\Intern\Documents\GitHub\Dealogikal\Dealogikal\bin\System.Web.Helpers.xm
 C:\Users\Intern\Documents\GitHub\Dealogikal\Dealogikal\bin\System.Web.Mvc.xml
 C:\Users\Intern\Documents\GitHub\Dealogikal\Dealogikal\obj\Debug\Dealogikal.dll
 C:\Users\Intern\Documents\GitHub\Dealogikal\Dealogikal\obj\Debug\Dealogikal.pdb
+C:\Users\Intern\Documents\GitHub\Dealogikal\Dealogikal\obj\Debug\Dealogikal.csprojResolveAssemblyReference.cache
