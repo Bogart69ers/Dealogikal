@@ -101,18 +101,31 @@ namespace Dealogikal.Repository
             var userSignIn = GetUserByEmployeeId(employeeId);
             if (userSignIn == null)
             {
-                errMsg = "User does not exist!";
+                errMsg = "Employee Id or Password is incorrect";
                 return ErrorCode.Error;
             }
 
             if (!userSignIn.password.Equals(password))
             {
-                errMsg = "Password is incorrect";
+                errMsg = "Employee Id or Password is incorrect";
                 return ErrorCode.Error;
             }
 
             errMsg = "Login Successful";
             return ErrorCode.Success;
+        }
+
+        public ErrorCode CreateEmployee(userAccount ua, ref string errMsg)
+        {
+            try
+            {
+                return _userAcc.Create(ua, out errMsg);
+            }
+            catch (Exception ex)
+            {
+                errMsg = ex.Message;
+                return ErrorCode.Error;
+            }
         }
     }
 }

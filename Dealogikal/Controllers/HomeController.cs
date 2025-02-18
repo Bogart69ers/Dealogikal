@@ -17,12 +17,6 @@ namespace Dealogikal.Controllers
     [Authorize]
     public class HomeController : BaseController
     {
-        // GET: Home
-        [Authorize]
-        public ActionResult Index()
-        {
-            return View();
-        }
 
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
@@ -79,7 +73,7 @@ namespace Dealogikal.Controllers
                 switch (user.role1.roleName)
                 {
                     case Constant.Role_HR:
-                        return RedirectToAction("HRDashboard", "Admin");
+                        return RedirectToAction("AdminDashboard", "Admin");
                     case Constant.Role_Employee:
                         return RedirectToAction("Dashboard", "Home");
                 }
@@ -94,7 +88,10 @@ namespace Dealogikal.Controllers
         [Authorize]
         public ActionResult Dashboard()
         {
-      
+            var user = _AccManager.GetEmployeebyEmployeeId(User.Identity.Name);
+
+            ViewBag.Name = user.firstName + " " + user.lastName;
+
             return View();
 
 
@@ -128,5 +125,7 @@ namespace Dealogikal.Controllers
             FormsAuthentication.SignOut();
             return RedirectToAction("Login");
         }
+
+        
     }
 }

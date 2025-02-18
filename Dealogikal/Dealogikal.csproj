@@ -1381,6 +1381,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Database\dtrRecords.cs">
@@ -1423,6 +1424,7 @@
     <Compile Include="Repository\IBaseRepository.cs" />
     <Compile Include="Utils\Roles.cs" />
     <Compile Include="Utils\Utilities.cs" />
+    <Compile Include="ViewModel\AccountViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\web.config" />
@@ -1453,6 +1455,11 @@
     <Content Include="Views\Home\Dtr.cshtml" />
     <Content Include="Views\Home\LeaveRequest.cshtml" />
     <Content Include="Views\Home\OvertimeRequest.cshtml" />
+    <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\Admin\AdminDashboard.cshtml" />
+    <Content Include="Views\Admin\CreateAccount.cshtml" />
+    <Content Include="Views\Admin\Accounts.cshtml" />
+    <Content Include="Views\Admin\Dtr.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1462,7 +1469,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Admin\" />
     <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
