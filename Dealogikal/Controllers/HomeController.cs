@@ -81,7 +81,7 @@ namespace Dealogikal.Controllers
                     case Constant.Role_HR:
                         return RedirectToAction("HRDashboard", "Admin");
                     case Constant.Role_Employee:
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Dashboard", "Home");
                 }
             }
 
@@ -90,6 +90,18 @@ namespace Dealogikal.Controllers
             return View();
 
         }
+
+        [Authorize]
+        public ActionResult Dashboard()
+        {
+      
+            return View();
+
+
+        }
+
+
+
 
         [AllowAnonymous]
         public ActionResult Logout()
