@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="DeologikalDTRModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="DeologikalDTRModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="dtrRecords">
           <Key>
             <PropertyRef Name="recordId" />
@@ -26,11 +26,17 @@
           <Property Name="firstName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="lastName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="email" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="birthdate" Type="date" />
           <Property Name="position" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="department" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="dateHired" Type="date" Nullable="false" />
+          <Property Name="address" Type="nvarchar(max)" />
+          <Property Name="barangay" Type="nvarchar" MaxLength="255" />
+          <Property Name="city" Type="nvarchar" MaxLength="255" />
+          <Property Name="zipcode" Type="nchar" MaxLength="10" />
           <Property Name="status" Type="int" />
           <Property Name="createdAt" Type="datetime" />
+          <Property Name="phone" Type="nvarchar" MaxLength="20" />
         </EntityType>
         <EntityType Name="role">
           <Key>
@@ -123,58 +129,46 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
             <End Role="userAccount" EntitySet="userAccount" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DeologikalDTRModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="DeologikalDTREntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="dtrRecords" EntityType="DeologikalDTRModel.dtrRecords" />
-          <EntitySet Name="employeeInfo" EntityType="DeologikalDTRModel.employeeInfo" />
-          <EntitySet Name="role" EntityType="DeologikalDTRModel.role" />
-          <EntitySet Name="userAccount" EntityType="DeologikalDTRModel.userAccount" />
-          <EntitySet Name="vw_Role" EntityType="DeologikalDTRModel.vw_Role" />
-          <AssociationSet Name="FK_dtrRecords_employeeInfo" Association="DeologikalDTRModel.FK_dtrRecords_employeeInfo">
-            <End Role="employeeInfo" EntitySet="employeeInfo" />
-            <End Role="dtrRecords" EntitySet="dtrRecords" />
-          </AssociationSet>
-          <AssociationSet Name="FK_userAccount_employeeInfo" Association="DeologikalDTRModel.FK_userAccount_employeeInfo">
-            <End Role="employeeInfo" EntitySet="employeeInfo" />
-            <End Role="userAccount" EntitySet="userAccount" />
-          </AssociationSet>
-          <AssociationSet Name="FK_userAccount_role" Association="DeologikalDTRModel.FK_userAccount_role">
-            <End Role="role" EntitySet="role" />
-            <End Role="userAccount" EntitySet="userAccount" />
-          </AssociationSet>
-        </EntityContainer>
         <EntityType Name="dtrRecords">
           <Key>
             <PropertyRef Name="recordId" />
           </Key>
           <Property Name="recordId" Type="Int32" Nullable="false" />
-          <Property Name="employeeId" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="date" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="timeIn" Type="DateTime" Precision="3" />
           <Property Name="breakOut" Type="DateTime" Precision="3" />
           <Property Name="breakIn" Type="DateTime" Precision="3" />
           <Property Name="timeOut" Type="DateTime" Precision="3" />
           <Property Name="createdAt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="employeeInfo" Relationship="DeologikalDTRModel.FK_dtrRecords_employeeInfo" FromRole="dtrRecords" ToRole="employeeInfo" />
+          <NavigationProperty Name="employeeInfo" Relationship="Self.FK_dtrRecords_employeeInfo" FromRole="dtrRecords" ToRole="employeeInfo" />
         </EntityType>
         <EntityType Name="employeeInfo">
           <Key>
             <PropertyRef Name="employeeId" />
           </Key>
-          <Property Name="employeeId" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="firstName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="lastName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="email" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="position" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="department" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="firstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="lastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="birthdate" Type="DateTime" Precision="0" />
+          <Property Name="position" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="department" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="dateHired" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="barangay" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="city" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="zipcode" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
           <Property Name="status" Type="Int32" />
           <Property Name="createdAt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="dtrRecords" Relationship="DeologikalDTRModel.FK_dtrRecords_employeeInfo" FromRole="employeeInfo" ToRole="dtrRecords" />
-          <NavigationProperty Name="userAccount" Relationship="DeologikalDTRModel.FK_userAccount_employeeInfo" FromRole="employeeInfo" ToRole="userAccount" />
+          <Property Name="phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="dtrRecords" Relationship="Self.FK_dtrRecords_employeeInfo" FromRole="employeeInfo" ToRole="dtrRecords" />
+          <NavigationProperty Name="userAccount" Relationship="Self.FK_userAccount_employeeInfo" FromRole="employeeInfo" ToRole="userAccount" />
         </EntityType>
         <EntityType Name="role">
           <Key>
@@ -182,19 +176,19 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           </Key>
           <Property Name="roleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="roleName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="userAccount" Relationship="DeologikalDTRModel.FK_userAccount_role" FromRole="role" ToRole="userAccount" />
+          <NavigationProperty Name="userAccount" Relationship="Self.FK_userAccount_role" FromRole="role" ToRole="userAccount" />
         </EntityType>
         <EntityType Name="userAccount">
           <Key>
             <PropertyRef Name="userId" />
           </Key>
           <Property Name="userId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="employeeId" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="password" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="role" Type="Int32" Nullable="false" />
           <Property Name="createdAt" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="employeeInfo" Relationship="DeologikalDTRModel.FK_userAccount_employeeInfo" FromRole="userAccount" ToRole="employeeInfo" />
-          <NavigationProperty Name="role1" Relationship="DeologikalDTRModel.FK_userAccount_role" FromRole="userAccount" ToRole="role" />
+          <NavigationProperty Name="employeeInfo" Relationship="Self.FK_userAccount_employeeInfo" FromRole="userAccount" ToRole="employeeInfo" />
+          <NavigationProperty Name="role1" Relationship="Self.FK_userAccount_role" FromRole="userAccount" ToRole="role" />
         </EntityType>
         <EntityType Name="vw_Role">
           <Key>
@@ -202,12 +196,12 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
             <PropertyRef Name="employeeId" />
           </Key>
           <Property Name="userId" Type="Int32" Nullable="false" />
-          <Property Name="employeeId" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="roleName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_dtrRecords_employeeInfo">
-          <End Type="DeologikalDTRModel.employeeInfo" Role="employeeInfo" Multiplicity="1" />
-          <End Type="DeologikalDTRModel.dtrRecords" Role="dtrRecords" Multiplicity="*" />
+          <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1" />
+          <End Role="dtrRecords" Type="Self.dtrRecords" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="employeeInfo">
               <PropertyRef Name="employeeId" />
@@ -218,10 +212,10 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_userAccount_employeeInfo">
-          <End Type="DeologikalDTRModel.employeeInfo" Role="employeeInfo" Multiplicity="1">
+          <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1">
             <OnDelete Action="Cascade" />
           </End>
-          <End Type="DeologikalDTRModel.userAccount" Role="userAccount" Multiplicity="*" />
+          <End Role="userAccount" Type="Self.userAccount" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="employeeInfo">
               <PropertyRef Name="employeeId" />
@@ -232,8 +226,8 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_userAccount_role">
-          <End Type="DeologikalDTRModel.role" Role="role" Multiplicity="1" />
-          <End Type="DeologikalDTRModel.userAccount" Role="userAccount" Multiplicity="*" />
+          <End Role="role" Type="Self.role" Multiplicity="1" />
+          <End Role="userAccount" Type="Self.userAccount" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="role">
               <PropertyRef Name="roleId" />
@@ -243,6 +237,25 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityContainer Name="DeologikalDTREntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="dtrRecords" EntityType="Self.dtrRecords" />
+          <EntitySet Name="employeeInfo" EntityType="Self.employeeInfo" />
+          <EntitySet Name="role" EntityType="Self.role" />
+          <EntitySet Name="userAccount" EntityType="Self.userAccount" />
+          <EntitySet Name="vw_Role" EntityType="Self.vw_Role" />
+          <AssociationSet Name="FK_dtrRecords_employeeInfo" Association="Self.FK_dtrRecords_employeeInfo">
+            <End Role="employeeInfo" EntitySet="employeeInfo" />
+            <End Role="dtrRecords" EntitySet="dtrRecords" />
+          </AssociationSet>
+          <AssociationSet Name="FK_userAccount_employeeInfo" Association="Self.FK_userAccount_employeeInfo">
+            <End Role="employeeInfo" EntitySet="employeeInfo" />
+            <End Role="userAccount" EntitySet="userAccount" />
+          </AssociationSet>
+          <AssociationSet Name="FK_userAccount_role" Association="Self.FK_userAccount_role">
+            <End Role="role" EntitySet="role" />
+            <End Role="userAccount" EntitySet="userAccount" />
+          </AssociationSet>
+        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -252,57 +265,63 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           <EntitySetMapping Name="dtrRecords">
             <EntityTypeMapping TypeName="DeologikalDTRModel.dtrRecords">
               <MappingFragment StoreEntitySet="dtrRecords">
-                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
-                <ScalarProperty Name="timeOut" ColumnName="timeOut" />
-                <ScalarProperty Name="breakIn" ColumnName="breakIn" />
-                <ScalarProperty Name="breakOut" ColumnName="breakOut" />
-                <ScalarProperty Name="timeIn" ColumnName="timeIn" />
-                <ScalarProperty Name="date" ColumnName="date" />
-                <ScalarProperty Name="employeeId" ColumnName="employeeId" />
                 <ScalarProperty Name="recordId" ColumnName="recordId" />
+                <ScalarProperty Name="employeeId" ColumnName="employeeId" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="timeIn" ColumnName="timeIn" />
+                <ScalarProperty Name="breakOut" ColumnName="breakOut" />
+                <ScalarProperty Name="breakIn" ColumnName="breakIn" />
+                <ScalarProperty Name="timeOut" ColumnName="timeOut" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="employeeInfo">
             <EntityTypeMapping TypeName="DeologikalDTRModel.employeeInfo">
               <MappingFragment StoreEntitySet="employeeInfo">
-                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
-                <ScalarProperty Name="status" ColumnName="status" />
-                <ScalarProperty Name="dateHired" ColumnName="dateHired" />
-                <ScalarProperty Name="department" ColumnName="department" />
-                <ScalarProperty Name="position" ColumnName="position" />
-                <ScalarProperty Name="email" ColumnName="email" />
-                <ScalarProperty Name="lastName" ColumnName="lastName" />
-                <ScalarProperty Name="firstName" ColumnName="firstName" />
                 <ScalarProperty Name="employeeId" ColumnName="employeeId" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="birthdate" ColumnName="birthdate" />
+                <ScalarProperty Name="position" ColumnName="position" />
+                <ScalarProperty Name="department" ColumnName="department" />
+                <ScalarProperty Name="dateHired" ColumnName="dateHired" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="barangay" ColumnName="barangay" />
+                <ScalarProperty Name="city" ColumnName="city" />
+                <ScalarProperty Name="zipcode" ColumnName="zipcode" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="role">
             <EntityTypeMapping TypeName="DeologikalDTRModel.role">
               <MappingFragment StoreEntitySet="role">
-                <ScalarProperty Name="roleName" ColumnName="roleName" />
                 <ScalarProperty Name="roleId" ColumnName="roleId" />
+                <ScalarProperty Name="roleName" ColumnName="roleName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="userAccount">
             <EntityTypeMapping TypeName="DeologikalDTRModel.userAccount">
               <MappingFragment StoreEntitySet="userAccount">
-                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
-                <ScalarProperty Name="role" ColumnName="role" />
-                <ScalarProperty Name="password" ColumnName="password" />
-                <ScalarProperty Name="employeeId" ColumnName="employeeId" />
                 <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="employeeId" ColumnName="employeeId" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="role" ColumnName="role" />
+                <ScalarProperty Name="createdAt" ColumnName="createdAt" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="vw_Role">
             <EntityTypeMapping TypeName="DeologikalDTRModel.vw_Role">
               <MappingFragment StoreEntitySet="vw_Role">
-                <ScalarProperty Name="roleName" ColumnName="roleName" />
-                <ScalarProperty Name="employeeId" ColumnName="employeeId" />
                 <ScalarProperty Name="userId" ColumnName="userId" />
+                <ScalarProperty Name="employeeId" ColumnName="employeeId" />
+                <ScalarProperty Name="roleName" ColumnName="roleName" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

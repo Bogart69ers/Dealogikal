@@ -21,11 +21,17 @@
     <Property Name="firstName" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="lastName" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="email" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="birthdate" Type="date" />
     <Property Name="position" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="department" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="dateHired" Type="date" Nullable="false" />
+    <Property Name="address" Type="nvarchar(max)" />
+    <Property Name="barangay" Type="nvarchar" MaxLength="255" />
+    <Property Name="city" Type="nvarchar" MaxLength="255" />
+    <Property Name="zipcode" Type="nchar" MaxLength="10" />
     <Property Name="status" Type="int" />
     <Property Name="createdAt" Type="datetime" />
+    <Property Name="phone" Type="nvarchar" MaxLength="20" />
   </EntityType>
   <EntityType Name="role">
     <Key>

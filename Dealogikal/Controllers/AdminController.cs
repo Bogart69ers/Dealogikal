@@ -15,6 +15,10 @@ namespace Dealogikal.Controllers
         [Authorize]
         public ActionResult AdminDashboard()
         {
+            var user = _AccManager.GetEmployeebyEmployeeId(User.Identity.Name);
+
+            ViewBag.Name = user.firstName + " " + user.lastName;
+
             return View();
         }
 
@@ -27,22 +31,25 @@ namespace Dealogikal.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateAccount(userAccount ua)
+        public ActionResult CreateAccount(userAccount ua, string email, DateTime birthdate, string firstName, string lastName ,string department, string position, string address, string barangay, string city, string zipcode, string phone)
         {
             try
             {
-                var currrentUser = _AccManager.GetUserByEmployeeId(User.Identity.Name);
-                if (currrentUser == null)
+                if (!ModelState.IsValid)
                 {
-                    ModelState.AddModelError(string.Empty, "User not found,");
                     return View("CreateAccount");
                 }
+
+                var empInfo = _AccManager.EmployeeInfoSignup(birthdate, position, department, ua.employeeId, email, firstName, lastName, phone, address, zipcode, city, barangay, ref ErrorMessage);
+
 
                 if (_AccManager.CreateEmployee(ua, ref ErrorMessage) != ErrorCode.Success)
                 {
                     ModelState.AddModelError(string.Empty, ErrorMessage);
                     return View("CreateAccount");
                 }
+
+
                 TempData["SuccessMessage"] = "Account created successfully.";
                 return RedirectToAction("CreateAccount");
 

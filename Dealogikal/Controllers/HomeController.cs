@@ -116,7 +116,11 @@ namespace Dealogikal.Controllers
             return View();
         }
 
-
+        [Authorize]
+        public ActionResult DTRHistory()
+        {
+            return View();
+        }
 
         [AllowAnonymous]
         public ActionResult Logout()

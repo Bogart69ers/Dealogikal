@@ -4,20 +4,59 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+
+
 <div class="col-12 grid-margin">
     <div class="card">
         <div class="card-body">
+            <div class="col-12 form-group">
+                @if (!String.IsNullOrEmpty(ViewBag.Error as String))
+                {
+                    <div style="color: red;">
+                        @ViewBag.Error
+                    </div>
+                }
+            </div>
+
             <h4 class="card-title">Create Employee</h4>
-            <form class="form-sample">
+            <form class="form-sample" action="@Url.Action("CreateAccount", "Admin")" method="post">
                 <p class="card-description">
-                    Personal info
+                    Account Info
+                </p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Employee ID</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" name="employeeId" id="employeeId" placeholder="Employee ID" required/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Password </label>
+                            <div class="col-sm-9">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="password" id="password" placeholder="Password" required />
+                                    <div class="input-group-append" id="togglePassword" style="cursor: pointer;">
+                                        <span class="input-group-text">
+                                            <i class="icon-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                  
+                </div>            
+                <p class="card-description">
+                    Employee Information
                 </p>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">First Name</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" />
+                                <input type="text" class="form-control" name="firstName" id="firstName" placeholder="First Name" required />
                             </div>
                         </div>
                     </div>
@@ -25,20 +64,17 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Last Name</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" />
+                                <input type="text" class="form-control" name="lastName" id="lastName" placeholder="Last Name" required />
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> 
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Gender</label>
+                            <label class="col-sm-3 col-form-label">Email</label>
                             <div class="col-sm-9">
-                                <select class="form-control">
-                                    <option>Male</option>
-                                    <option>Female</option>
-                                </select>
+                                <input type="text" class="form-control" name="email" id="email" placeholder="Email"/>
                             </div>
                         </div>
                     </div>
@@ -46,82 +82,51 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">Date of Birth</label>
                             <div class="col-sm-9">
-                                <input class="form-control" placeholder="dd/mm/yyyy" />
+                                <input type="date" class="form-control" name="birthdate" id="birthdate" placeholder="dd/mm/yyyy"/>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </div>                   
+                </div>         
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Category</label>
+                            <label class="col-sm-3 col-form-label">Department</label>
                             <div class="col-sm-9">
-                                <select class="form-control">
-                                    <option>Category1</option>
-                                    <option>Category2</option>
-                                    <option>Category3</option>
-                                    <option>Category4</option>
+                                <select class="form-control" name="department" id="department" required>
+                                    <option value="" disabled selected>Department</option>
+                                    <option value="IT">IT</option>
+                                    <option value="HR">HR</option>
+                                    <option value="HR">Sales</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Accounting">Accounting</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Membership</label>
-                            <div class="col-sm-4">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios1" value="" checked>
-                                        Free
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-sm-5">
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" name="membershipRadios" id="membershipRadios2" value="option2">
-                                        Professional
-                                    </label>
-                                </div>
+                            <label class="col-sm-3 col-form-label">Position </label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" placeholder="Position" name="position" id="position" />
                             </div>
                         </div>
                     </div>
                 </div>
-                <p class="card-description">
-                    Address
-                </p>
+                
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Address 1</label>
+                            <label class="col-sm-3 col-form-label">Address </label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" />
+                                <input type="text" class="form-control" placeholder="Address" name="address" id="address"/>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">State</label>
+                            <label class="col-sm-3 col-form-label">Barangay</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Address 2</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" />
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Postcode</label>
-                            <div class="col-sm-9">
-                                <input type="text" class="form-control" />
+                                <input type="text" class="form-control" placeholder="Barangay" name="barangay" id="barangay"/>
                             </div>
                         </div>
                     </div>
@@ -131,25 +136,67 @@
                         <div class="form-group row">
                             <label class="col-sm-3 col-form-label">City</label>
                             <div class="col-sm-9">
-                                <input type="text" class="form-control" />
+                                <input type="text" class="form-control" placeholder="City" name="city" id="city" />
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group row">
-                            <label class="col-sm-3 col-form-label">Country</label>
+                            <label class="col-sm-3 col-form-label">Postal Code</label>
                             <div class="col-sm-9">
-                                <select class="form-control">
-                                    <option>America</option>
-                                    <option>Italy</option>
-                                    <option>Russia</option>
-                                    <option>Britain</option>
-                                </select>
+                                <input type="text" class="form-control" name="zipcode" placeholder="Zip Code" pattern="\d{4,5}" title="Please enter a valid zip code with 4 to 5 digits"/>
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Phone Number</label>
+                            <div class="col-sm-9">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            +63
+                                        </span>
+                                    </div>
+                                    <input type="text" class="form-control" name="phone" id="phone"
+                                           placeholder="Enter 11-digit number" pattern="\d{11}" title="Please enter exactly 11 digits"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>          
                 </div>
+                <button type="submit" class="btn btn-primary mr-2">Create</button>
+                <button class="btn btn-light" id="clearForm">Reset</button>               
             </form>
         </div>
     </div>
 </div>
+
+
+<script>
+    document.getElementById("togglePassword").addEventListener("click", function () {
+        var passwordField = document.getElementById("password");
+        var icon = this.querySelector("i");
+
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");
+        } else {
+            passwordField.type = "password";
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");
+        }
+    });
+</script>
+
+<script>
+    document.getElementById("clearForm").addEventListener("click", function() {
+        document.querySelectorAll(".form-sample input, .form-sample select").forEach(field => {
+            if (field.type !== "submit" && field.type !== "button") {
+                field.value = "";
+            }
+        });
+    });
+</script>
+

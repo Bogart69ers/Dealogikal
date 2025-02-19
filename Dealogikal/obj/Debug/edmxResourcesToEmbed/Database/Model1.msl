@@ -4,57 +4,63 @@
     <EntitySetMapping Name="dtrRecords">
       <EntityTypeMapping TypeName="DeologikalDTRModel.dtrRecords">
         <MappingFragment StoreEntitySet="dtrRecords">
-          <ScalarProperty Name="createdAt" ColumnName="createdAt" />
-          <ScalarProperty Name="timeOut" ColumnName="timeOut" />
-          <ScalarProperty Name="breakIn" ColumnName="breakIn" />
-          <ScalarProperty Name="breakOut" ColumnName="breakOut" />
-          <ScalarProperty Name="timeIn" ColumnName="timeIn" />
-          <ScalarProperty Name="date" ColumnName="date" />
-          <ScalarProperty Name="employeeId" ColumnName="employeeId" />
           <ScalarProperty Name="recordId" ColumnName="recordId" />
+          <ScalarProperty Name="employeeId" ColumnName="employeeId" />
+          <ScalarProperty Name="date" ColumnName="date" />
+          <ScalarProperty Name="timeIn" ColumnName="timeIn" />
+          <ScalarProperty Name="breakOut" ColumnName="breakOut" />
+          <ScalarProperty Name="breakIn" ColumnName="breakIn" />
+          <ScalarProperty Name="timeOut" ColumnName="timeOut" />
+          <ScalarProperty Name="createdAt" ColumnName="createdAt" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="employeeInfo">
       <EntityTypeMapping TypeName="DeologikalDTRModel.employeeInfo">
         <MappingFragment StoreEntitySet="employeeInfo">
-          <ScalarProperty Name="createdAt" ColumnName="createdAt" />
-          <ScalarProperty Name="status" ColumnName="status" />
-          <ScalarProperty Name="dateHired" ColumnName="dateHired" />
-          <ScalarProperty Name="department" ColumnName="department" />
-          <ScalarProperty Name="position" ColumnName="position" />
-          <ScalarProperty Name="email" ColumnName="email" />
-          <ScalarProperty Name="lastName" ColumnName="lastName" />
-          <ScalarProperty Name="firstName" ColumnName="firstName" />
           <ScalarProperty Name="employeeId" ColumnName="employeeId" />
+          <ScalarProperty Name="firstName" ColumnName="firstName" />
+          <ScalarProperty Name="lastName" ColumnName="lastName" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="birthdate" ColumnName="birthdate" />
+          <ScalarProperty Name="position" ColumnName="position" />
+          <ScalarProperty Name="department" ColumnName="department" />
+          <ScalarProperty Name="dateHired" ColumnName="dateHired" />
+          <ScalarProperty Name="address" ColumnName="address" />
+          <ScalarProperty Name="barangay" ColumnName="barangay" />
+          <ScalarProperty Name="city" ColumnName="city" />
+          <ScalarProperty Name="zipcode" ColumnName="zipcode" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+          <ScalarProperty Name="phone" ColumnName="phone" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="role">
       <EntityTypeMapping TypeName="DeologikalDTRModel.role">
         <MappingFragment StoreEntitySet="role">
-          <ScalarProperty Name="roleName" ColumnName="roleName" />
           <ScalarProperty Name="roleId" ColumnName="roleId" />
+          <ScalarProperty Name="roleName" ColumnName="roleName" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="userAccount">
       <EntityTypeMapping TypeName="DeologikalDTRModel.userAccount">
         <MappingFragment StoreEntitySet="userAccount">
-          <ScalarProperty Name="createdAt" ColumnName="createdAt" />
-          <ScalarProperty Name="role" ColumnName="role" />
-          <ScalarProperty Name="password" ColumnName="password" />
-          <ScalarProperty Name="employeeId" ColumnName="employeeId" />
           <ScalarProperty Name="userId" ColumnName="userId" />
+          <ScalarProperty Name="employeeId" ColumnName="employeeId" />
+          <ScalarProperty Name="password" ColumnName="password" />
+          <ScalarProperty Name="role" ColumnName="role" />
+          <ScalarProperty Name="createdAt" ColumnName="createdAt" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="vw_Role">
       <EntityTypeMapping TypeName="DeologikalDTRModel.vw_Role">
         <MappingFragment StoreEntitySet="vw_Role">
-          <ScalarProperty Name="roleName" ColumnName="roleName" />
-          <ScalarProperty Name="employeeId" ColumnName="employeeId" />
           <ScalarProperty Name="userId" ColumnName="userId" />
+          <ScalarProperty Name="employeeId" ColumnName="employeeId" />
+          <ScalarProperty Name="roleName" ColumnName="roleName" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

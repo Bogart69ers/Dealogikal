@@ -119,13 +119,58 @@ namespace Dealogikal.Repository
         {
             try
             {
-                return _userAcc.Create(ua, out errMsg);
+                ua.role = 1;
+                ua.createdAt = DateTime.Now;
+
+                if (GetUserByEmployeeId(ua.employeeId) != null)
+                {
+                    errMsg = "Employee already exists";
+                    return ErrorCode.Error;
+                }
+
+                if (_userAcc.Create(ua, out errMsg) != ErrorCode.Success)
+                {
+                    return ErrorCode.Error;
+                }
+
+                return ErrorCode.Success;
+
             }
             catch (Exception ex)
             {
                 errMsg = ex.Message;
                 return ErrorCode.Error;
             }
+        }
+
+        public employeeInfo EmployeeInfoSignup( DateTime birthdate, string position, string department, string employeeId, string email, string firstname, string lastname, string phone, string address, string zipcode, string city, string barangay, ref String err)
+        {
+
+            var empInfo = GetEmployeebyEmployeeId(employeeId);
+            if (empInfo != null)
+            {
+                return empInfo;
+            }
+            empInfo = new employeeInfo();
+            empInfo.employeeId = employeeId;
+            empInfo.email = email;
+            empInfo.status = (int)Status.Active;
+            empInfo.dateHired = DateTime.Now.Date;
+            empInfo.createdAt = DateTime.Now;
+            empInfo.position = position;
+            empInfo.department = department;
+            empInfo.firstName = firstname;
+            empInfo.lastName = lastname;
+            empInfo.address = address;
+            empInfo.zipcode = zipcode;
+            empInfo.barangay = barangay;
+            empInfo.city = city;
+            empInfo.phone = phone;
+            empInfo.birthdate = birthdate;
+
+            _employeeInf.Create(empInfo, out err);
+
+            return GetEmployeebyEmployeeId(employeeId);
         }
     }
 }
