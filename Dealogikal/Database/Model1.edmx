@@ -25,7 +25,7 @@
           <Property Name="employeeId" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="firstName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="lastName" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="email" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="email" Type="nvarchar" MaxLength="255" />
           <Property Name="birthdate" Type="date" />
           <Property Name="position" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="department" Type="nvarchar" MaxLength="100" Nullable="false" />
@@ -155,7 +155,7 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="firstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="lastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="birthdate" Type="DateTime" Precision="0" />
           <Property Name="position" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="department" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />

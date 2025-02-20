@@ -17,6 +17,11 @@ namespace Dealogikal.Controllers
     [Authorize]
     public class HomeController : BaseController
     {
+        [Authorize]
+        public ActionResult Index()
+        {
+            return RedirectToAction("Dashboard");
+        }
 
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
@@ -57,7 +62,27 @@ namespace Dealogikal.Controllers
                     return View();
                 }
 
-                FormsAuthentication.SetAuthCookie(employeeId, false);
+                FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(
+                    1, // Ticket version
+                    employeeId, // Username
+                    DateTime.Now, // Issue date
+                    DateTime.Now.AddDays(30), // Expiration date (set to 30 days)
+                    true, // Persistent
+                    "", // User data
+                    FormsAuthentication.FormsCookiePath // Cookie path
+                );
+
+                // Encrypt the ticket
+                string encryptedTicket = FormsAuthentication.Encrypt(ticket);
+
+                // Create the authentication cookie
+                HttpCookie authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket);
+                authCookie.Expires = ticket.Expiration; // Set expiration
+                authCookie.HttpOnly = true; // Prevent JavaScript access
+
+                // Add the cookie to the response
+                Response.Cookies.Add(authCookie);
+
 
                 if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 {
@@ -94,7 +119,6 @@ namespace Dealogikal.Controllers
 
             return View();
 
-
         }
 
 
@@ -103,6 +127,7 @@ namespace Dealogikal.Controllers
         {
             return View();
         }
+
 
         [Authorize]
         public ActionResult LeaveRequest()

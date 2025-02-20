@@ -3,55 +3,126 @@
     ViewBag.Title = "Dashboard";
     var name = ViewBag.Name;
 }
-
 <div class="content-wrapper">
     <div class="row">
-        <div class="col-md-12 grid-margin d-flex justify-content-between align-items-center">
-            <div>
-                <h2 class="font-weight-bold">Welcome @name</h2>
+        <div class="col-md-12 grid-margin d-flex flex-column align-items-start">
+            <h2 class="font-weight-bold text-left">Welcome @name</h2>
+            <div class="d-flex align-items-center" style="margin-top: 20px;">
+                <!-- Live Analog Clock -->
+                <div class="d-flex flex-column align-items-center">
+                    <canvas id="analogClock" width="200" height="200" style="background: white; border-radius: 50%; box-shadow: 0px 0px 10px rgba(0,0,0,0.1); margin-left:95%"></canvas>
+                    <!-- Live Digital Clock -->
+                    <div id="digitalClock" style="font-size: 16px; margin-top: 10px; font-weight: bold; text-align: center; margin-left: 100%"></div>
+                </div>
+                <!-- In Button -->
+                <button type="button" class="btn btn-inverse-info btn-icon" style="margin-left: 50%; font-size: 15px; padding: 30px 50px; text-align:left">Time In</button>
             </div>
-            <!-- Live Date & Time -->
-            <div id="datetime" style="font-size: 18px; font-weight: bold;"></div>
         </div>
     </div>
 
-    <h4>To do lists:</h4>
-    <div class="tab-content" id="setting-content" style="text-align:left;">
-        <div class="tab-pane fade show active scroll-wrapper ps ps--active-y" id="todo-section" role="tabpanel" aria-labelledby="todo-section">
-            <div class="add-items d-flex px-3 mb-0">
+    <div class="right-section" style="width: 300px; position: absolute; right: 20px; top: 150px;">
+        <!-- To-Do List Section -->
+        <div class="todo-container" style="background: #f8f9fa; padding: 15px; border-radius: 5px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1);">
+            <h4>To-do List:</h4>
+            <div class="add-items d-flex mb-2">
                 <form class="form w-100">
-                    <div class="form-group d-flex" style="width: 100%;">
-                        <input type="text" class="form-control todo-list-input"
-                               placeholder="Add To-do"
-                               maxlength="80"
-                               style="flex-grow: 1; font-size: 15px; padding: 12px; width: 100%; min-width: 91%; border-radius: 8px;">
-                        <button type="submit" class="add btn btn-primary todo-list-add-btn" id="add-task"
-                                style="font-size: 20px; padding: 12px 24px; margin-left: 10px; border-radius: 8px;">
+                    <div class="form-group d-flex">
+                        <textarea class="form-control todo-list-input"
+                                  placeholder="Add To-do"
+                                  maxlength="200"
+                                  style="flex-grow: 1; font-size: 14px; padding: 10px; border-radius: 5px; word-wrap: break-word; overflow-wrap: break-word; width: 100%; height: auto; min-height: 40px; max-height: 100px; resize: none;"></textarea>
+                        <button type="submit" class="btn btn-primary todo-list-add-btn" id="add-task"
+                                style="font-size: 14px; padding: 10px; margin-left: 10px; border-radius: 5px;">
                             Add
                         </button>
                     </div>
                 </form>
             </div>
-            <div class="list-wrapper px-3" style="display:flex;">
-                <ul class="d-flex flex-column-reverse todo-list"
-                    style="width:100%; word-wrap:break-word; overflow-wrap:break-word; font-size: 20px;"></ul>
+            <div class="list-wrapper" style="max-width: 100%; word-wrap: break-word; overflow-wrap: break-word; max-height: 200px; overflow-y: auto; margin-top: 10px;">
+                <ul class="todo-list" style="list-style: none; padding: 0; font-size: 14px; word-wrap: break-word; overflow-wrap: break-word; white-space: pre-wrap; width: 100%;"></ul>
             </div>
         </div>
     </div>
 </div>
 
-<!-- JavaScript for Live Date & Time -->
+<!-- JavaScript for Live Analog Clock and To-Do List Behavior -->
 <script>
-    function updateDateTime() {
+    function drawClock() {
+        const canvas = document.getElementById("analogClock");
+        const ctx = canvas.getContext("2d");
         const now = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const formattedDate = now.toLocaleDateString('en-US', options);
-        const formattedTime = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+        const radius = centerX - 5;
 
-        document.getElementById('datetime').innerHTML = `${formattedDate} - ${formattedTime}`;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+        ctx.fillStyle = "white";
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 3, 0, 2 * Math.PI);
+        ctx.fillStyle = "black";
+        ctx.fill();
+
+        function drawHand(length, angle, width, color) {
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(
+                centerX + length * Math.cos(angle),
+                centerY + length * Math.sin(angle)
+            );
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.stroke();
+        }
+
+        const hours = now.getHours() % 12;
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+
+        drawHand(radius * 0.5, ((hours + minutes / 60) * 30 - 90) * Math.PI / 180, 4, "black");
+        drawHand(radius * 0.7, ((minutes + seconds / 60) * 6 - 90) * Math.PI / 180, 2, "black");
+        drawHand(radius * 0.8, (seconds * 6 - 90) * Math.PI / 180, 1, "red");
     }
 
-    // Update time every second
-    setInterval(updateDateTime, 1000);
-    updateDateTime(); // Initialize immediately
+    function updateDigitalClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        const amPm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+        document.getElementById("digitalClock").innerText = `${hours}:${minutes}:${seconds} ${amPm}`;
+    }
+
+    setInterval(drawClock, 1000);
+    setInterval(updateDigitalClock, 1000);
+    drawClock();
+    updateDigitalClock();
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

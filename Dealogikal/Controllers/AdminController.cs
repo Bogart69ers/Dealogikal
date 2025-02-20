@@ -13,6 +13,12 @@ namespace Dealogikal.Controllers
     public class AdminController : BaseController
     {
         [Authorize]
+        public ActionResult Index()
+        {
+            return RedirectToAction("AdminDashboard");
+        }
+
+        [Authorize]
         public ActionResult AdminDashboard()
         {
             var user = _AccManager.GetEmployeebyEmployeeId(User.Identity.Name);
@@ -31,7 +37,7 @@ namespace Dealogikal.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateAccount(userAccount ua, string email, DateTime birthdate, string firstName, string lastName ,string department, string position, string address, string barangay, string city, string zipcode, string phone)
+        public ActionResult CreateAccount(userAccount ua, string email, DateTime? birthdate, string firstName, string lastName ,string department, string position, string address, string barangay, string city, string zipcode, string phone)
         {
             try
             {
@@ -40,17 +46,25 @@ namespace Dealogikal.Controllers
                     return View("CreateAccount");
                 }
 
-                var empInfo = _AccManager.EmployeeInfoSignup(birthdate, position, department, ua.employeeId, email, firstName, lastName, phone, address, zipcode, city, barangay, ref ErrorMessage);
+                if (_AccManager.EmployeeInfoSignup(birthdate, position, department, ua.employeeId, email, firstName, lastName, phone, address, zipcode, city, barangay, ref ErrorMessage) != ErrorCode.Success)
+                {
+                    ViewBag.ErrorMessage = ErrorMessage;
+                    return View("CreateAccount");
+                }
 
 
                 if (_AccManager.CreateEmployee(ua, ref ErrorMessage) != ErrorCode.Success)
                 {
-                    ModelState.AddModelError(string.Empty, ErrorMessage);
+                    ViewBag.ErrorMessage = "Employee Already Exist";
                     return View("CreateAccount");
                 }
 
 
                 TempData["SuccessMessage"] = "Account created successfully.";
+
+                ViewBag.SuccessMessage = TempData["SuccessMessage"];
+                ViewBag.ErrorMessage = ErrorMessage;
+
                 return RedirectToAction("CreateAccount");
 
             }

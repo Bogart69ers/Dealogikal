@@ -143,34 +143,49 @@ namespace Dealogikal.Repository
             }
         }
 
-        public employeeInfo EmployeeInfoSignup( DateTime birthdate, string position, string department, string employeeId, string email, string firstname, string lastname, string phone, string address, string zipcode, string city, string barangay, ref String err)
+        public ErrorCode EmployeeInfoSignup( DateTime? birthdate, string position, string department, string employeeId, string email, string firstname, string lastname, string phone, string address, string zipcode, string city, string barangay, ref String err)
         {
-
-            var empInfo = GetEmployeebyEmployeeId(employeeId);
-            if (empInfo != null)
+            try
             {
-                return empInfo;
+                var empInfo = GetEmployeebyEmployeeId(employeeId);
+                if (empInfo.employeeId == employeeId && empInfo.firstName == firstname && empInfo.lastName == lastname)
+                {
+                    err = "Employee Already exist";
+                    return ErrorCode.Error;
+                }
+                else if (empInfo.employeeId == employeeId)
+                {
+                    err = "Employee ID Already Used";
+                    return ErrorCode.Error;
+                }
+                empInfo = new employeeInfo();
+                empInfo.employeeId = employeeId;
+                empInfo.email = email;
+                empInfo.status = (int)Status.Active;
+                empInfo.dateHired = DateTime.Now.Date;
+                empInfo.createdAt = DateTime.Now;
+                empInfo.position = position;
+                empInfo.department = department;
+                empInfo.firstName = firstname;
+                empInfo.lastName = lastname;
+                empInfo.address = address;
+                empInfo.zipcode = zipcode;
+                empInfo.barangay = barangay;
+                empInfo.city = city;
+                empInfo.phone = phone;
+                empInfo.birthdate = birthdate;
+
+
+                _employeeInf.Create(empInfo, out err);
+
+                return ErrorCode.Success;
             }
-            empInfo = new employeeInfo();
-            empInfo.employeeId = employeeId;
-            empInfo.email = email;
-            empInfo.status = (int)Status.Active;
-            empInfo.dateHired = DateTime.Now.Date;
-            empInfo.createdAt = DateTime.Now;
-            empInfo.position = position;
-            empInfo.department = department;
-            empInfo.firstName = firstname;
-            empInfo.lastName = lastname;
-            empInfo.address = address;
-            empInfo.zipcode = zipcode;
-            empInfo.barangay = barangay;
-            empInfo.city = city;
-            empInfo.phone = phone;
-            empInfo.birthdate = birthdate;
+            catch (Exception)
+            {
 
-            _employeeInf.Create(empInfo, out err);
-
-            return GetEmployeebyEmployeeId(employeeId);
+                throw;
+            }
+            
         }
     }
 }

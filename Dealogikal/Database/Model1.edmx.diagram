@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="d4b458ea70174838aae34552ab2cb66d" Name="Diagram1">
+      <Diagram DiagramId="783106aaf30e464fb5957f18f71ca53f" Name="Diagram1">
         <EntityTypeShape EntityType="DeologikalDTRModel.dtrRecords" Width="1.5" PointX="3" PointY="3.125" IsExpanded="true" />
         <EntityTypeShape EntityType="DeologikalDTRModel.employeeInfo" Width="1.5" PointX="0.75" PointY="2.375" IsExpanded="true" />
         <EntityTypeShape EntityType="DeologikalDTRModel.role" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
