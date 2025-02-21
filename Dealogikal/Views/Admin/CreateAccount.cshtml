@@ -17,10 +17,10 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="col-12 form-group">
-                                @if (!string.IsNullOrEmpty(ViewBag.SuccessMessage as string))
+                                @if (TempData["SuccessMessage"] != null)
                                 {
                                     <div style="color: green;">
-                                        @ViewBag.SuccessMessage
+                                        @TempData["SuccessMessage"]
                                     </div>
                                 }
 
@@ -92,12 +92,20 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group row">
-                                            <label class="col-sm-3 col-form-label">Date of Birth</label>
+                                            <label class="col-sm-3 col-form-label">Phone Number</label>
                                             <div class="col-sm-9">
-                                                <input type="date" class="form-control" name="birthdate" id="birthdate" placeholder="dd/mm/yyyy" />
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text">
+                                                            +63
+                                                        </span>
+                                                    </div>
+                                                    <input type="text" class="form-control" name="phone" id="phone"
+                                                           placeholder="Enter 11-digit number" pattern="\d{11}" title="Please enter exactly 11 digits" />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div>                                   
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
@@ -162,17 +170,17 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group row">
-                                            <label class="col-sm-3 col-form-label">Phone Number</label>
+                                            <label class="col-sm-3 col-form-label">Date of Birth</label>
                                             <div class="col-sm-9">
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">
-                                                            +63
-                                                        </span>
-                                                    </div>
-                                                    <input type="text" class="form-control" name="phone" id="phone"
-                                                           placeholder="Enter 11-digit number" pattern="\d{11}" title="Please enter exactly 11 digits" />
-                                                </div>
+                                                <input type="date" class="form-control" name="birthdate" id="birthdate" placeholder="dd/mm/yyyy" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Date Hired</label>
+                                            <div class="col-sm-9">
+                                                <input type="date" class="form-control" name="dateHired" id="dateHired" placeholder="dd/mm/yyyy" required/>
                                             </div>
                                         </div>
                                     </div>

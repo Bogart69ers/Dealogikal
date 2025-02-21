@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Dealogikal.Utils;
 using System.Web.Security;
 using Dealogikal.Database;
+using Dealogikal.ViewModel;
 
 namespace Dealogikal.Controllers
 {
@@ -37,7 +38,7 @@ namespace Dealogikal.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateAccount(userAccount ua, string email, DateTime? birthdate, string firstName, string lastName ,string department, string position, string address, string barangay, string city, string zipcode, string phone)
+        public ActionResult CreateAccount(userAccount ua, string email, DateTime? birthdate, string firstName, string lastName ,string department, string position, string address, string barangay, string city, string zipcode, string phone, DateTime dateHired)
         {
             try
             {
@@ -46,7 +47,7 @@ namespace Dealogikal.Controllers
                     return View("CreateAccount");
                 }
 
-                if (_AccManager.EmployeeInfoSignup(birthdate, position, department, ua.employeeId, email, firstName, lastName, phone, address, zipcode, city, barangay, ref ErrorMessage) != ErrorCode.Success)
+                if (_AccManager.EmployeeInfoSignup(birthdate, position, department, ua.employeeId, email, firstName, lastName, phone, address, zipcode, city, barangay, dateHired, ref ErrorMessage) != ErrorCode.Success)
                 {
                     ViewBag.ErrorMessage = ErrorMessage;
                     return View("CreateAccount");
@@ -61,9 +62,6 @@ namespace Dealogikal.Controllers
 
 
                 TempData["SuccessMessage"] = "Account created successfully.";
-
-                ViewBag.SuccessMessage = TempData["SuccessMessage"];
-                ViewBag.ErrorMessage = ErrorMessage;
 
                 return RedirectToAction("CreateAccount");
 
@@ -82,7 +80,40 @@ namespace Dealogikal.Controllers
         [Authorize]
         public ActionResult Accounts()
         {
-            return View();
+            var model = new AccountViewModel
+            {
+                employeeInfos = _AccManager.GetAllEmployee() // Ensure this method returns a List<employeeInfo>
+            };
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public JsonResult GetEmployeeDetails(int id)
+        {
+            try
+            {
+                var employee = _AccManager.GetEmployeebyEmployeeId(id.ToString());
+
+                if (employee == null)
+                {
+                    return Json(new { error = "Employee not found" }, JsonRequestBehavior.AllowGet);
+                }
+
+                var employeeDetails = new
+                {
+                    Email = employee.email,
+                    Phone = employee.phone,
+                    Address = $"{employee.address}, {employee.barangay}, {employee.city}, {employee.zipcode}",
+                    Birthdate = employee.birthdate?.ToString("yyyy-MM-dd")
+                };
+
+                return Json(employeeDetails, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
 
 

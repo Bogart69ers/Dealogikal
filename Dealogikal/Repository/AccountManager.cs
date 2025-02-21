@@ -143,26 +143,29 @@ namespace Dealogikal.Repository
             }
         }
 
-        public ErrorCode EmployeeInfoSignup( DateTime? birthdate, string position, string department, string employeeId, string email, string firstname, string lastname, string phone, string address, string zipcode, string city, string barangay, ref String err)
+        public ErrorCode EmployeeInfoSignup( DateTime? birthdate, string position, string department, string employeeId, string email, string firstname, string lastname, string phone, string address, string zipcode, string city, string barangay, DateTime dateHired, ref String err)
         {
             try
             {
                 var empInfo = GetEmployeebyEmployeeId(employeeId);
-                if (empInfo.employeeId == employeeId && empInfo.firstName == firstname && empInfo.lastName == lastname)
+                if (empInfo != null) // Ensure empInfo is not null before accessing its properties
                 {
-                    err = "Employee Already exist";
-                    return ErrorCode.Error;
-                }
-                else if (empInfo.employeeId == employeeId)
-                {
-                    err = "Employee ID Already Used";
-                    return ErrorCode.Error;
-                }
+                    if (empInfo.employeeId == employeeId && empInfo.firstName == firstname && empInfo.lastName == lastname)
+                    {
+                        err = "Employee Already Exists";
+                        return ErrorCode.Error;
+                    }
+                    else if (empInfo.employeeId == employeeId)
+                    {
+                        err = "Employee ID Already Used";
+                        return ErrorCode.Error;
+                    }
+                }               
                 empInfo = new employeeInfo();
                 empInfo.employeeId = employeeId;
                 empInfo.email = email;
                 empInfo.status = (int)Status.Active;
-                empInfo.dateHired = DateTime.Now.Date;
+                empInfo.dateHired = dateHired;
                 empInfo.createdAt = DateTime.Now;
                 empInfo.position = position;
                 empInfo.department = department;
@@ -180,10 +183,11 @@ namespace Dealogikal.Repository
 
                 return ErrorCode.Success;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
-                throw;
+                err = ex.Message;
+                return ErrorCode.Error;
             }
             
         }

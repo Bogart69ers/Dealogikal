@@ -130,6 +130,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\css\404.css" />
     <Content Include="Assets\css\vertical-layout-light\style.css" />
     <Content Include="Assets\img\background.jpg" />
     <Content Include="Assets\img\dealogikal-logo.ico" />
@@ -1461,6 +1462,8 @@
     <Content Include="Views\Admin\Accounts.cshtml" />
     <Content Include="Views\Admin\Dtr.cshtml" />
     <Content Include="Views\Home\DTRHistory.cshtml" />
+    <Content Include="Views\Home\InActiveAccount.cshtml" />
+    <Content Include="Views\Home\PageNotFound.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

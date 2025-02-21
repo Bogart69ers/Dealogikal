@@ -14,14 +14,32 @@ using Dealogikal.Utils;
 
 namespace Dealogikal.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Employee")]
     public class HomeController : BaseController
     {
-        [Authorize]
+        [AllowAnonymous]
         public ActionResult Index()
         {
-            return RedirectToAction("Dashboard");
+            var user = _AccManager.GetUserByEmployeeId(User.Identity.Name);
+
+            if (user == null)
+            {
+                return RedirectToAction("Login", "Home"); // Redirect to login if no user is found
+            }
+
+            switch (user.role1.roleName)
+            {
+                case Constant.Role_HR:
+                    return RedirectToAction("AdminDashboard", "Admin");
+
+                case Constant.Role_Employee:
+                    return RedirectToAction("Dashboard", "Home");
+
+                default:
+                    return RedirectToAction("Login", "Home"); // Handle unexpected roles
+            }
         }
+
 
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
@@ -62,14 +80,19 @@ namespace Dealogikal.Controllers
                     return View();
                 }
 
+                if (info != null && info.status == 0)
+                {
+                    return RedirectToAction("InActiveAccount", "Home");
+                }
+
                 FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(
-                    1, // Ticket version
-                    employeeId, // Username
-                    DateTime.Now, // Issue date
-                    DateTime.Now.AddDays(30), // Expiration date (set to 30 days)
-                    true, // Persistent
-                    "", // User data
-                    FormsAuthentication.FormsCookiePath // Cookie path
+                    1, 
+                    employeeId, 
+                    DateTime.Now, 
+                    DateTime.Now.AddDays(30), 
+                    true, 
+                    "", 
+                    FormsAuthentication.FormsCookiePath 
                 );
 
                 // Encrypt the ticket
@@ -155,6 +178,16 @@ namespace Dealogikal.Controllers
             return RedirectToAction("Login");
         }
 
-        
+        [AllowAnonymous]
+        public ActionResult PageNotFound()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        public ActionResult InActiveAccount()
+        {
+            return View();
+        }
     }
 }
