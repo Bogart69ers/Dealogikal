@@ -10,8 +10,112 @@
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Overtime Request</h3>
+
+                </div>
+                <div class="overtime-request-container">
+                    <h3>Overtime Request Form</h3>
+
+                    <div class="form-group">
+                        <label>Overtime Date:</label>
+                        <div class="date-group">
+                            <input type="text" placeholder="MM">
+                            <input type="text" placeholder="DD">
+                            <input type="text" placeholder="YYYY">
+                            <button class="calendar-btn">📅</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Start Time:</label>
+                        <input type="time">
+                    </div>
+
+                    <div class="form-group">
+                        <label>End Time:</label>
+                        <input type="time">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reason for Overtime:</label>
+                        <textarea placeholder="Enter reason..."></textarea>
+                    </div>
+
+                    <div class="form-group submit-container">
+                        <button type="submit" class="submit-btn">Submit</button>
+                    </div>
                 </div>
 
+                <style>
+                    .overtime-request-container {
+                        background: #ffffff;
+                        padding: 20px;
+                        border-radius: 10px;
+                        box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+                        width: 100%;
+                        max-width: 700px;
+                        margin: auto;
+                    }
+
+                    .form-group {
+                        margin-bottom: 15px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        width: 100%;
+                    }
+
+                    label {
+                        font-weight: bold;
+                    }
+
+                    .date-group {
+                        display: flex;
+                        gap: 5px;
+                        align-items: center;
+                    }
+
+                        .date-group input {
+                            width: 50px;
+                            text-align: center;
+                            padding: 5px;
+                        }
+
+                    .calendar-btn {
+                        background: #ddd;
+                        border: none;
+                        padding: 5px 10px;
+                        cursor: pointer;
+                    }
+
+                    textarea {
+                        width: 100%;
+                        height: 80px;
+                        padding: 10px;
+                        border-radius: 5px;
+                        border: 1px solid #ccc;
+                        resize: none;
+                    }
+
+                    .submit-container {
+                        display: flex;
+                        justify-content: center;
+                        margin-top: 20px;
+                    }
+
+                    .submit-btn {
+                        background: #007bff;
+                        color: white;
+                        border: none;
+                        padding: 10px 20px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-size: 16px;
+                    }
+
+                        .submit-btn:hover {
+                            background: #0056b3;
+                        }
+                </style>
             </div>
         </div>
     </div>

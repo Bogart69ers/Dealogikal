@@ -9,8 +9,144 @@
         <div class="col-md-12 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold">Leave Request</h3>
+                    <h3 class="font-weight-bold">Leave Request Form</h3>
                 </div>
+                <div class="leave-request-container">
+                    <h3>Leave Request Form</h3>
+
+                    <div class="form-group">
+                        <label>Leave Request For:</label>
+                        <div class="radio-group">
+                            <label for="days"><input type="radio" id="days" name="leave_request" checked> Days</label>
+                            <label for="hours"><input type="radio" id="hours" name="leave_request"> Hours</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Leave Start:</label>
+                        <div class="date-group">
+                            <input type="text" placeholder="MM">
+                            <input type="text" placeholder="DD">
+                            <input type="text" placeholder="YYYY">
+                            <button class="calendar-btn">📅</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Leave End:</label>
+                        <div class="date-group">
+                            <input type="text" placeholder="MM">
+                            <input type="text" placeholder="DD">
+                            <input type="text" placeholder="YYYY">
+                            <button class="calendar-btn">📅</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Leave Type:</label>
+                        <div class="radio-group grid">
+                            <label for="vacation"><input type="radio" id="vacation" name="leave_type"> Vacation</label>
+                            <label for="sick"><input type="radio" id="sick" name="leave_type"> Sick</label>
+                            <label for="quitting"><input type="radio" id="quitting" name="leave_type"> Quitting</label>
+                            <label for="other"><input type="radio" id="other" name="leave_type"> Other</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Comments:</label>
+                        <textarea placeholder="Enter comments..."></textarea>
+                    </div>
+
+                    <div class="form-group submit-container">
+                        <button type="submit" class="submit-btn">Submit</button>
+                    </div>
+                </div>
+
+                <style>
+                    .leave-request-container {
+                        background: #ffffff;
+                        padding: 20px;
+                        border-radius: 10px;
+                        box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+                        width: 100%;
+                        max-width: 700px;
+                        margin: auto;
+                    }
+
+                    .form-group {
+                        margin-bottom: 15px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        width: 100%;
+                    }
+
+                    label {
+                        font-weight: bold;
+                    }
+
+                    .radio-group {
+                        display: flex;
+                        gap: 20px;
+                    }
+
+                        .radio-group.grid {
+                            display: grid;
+                            grid-template-columns: repeat(2, 1fr);
+                            gap: 10px;
+                        }
+
+                    .date-group {
+                        display: flex;
+                        gap: 5px;
+                        align-items: center;
+                    }
+
+                        .date-group input {
+                            width: 50px;
+                            text-align: center;
+                            padding: 5px;
+                        }
+
+                    .calendar-btn {
+                        background: #ddd;
+                        border: none;
+                        padding: 5px 10px;
+                        cursor: pointer;
+                    }
+
+                    textarea {
+                        width: 100%;
+                        height: 80px;
+                        padding: 10px;
+                        border-radius: 5px;
+                        border: 1px solid #ccc;
+                        resize: none;
+                    }
+
+                    .submit-container {
+                        display: flex;
+                        justify-content: center;
+                        margin-top: 20px;
+                    }
+
+                    .submit-btn {
+                        background: #007bff;
+                        color: white;
+                        border: none;
+                        padding: 10px 20px;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-size: 16px;
+                    }
+
+                        .submit-btn:hover {
+                            background: #0056b3;
+                        }
+                </style>
+
+
+
 
             </div>
         </div>
