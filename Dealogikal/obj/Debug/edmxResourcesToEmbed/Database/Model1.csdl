@@ -4,7 +4,7 @@
     <Key>
       <PropertyRef Name="recordId" />
     </Key>
-    <Property Name="recordId" Type="Int32" Nullable="false" />
+    <Property Name="recordId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="date" Type="DateTime" Nullable="false" Precision="0" />
     <Property Name="timeIn" Type="DateTime" Precision="3" />
@@ -12,6 +12,7 @@
     <Property Name="breakIn" Type="DateTime" Precision="3" />
     <Property Name="timeOut" Type="DateTime" Precision="3" />
     <Property Name="createdAt" Type="DateTime" Precision="3" />
+    <Property Name="workMode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="employeeInfo" Relationship="Self.FK_dtrRecords_employeeInfo" FromRole="dtrRecords" ToRole="employeeInfo" />
   </EntityType>
   <EntityType Name="employeeInfo">
@@ -33,8 +34,37 @@
     <Property Name="status" Type="Int32" />
     <Property Name="createdAt" Type="DateTime" Precision="3" />
     <Property Name="phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="leaveCount" Type="Int32" />
     <NavigationProperty Name="dtrRecords" Relationship="Self.FK_dtrRecords_employeeInfo" FromRole="employeeInfo" ToRole="dtrRecords" />
+    <NavigationProperty Name="leaveRequest" Relationship="Self.FK_leaveRequest_employeeInfo" FromRole="employeeInfo" ToRole="leaveRequest" />
+    <NavigationProperty Name="overtimeRequest" Relationship="Self.FK_overtimeRequest_employeeInfo" FromRole="employeeInfo" ToRole="overtimeRequest" />
     <NavigationProperty Name="userAccount" Relationship="Self.FK_userAccount_employeeInfo" FromRole="employeeInfo" ToRole="userAccount" />
+  </EntityType>
+  <EntityType Name="leaveRequest">
+    <Key>
+      <PropertyRef Name="requestId" />
+    </Key>
+    <Property Name="requestId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="leaveStart" Type="DateTime" Precision="0" />
+    <Property Name="leaveEnd" Type="DateTime" Precision="0" />
+    <Property Name="leaveType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="leaveReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="dateFiled" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="employeeInfo" Relationship="Self.FK_leaveRequest_employeeInfo" FromRole="leaveRequest" ToRole="employeeInfo" />
+  </EntityType>
+  <EntityType Name="overtimeRequest">
+    <Key>
+      <PropertyRef Name="requestId" />
+    </Key>
+    <Property Name="requestId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="overtimeStart" Type="DateTime" Precision="3" />
+    <Property Name="overtimeEnd" Type="DateTime" Precision="3" />
+    <Property Name="overtimeDate" Type="DateTime" Precision="0" />
+    <Property Name="overtimeReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="dateFiled" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="employeeInfo" Relationship="Self.FK_overtimeRequest_employeeInfo" FromRole="overtimeRequest" ToRole="employeeInfo" />
   </EntityType>
   <EntityType Name="role">
     <Key>
@@ -77,6 +107,34 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_leaveRequest_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="leaveRequest" Type="Self.leaveRequest" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="leaveRequest">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_overtimeRequest_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="overtimeRequest" Type="Self.overtimeRequest" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="overtimeRequest">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_userAccount_employeeInfo">
     <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1">
       <OnDelete Action="Cascade" />
@@ -106,12 +164,22 @@
   <EntityContainer Name="DeologikalDTREntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="dtrRecords" EntityType="Self.dtrRecords" />
     <EntitySet Name="employeeInfo" EntityType="Self.employeeInfo" />
+    <EntitySet Name="leaveRequest" EntityType="Self.leaveRequest" />
+    <EntitySet Name="overtimeRequest" EntityType="Self.overtimeRequest" />
     <EntitySet Name="role" EntityType="Self.role" />
     <EntitySet Name="userAccount" EntityType="Self.userAccount" />
     <EntitySet Name="vw_Role" EntityType="Self.vw_Role" />
     <AssociationSet Name="FK_dtrRecords_employeeInfo" Association="Self.FK_dtrRecords_employeeInfo">
       <End Role="employeeInfo" EntitySet="employeeInfo" />
       <End Role="dtrRecords" EntitySet="dtrRecords" />
+    </AssociationSet>
+    <AssociationSet Name="FK_leaveRequest_employeeInfo" Association="Self.FK_leaveRequest_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="leaveRequest" EntitySet="leaveRequest" />
+    </AssociationSet>
+    <AssociationSet Name="FK_overtimeRequest_employeeInfo" Association="Self.FK_overtimeRequest_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="overtimeRequest" EntitySet="overtimeRequest" />
     </AssociationSet>
     <AssociationSet Name="FK_userAccount_employeeInfo" Association="Self.FK_userAccount_employeeInfo">
       <End Role="employeeInfo" EntitySet="employeeInfo" />

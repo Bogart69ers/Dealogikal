@@ -57,7 +57,7 @@ html, body{
     user-select: none; /* Standard syntax */
 }
 
-.bg-purple{
+/*.bg-purple{
     background: url(~/Assets/img/404/purple.jpg);
     background-repeat: repeat-x;
     background-size: cover;
@@ -65,7 +65,7 @@ html, body{
     height: 100%;
     overflow: hidden;
     
-}
+}*/
 
 .custom-navbar{
     padding-top: 15px;
@@ -224,12 +224,12 @@ li a:hover {
     pointer-events: none;
 }
 
-.stars{
+/*.stars{
     background: url(~/Assets/img/404/overlay_stars.svg);
     background-repeat: repeat;
     background-size: contain;
     background-position: left top;
-}
+}*/
 
 .glowing_stars .star{
     position: absolute;

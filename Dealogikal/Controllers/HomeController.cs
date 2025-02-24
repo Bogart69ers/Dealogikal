@@ -9,6 +9,7 @@ using System.IO;
 using Dealogikal.Repository;
 using System.Globalization;
 using Dealogikal.Utils;
+using Dealogikal.ViewModel;
 
 
 
@@ -123,7 +124,7 @@ namespace Dealogikal.Controllers
                     case Constant.Role_HR:
                         return RedirectToAction("AdminDashboard", "Admin");
                     case Constant.Role_Employee:
-                        return RedirectToAction("Dashboard", "Home");
+                        return RedirectToAction("Dashboard", "Home");                                
                 }
             }
 
@@ -137,10 +138,20 @@ namespace Dealogikal.Controllers
         public ActionResult Dashboard()
         {
             var user = _AccManager.GetEmployeebyEmployeeId(User.Identity.Name);
+            var dtrRec = _DtrManager.GetRecordsByEmployeeId(user.employeeId);
+
+            var currentDtr = _DtrManager.GetAllDtr().FirstOrDefault(r => r.employeeId == user.employeeId && r.date == DateTime.Now.Date);
 
             ViewBag.Name = user.firstName + " " + user.lastName;
 
-            return View();
+            var model = new AccountViewModel
+            {
+                employeeInfos = _AccManager.GetAllEmployee(),
+                dtr = currentDtr,
+                dtrRecords = _DtrManager.GetAllDtr()
+            };
+
+            return View(model);
 
         }
 
@@ -150,6 +161,74 @@ namespace Dealogikal.Controllers
         {
             return View();
         }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult Dtr(dtrRecords dtr, int? recordId, string action)
+        {
+            var currentUser = User.Identity.Name;
+            string errMsg = string.Empty;
+            ErrorCode result;
+
+            if (action == "TimeIn")
+            {
+                // Create a new record for the morning Time In.
+                result = _DtrManager.CreateDtr(dtr, currentUser, ref errMsg);
+                if (result != ErrorCode.Success)
+                {
+                    ViewBag.Error = "Error Creating DTR: " + errMsg;
+                    return RedirectToAction("Dashboard");
+                }
+            }
+            else if (action == "BreakIn")
+            {
+                // Update the current record with Break In time.
+                if (recordId.HasValue)
+                {
+                    result = _DtrManager.UpdateBreakIn(currentUser, recordId.Value, ref errMsg);
+                    if (result != ErrorCode.Success)
+                    {
+                        ViewBag.Error = "Error Updating Break In: " + errMsg;
+                        return RedirectToAction("Dashboard");
+                    }
+                }
+                else
+                {
+                    ViewBag.Error = "Record ID is missing for Break In.";
+                    return RedirectToAction("Dashboard");
+                }
+            }
+            else if (action == "BreakOut")
+            {
+                result = _DtrManager.UpdateBreakOut(currentUser, recordId.Value, ref errMsg);
+                if (result != ErrorCode.Success)
+                {
+                    ViewBag.Error = "Error Updating Break Out: " + errMsg;
+                    return RedirectToAction("Dashboard");
+                }
+            }
+            else if (action == "TimeOut")
+            {
+                // Update the current record with Time Out.
+                if (recordId.HasValue)
+                {
+                    result = _DtrManager.UpdateTimeOut(currentUser, recordId.Value, ref errMsg);
+                    if (result != ErrorCode.Success)
+                    {
+                        ViewBag.Error = "Error Updating Time Out: " + errMsg;
+                        return RedirectToAction("Dashboard");
+                    }
+                }
+                else
+                {
+                    ViewBag.Error = "Record ID is missing for Time Out.";
+                    return RedirectToAction("Dashboard");
+                }
+            }
+
+            return RedirectToAction("Dashboard");
+        }
+
 
 
         [Authorize]

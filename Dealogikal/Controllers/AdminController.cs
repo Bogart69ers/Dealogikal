@@ -124,5 +124,11 @@ namespace Dealogikal.Controllers
         }
 
 
+        [Authorize]
+        public ActionResult EmployeeDtr()
+        {
+            return View();
+        }
+
     }
 }

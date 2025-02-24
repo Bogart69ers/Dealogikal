@@ -12,17 +12,15 @@ namespace Dealogikal.Database
     using System;
     using System.Collections.Generic;
     
-    public partial class dtrRecords
+    public partial class overtimeRequest
     {
-        public int recordId { get; set; }
+        public int requestId { get; set; }
         public string employeeId { get; set; }
-        public System.DateTime date { get; set; }
-        public Nullable<System.DateTime> timeIn { get; set; }
-        public Nullable<System.DateTime> breakOut { get; set; }
-        public Nullable<System.DateTime> breakIn { get; set; }
-        public Nullable<System.DateTime> timeOut { get; set; }
-        public Nullable<System.DateTime> createdAt { get; set; }
-        public string workMode { get; set; }
+        public Nullable<System.DateTime> overtimeStart { get; set; }
+        public Nullable<System.DateTime> overtimeEnd { get; set; }
+        public Nullable<System.DateTime> overtimeDate { get; set; }
+        public string overtimeReason { get; set; }
+        public Nullable<System.DateTime> dateFiled { get; set; }
     
         public virtual employeeInfo employeeInfo { get; set; }
     }

@@ -12,6 +12,7 @@
           <ScalarProperty Name="breakIn" ColumnName="breakIn" />
           <ScalarProperty Name="timeOut" ColumnName="timeOut" />
           <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+          <ScalarProperty Name="workMode" ColumnName="workMode" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -33,6 +34,33 @@
           <ScalarProperty Name="status" ColumnName="status" />
           <ScalarProperty Name="createdAt" ColumnName="createdAt" />
           <ScalarProperty Name="phone" ColumnName="phone" />
+          <ScalarProperty Name="leaveCount" ColumnName="leaveCount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="leaveRequest">
+      <EntityTypeMapping TypeName="DeologikalDTRModel.leaveRequest">
+        <MappingFragment StoreEntitySet="leaveRequest">
+          <ScalarProperty Name="requestId" ColumnName="requestId" />
+          <ScalarProperty Name="employeeId" ColumnName="employeeId" />
+          <ScalarProperty Name="leaveStart" ColumnName="leaveStart" />
+          <ScalarProperty Name="leaveEnd" ColumnName="leaveEnd" />
+          <ScalarProperty Name="leaveType" ColumnName="leaveType" />
+          <ScalarProperty Name="leaveReason" ColumnName="leaveReason" />
+          <ScalarProperty Name="dateFiled" ColumnName="dateFiled" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="overtimeRequest">
+      <EntityTypeMapping TypeName="DeologikalDTRModel.overtimeRequest">
+        <MappingFragment StoreEntitySet="overtimeRequest">
+          <ScalarProperty Name="requestId" ColumnName="requestId" />
+          <ScalarProperty Name="employeeId" ColumnName="employeeId" />
+          <ScalarProperty Name="overtimeStart" ColumnName="overtimeStart" />
+          <ScalarProperty Name="overtimeEnd" ColumnName="overtimeEnd" />
+          <ScalarProperty Name="overtimeDate" ColumnName="overtimeDate" />
+          <ScalarProperty Name="overtimeReason" ColumnName="overtimeReason" />
+          <ScalarProperty Name="dateFiled" ColumnName="dateFiled" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

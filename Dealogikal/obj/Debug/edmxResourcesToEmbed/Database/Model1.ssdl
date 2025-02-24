@@ -4,7 +4,7 @@
     <Key>
       <PropertyRef Name="recordId" />
     </Key>
-    <Property Name="recordId" Type="int" Nullable="false" />
+    <Property Name="recordId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="employeeId" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="date" Type="date" Nullable="false" />
     <Property Name="timeIn" Type="datetime" />
@@ -12,6 +12,7 @@
     <Property Name="breakIn" Type="datetime" />
     <Property Name="timeOut" Type="datetime" />
     <Property Name="createdAt" Type="datetime" />
+    <Property Name="workMode" Type="nvarchar" MaxLength="100" />
   </EntityType>
   <EntityType Name="employeeInfo">
     <Key>
@@ -32,6 +33,31 @@
     <Property Name="status" Type="int" />
     <Property Name="createdAt" Type="datetime" />
     <Property Name="phone" Type="nvarchar" MaxLength="20" />
+    <Property Name="leaveCount" Type="int" />
+  </EntityType>
+  <EntityType Name="leaveRequest">
+    <Key>
+      <PropertyRef Name="requestId" />
+    </Key>
+    <Property Name="requestId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" />
+    <Property Name="leaveStart" Type="date" />
+    <Property Name="leaveEnd" Type="date" />
+    <Property Name="leaveType" Type="nvarchar" MaxLength="100" />
+    <Property Name="leaveReason" Type="nvarchar(max)" />
+    <Property Name="dateFiled" Type="datetime" />
+  </EntityType>
+  <EntityType Name="overtimeRequest">
+    <Key>
+      <PropertyRef Name="requestId" />
+    </Key>
+    <Property Name="requestId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" />
+    <Property Name="overtimeStart" Type="datetime" />
+    <Property Name="overtimeEnd" Type="datetime" />
+    <Property Name="overtimeDate" Type="date" />
+    <Property Name="overtimeReason" Type="nvarchar(max)" />
+    <Property Name="dateFiled" Type="datetime" />
   </EntityType>
   <EntityType Name="role">
     <Key>
@@ -73,6 +99,34 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_leaveRequest_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="leaveRequest" Type="Self.leaveRequest" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="leaveRequest">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_overtimeRequest_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="overtimeRequest" Type="Self.overtimeRequest" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="overtimeRequest">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_userAccount_employeeInfo">
     <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1">
       <OnDelete Action="Cascade" />
@@ -102,6 +156,8 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
   <EntityContainer Name="DeologikalDTRModelStoreContainer">
     <EntitySet Name="dtrRecords" EntityType="Self.dtrRecords" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="employeeInfo" EntityType="Self.employeeInfo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="leaveRequest" EntityType="Self.leaveRequest" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="overtimeRequest" EntityType="Self.overtimeRequest" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="role" EntityType="Self.role" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="userAccount" EntityType="Self.userAccount" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="vw_Role" EntityType="Self.vw_Role" store:Type="Views" store:Schema="dbo">
@@ -114,6 +170,14 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
     <AssociationSet Name="FK_dtrRecords_employeeInfo" Association="Self.FK_dtrRecords_employeeInfo">
       <End Role="employeeInfo" EntitySet="employeeInfo" />
       <End Role="dtrRecords" EntitySet="dtrRecords" />
+    </AssociationSet>
+    <AssociationSet Name="FK_leaveRequest_employeeInfo" Association="Self.FK_leaveRequest_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="leaveRequest" EntitySet="leaveRequest" />
+    </AssociationSet>
+    <AssociationSet Name="FK_overtimeRequest_employeeInfo" Association="Self.FK_overtimeRequest_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="overtimeRequest" EntitySet="overtimeRequest" />
     </AssociationSet>
     <AssociationSet Name="FK_userAccount_employeeInfo" Association="Self.FK_userAccount_employeeInfo">
       <End Role="employeeInfo" EntitySet="employeeInfo" />

@@ -120,7 +120,7 @@
                     </li>                   
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-                            <i class="icon-head menu-icon"></i>
+                            <i class="icon-clock menu-icon"></i>
                             <span class="menu-title">Daily Time Record</span>
                             <i class="menu-arrow"></i>
                         </a>
@@ -138,10 +138,21 @@
                             <i class="menu-arrow"></i>
                         </a>
                         <div class="collapse" id="ui-basic">
-                            <ul class="nav flex-column sub-menu">
-                                <li class="nav-item"> <a class="nav-link" href="~/Home/LeaveRequest">Request Leave</a></li>
-                                <li class="nav-item"> <a class="nav-link" href="~/Home/OvertimeRequest">Request Overtime</a></li>
-                            </ul>
+
+                                @if (ViewBag.EmployeeInfo != null && ViewBag.EmployeeInfo.position == "Department Head")
+                                {
+                                    <ul class="nav flex-column sub-menu">
+                                        <li class="nav-item"><a class="nav-link" href="~/Home/LeaveRequest">Leave Requests</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="~/Home/OvertimeRequest">Overtime Requests</a></li>
+                                    </ul>
+                                }
+                                else if (ViewBag.EmployeeInfo != null)
+                                {
+                                    <ul class="nav flex-column sub-menu">
+                                        <li class="nav-item"><a class="nav-link" href="~/Home/LeaveRequest">Request Leave</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="~/Home/OvertimeRequest">Request Overtime</a></li>
+                                    </ul>
+                                }
                         </div>
                     </li>                    
                 </ul>

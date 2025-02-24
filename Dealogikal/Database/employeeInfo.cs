@@ -18,6 +18,8 @@ namespace Dealogikal.Database
         public employeeInfo()
         {
             this.dtrRecords = new HashSet<dtrRecords>();
+            this.leaveRequest = new HashSet<leaveRequest>();
+            this.overtimeRequest = new HashSet<overtimeRequest>();
             this.userAccount = new HashSet<userAccount>();
         }
     
@@ -36,9 +38,14 @@ namespace Dealogikal.Database
         public Nullable<int> status { get; set; }
         public Nullable<System.DateTime> createdAt { get; set; }
         public string phone { get; set; }
+        public Nullable<int> leaveCount { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<dtrRecords> dtrRecords { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<leaveRequest> leaveRequest { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<overtimeRequest> overtimeRequest { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<userAccount> userAccount { get; set; }
     }

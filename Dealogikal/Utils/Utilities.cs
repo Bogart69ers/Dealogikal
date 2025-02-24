@@ -17,7 +17,8 @@ namespace Dealogikal.Utils
     public enum RoleType
     {
         HR,
-        Employee
+        Employee,
+        DepartmentHead
     }
     public enum Status
     {
@@ -28,6 +29,7 @@ namespace Dealogikal.Utils
     {
         public const string Role_HR = "HR";
         public const string Role_Employee = "Employee";
+        public const string Role_DepartmentHead = "DepartmentHead";
 
         public const int ERROR = 1;
         public const int SUCCESS = 0;
