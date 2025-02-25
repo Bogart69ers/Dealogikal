@@ -52,16 +52,16 @@ else
                                     }
                                 </select>
                                 <div class="d-flex justify-content-between" style="width: 100%; margin-top: 10%">
-                                    <button type="submit" class="btn btn-inverse-info btn-icon"
+                                    <button type="submit" id="btn1" class="btn btn-inverse-info btn-icon"
                                             style="font-size: 15px; padding: 18px 38px; display: flex; justify-content: center; align-items: center; white-space: nowrap; width: 100%;"
                                             name="action" value="">
-                                        Action 1
+                                        Time In
                                     </button>
                                     &nbsp;
-                                    <button type="submit" class="btn btn-inverse-dark btn-icon"
+                                    <button type="submit" id="btn2" class="btn btn-inverse-dark btn-icon"
                                             style="font-size: 15px; padding: 18px 38px; display: flex; justify-content: center; align-items: center; white-space: nowrap; width: 100%;"
                                             name="action" value="">
-                                        Action 2
+                                        Time Out
                                     </button>
                                 </div>
 
@@ -244,69 +244,61 @@ else
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    $(document).ready(function(){
-        console.log("Script Loaded: Checking Button Logic"); // Debugging Log
-
-        // Get the current hour (0-23)
+    function updateButtons() {
         var now = new Date();
         var currentHour = now.getHours();
-        console.log("Current Hour: ", currentHour); // Debugging Log
 
-        // Retrieve DTR field values from the hidden inputs
-        var timeInVal   = $('#timeIn').val();
-        var breakInVal  = $('#breakIn').val();
+        var timeInVal = $('#timeIn').val();
+        var breakInVal = $('#breakIn').val();
         var breakOutVal = $('#breakOut').val();
-        var timeOutVal  = $('#timeOut').val();
+        var timeOutVal = $('#timeOut').val();
 
-        console.log("DTR Values - TimeIn:", timeInVal, "BreakIn:", breakInVal, "BreakOut:", breakOutVal, "TimeOut:", timeOutVal); // Debugging Log
+        var btn1 = $('#btn1');
+        var btn2 = $('#btn2');
 
-        // Get references to the two buttons
-        var btn1 = $('button[name="action"]').eq(0);
-        var btn2 = $('button[name="action"]').eq(1);
+        console.log("Time Values:", { timeInVal, breakInVal, breakOutVal, timeOutVal }); // Debugging Log
+        console.log("Current Hour:", currentHour); // Debugging Log
 
-        console.log("Initial Button Text:", btn1.text(), btn2.text()); // Debugging Log
-
-        if(currentHour < 12){
-            // Morning Mode: Use Time In / Break In sequence
-            if(timeInVal === ""){
-                console.log("Setting Button: Time In Available");
+        if (currentHour < 12) {
+            // Morning Shift: Time In & Break In
+            if (!timeInVal) {
+                console.log("Enable Time In Button");
                 btn1.text("Time In").val("TimeIn").prop("disabled", false);
-                btn2.text("Break In").val("BreakIn").prop("disabled", true);
-            } else if(timeInVal !== "" && breakInVal === ""){
-                console.log("Setting Button: Break In Available");
-                btn1.text("Time In").val("TimeIn").prop("disabled", true);
-                btn2.text("Break In").val("BreakIn").prop("disabled", false);
+                btn2.text("Time Out").val("BreakIn").prop("disabled", true);
+            } else if (timeInVal && !breakInVal) {
+                console.log("Enable Break In Button");
+                btn1.prop("disabled", true);
+                btn2.text("Time Out").val("BreakIn").prop("disabled", false);
             } else {
-                console.log("Setting Button: Both Disabled");
-                btn1.text("Time In").val("TimeIn").prop("disabled", true);
-                btn2.text("Break In").val("BreakIn").prop("disabled", true);
+                console.log("Disable Morning Buttons");
+                btn1.prop("disabled", true);
+                btn2.prop("disabled", true);
             }
         } else {
-            // Afternoon Mode: Use Break Out / Time Out sequence.
-            if(timeInVal === "" && breakInVal === ""){
-                console.log("No Morning Logs - Allow Afternoon Logs Directly");
-                btn1.text("Break Out").val("BreakOut").prop("disabled", false);
+            // Afternoon Shift: Break Out & Time Out
+            if (!breakOutVal) {
+                console.log("Enable Break Out Button");
+                btn1.text("Time In").val("BreakOut").prop("disabled", false);
+                btn2.text("Time Out").val("TimeOut").prop("disabled", true);
+            } else if (breakOutVal && !timeOutVal) {
+                console.log("Enable Time Out Button");
+                btn1.prop("disabled", true);
                 btn2.text("Time Out").val("TimeOut").prop("disabled", false);
             } else {
-                if(breakOutVal === ""){
-                    console.log("Setting Button: Break Out Available");
-                    btn1.text("Break Out").val("BreakOut").prop("disabled", false);
-                    btn2.text("Time Out").val("TimeOut").prop("disabled", true);
-                } else if(breakOutVal !== "" && timeOutVal === ""){
-                    console.log("Setting Button: Time Out Available");
-                    btn1.text("Break Out").val("BreakOut").prop("disabled", true);
-                    btn2.text("Time Out").val("TimeOut").prop("disabled", false);
-                } else {
-                    console.log("Setting Button: Both Disabled");
-                    btn1.text("Break Out").val("BreakOut").prop("disabled", true);
-                    btn2.text("Time Out").val("TimeOut").prop("disabled", true);
-                }
+                console.log("Disable Afternoon Buttons");
+                btn1.prop("disabled", true);
+                btn2.prop("disabled", true);
             }
         }
+    }
 
-        console.log("Updated Button Text:", btn1.text(), btn2.text()); // Debugging Log
+    // Run button update on page load
+    $(document).ready(function () {
+        updateButtons();
+        setInterval(updateButtons, 1000); 
     });
 </script>
+
 
 
 <script>
@@ -332,7 +324,8 @@ else
             let taskText = inputField.value.trim();
             if (taskText !== "") {
                 let newTask = document.createElement("li");
-                newTask.style.position = "relative"; // Ensure proper positioning
+                newTask.classList.add("todo-item");
+                newTask.style.position = "relative";
                 newTask.style.display = "flex";
                 newTask.style.alignItems = "center";
                 newTask.style.justifyContent = "space-between";
@@ -340,9 +333,11 @@ else
 
                 // Get current date in mm/dd/yyyy format
                 let currentDate = new Date();
-                let formattedDate = (currentDate.getMonth() + 1).toString().padStart(2, '0') + "/" +
-                                    currentDate.getDate().toString().padStart(2, '0') + "/" +
-                                    currentDate.getFullYear();
+                let formattedDate = currentDate.toLocaleDateString("en-US", {
+                    month: "2-digit",
+                    day: "2-digit",
+                    year: "numeric"
+                });
 
                 // Date element
                 let dateElement = document.createElement("div");
@@ -364,7 +359,7 @@ else
                 taskSpan.textContent = taskText;
                 taskSpan.style.flexGrow = "1";
 
-                // Delete button (Fixed Small, Right Side)
+                // Delete button
                 let deleteBtn = document.createElement("button");
                 deleteBtn.textContent = "Delete";
                 deleteBtn.classList.add("delete-btn");
@@ -379,13 +374,8 @@ else
                 deleteBtn.style.cursor = "pointer";
                 deleteBtn.style.marginLeft = "10px";
 
-                // Create a container for date and task
-                let taskContainer = document.createElement("div");
-                taskContainer.appendChild(dateElement);
-                taskContainer.appendChild(newTask);
-
                 deleteBtn.addEventListener("click", function () {
-                    taskContainer.remove(); // Remove both date and task
+                    newTask.remove();
                 });
 
                 newTask.appendChild(checkbox);
@@ -393,7 +383,7 @@ else
                 newTask.appendChild(deleteBtn);
 
                 // Insert the new task at the top
-                todoList.prepend(taskContainer);
+                todoList.prepend(newTask);
 
                 inputField.value = "";
                 inputField.style.height = "40px"; // Reset textarea height
@@ -407,26 +397,34 @@ else
         const minutes = now.getMinutes();
         const seconds = now.getSeconds();
         const ampm = hours >= 12 ? 'PM' : 'AM';
-    
+
         // Convert 24-hour format to 12-hour format
         hours = hours % 12;
         hours = hours ? hours : 12; // Convert 0 to 12
-    
-        document.getElementById("digitalClock").textContent = 
+
+        // Update digital clock
+        document.getElementById("digitalClock").textContent =
             `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
-    
+
+        // Update live date
         document.getElementById("liveDate").textContent = now.toDateString();
-        drawAnalogClock(hours, minutes, seconds);
+
+        // Draw analog clock
+        drawAnalogClock(now);
     }
 
-
-    function drawAnalogClock(hours, minutes, seconds) {
+    function drawAnalogClock(now) {
         const canvas = document.getElementById("analogClock");
+        if (!canvas) return;
         const ctx = canvas.getContext("2d");
-
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.save();
         ctx.translate(canvas.width / 2, canvas.height / 2);
+
+        // Convert to degrees
+        let hours = now.getHours() % 12;
+        let minutes = now.getMinutes();
+        let seconds = now.getSeconds();
 
         function drawHand(length, width, angle, color = "black") {
             ctx.save();
@@ -440,12 +438,15 @@ else
             ctx.restore();
         }
 
-        drawHand(50, 6, (hours % 12) * 30 + minutes * 0.5);
-        drawHand(70, 4, minutes * 6);
-        drawHand(90, 2, seconds * 6, "red");
+        // Draw clock hands
+        drawHand(50, 6, (hours % 12) * 30 + minutes * 0.5); // Hour hand
+        drawHand(70, 4, minutes * 6); // Minute hand
+        drawHand(90, 2, seconds * 6, "red"); // Second hand
 
         ctx.restore();
     }
 
+    // Ensure the clock starts updating immediately and runs every second
     setInterval(updateClock, 1000);
+    updateClock();
 </script>

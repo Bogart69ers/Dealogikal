@@ -1,7 +1,11 @@
-﻿@{
+﻿@model Dealogikal.ViewModel.AccountViewModel
+@{
     ViewBag.Title = "LeaveRequest";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var leavecount = ViewBag.LeaveCount ?? 0;
 }
+
 
 <div class="content-wrapper">
     <div class="row">
@@ -15,10 +19,12 @@
                 <div class="col-md-5 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body d-flex flex-column" style="height: 100%;">
-                            <form class="forms-sample d-flex flex-column flex-grow-1">
+                            <form class="forms-sample d-flex flex-column flex-grow-1" action="@Url.Action("LeaveRequest", "Home")" method="post">
+
                                 <div class="form-group">
                                     <label for="workMode">Leave Request Type:</label>
-                                    <select id="workMode" class="form-control">
+                                    <select id="workMode" class="form-control" style="min-width:100%" required name="leaveRequestType">
+                                        <option value="" disabled selected>Leave Request Type</option>
                                         <option value="halfday-undertime">Halfday/Undertime</option>
                                         <option value="sick-leave">Sick Leave</option>
                                         <option value="paternity-leave">Paternity Leave</option>
@@ -29,26 +35,33 @@
                                         <option value="bereavement-leave">Bereavement Leave</option>
                                         <option value="others">Others</option>
                                     </select>
-                                    <input type="text" id="otherLeaveType" class="form-control mt-2" placeholder="Specify other leave type..." style="display: none;">
+                                    <input type="text" id="otherLeaveType" class="form-control mt-2" placeholder="Specify other leave type..." style="display:none; min-width:100%">
                                 </div>
                                 <div class="form-group">
                                     <label for="leaveStart">Leave Start:</label>
-                                    <input type="date" class="form-control" id="leaveStart" placeholder="dd/mm/yyyy">
+                                    <input type="date" class="form-control" id="leaveStart" placeholder="dd/mm/yyyy" style="min-width:100%" name="leaveStart">
                                 </div>
                                 <div class="form-group">
                                     <label for="leaveEnd">Leave End:</label>
-                                    <input type="date" class="form-control" id="leaveEnd" placeholder="dd/mm/yyyy">
+                                    <input type="date" class="form-control" id="leaveEnd" placeholder="dd/mm/yyyy" style="min-width:100%" name="leaveEnd">
                                 </div>
                                 <div class="form-group">
                                     <label for="leaveType">Leave Type:</label>
-                                    <select id="leaveType" class="form-control">
-                                        <option value="leavewithpay">Leave With Pay</option>
-                                        <option value="leavewithoutpay">Leave Without Pay</option>
+                                    <select id="leaveType" class="form-control" style="min-width:100%" name="leaveType">
+                                        @if (leavecount > 0)
+                                        {
+                                            <option value="leavewithpay">Leave With Pay</option>
+                                            <option value="leavewithoutpay">Leave Without Pay</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="leavewithoutpay">Leave Without Pay</option>
+                                        }
                                     </select>
                                 </div>
                                 <div class="form-group flex-grow-1">
                                     <label for="leaveReason">Leave Reason:</label>
-                                    <textarea id="leaveReason" class="form-control" placeholder="Enter reason..." style="height:75%;"></textarea>
+                                    <textarea id="leaveReason" class="form-control" placeholder="Enter reason..." style="height:75%; min-width:100%" name="leaveReason"></textarea>
                                 </div>
                                 <div class="d-flex justify-content-center mt-auto">
                                     <button type="submit" class="btn btn-primary mr-2">Submit</button>
@@ -66,7 +79,7 @@
                             <div class="leave-count-container text-center mb-4">
                                 <div class="leave-count-card">
                                     <p class="leave-count-title">Remaining Leave Count:</p>
-                                    <p class="leave-count-number">1</p>
+                                    <p class="leave-count-number">@leavecount</p>
                                 </div>
                             </div>
 
@@ -84,12 +97,21 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @for (int i = 1; i <= 5; i++)
+                                        @if (Model.leaveRequests != null && Model.leaveRequests.Any())
+                                        {
+                                            foreach (var request in Model.leaveRequests)
+                                            {
+                                                <tr>
+                                                    <td>@request.dateFiled.ToString("MMMM dd, yyyy")</td>
+                                                    <td>@request.leaveType</td>
+                                                    <td class="font-weight-medium"><div class="badge @(request.status == 0 ? "badge-warning" : request.status == 1 ? "badge-success" : "badge-secondary")">@(request.status == 0 ? "Pending" : request.status == 1 ? "Approved" : "Unknown")</div></td>
+                                                </tr>
+                                            }
+                                        }
+                                        else
                                         {
                                             <tr>
-                                                <td>21 Sep 2018</td>
-                                                <td>Sick Leave</td>
-                                                <td class="font-weight-medium"><div class="badge badge-success">Approved</div></td>
+                                                <td colspan="6">No Leave Request found.</td>
                                             </tr>
                                         }
                                     </tbody>

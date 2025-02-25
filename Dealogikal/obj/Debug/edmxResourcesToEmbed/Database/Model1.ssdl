@@ -45,7 +45,9 @@
     <Property Name="leaveEnd" Type="date" />
     <Property Name="leaveType" Type="nvarchar" MaxLength="100" />
     <Property Name="leaveReason" Type="nvarchar(max)" />
-    <Property Name="dateFiled" Type="datetime" />
+    <Property Name="dateFiled" Type="datetime" Nullable="false" />
+    <Property Name="status" Type="int" />
+    <Property Name="leaveRequestType" Type="nvarchar" MaxLength="100" />
   </EntityType>
   <EntityType Name="overtimeRequest">
     <Key>
@@ -57,7 +59,8 @@
     <Property Name="overtimeEnd" Type="datetime" />
     <Property Name="overtimeDate" Type="date" />
     <Property Name="overtimeReason" Type="nvarchar(max)" />
-    <Property Name="dateFiled" Type="datetime" />
+    <Property Name="dateFiled" Type="datetime" Nullable="false" />
+    <Property Name="status" Type="int" />
   </EntityType>
   <EntityType Name="role">
     <Key>

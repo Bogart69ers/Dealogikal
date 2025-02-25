@@ -20,7 +20,9 @@ namespace Dealogikal.Database
         public Nullable<System.DateTime> leaveEnd { get; set; }
         public string leaveType { get; set; }
         public string leaveReason { get; set; }
-        public Nullable<System.DateTime> dateFiled { get; set; }
+        public System.DateTime dateFiled { get; set; }
+        public Nullable<int> status { get; set; }
+        public string leaveRequestType { get; set; }
     
         public virtual employeeInfo employeeInfo { get; set; }
     }

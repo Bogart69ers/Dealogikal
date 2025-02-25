@@ -19,5 +19,13 @@ namespace Dealogikal.ViewModel
 
         public List<dtrRecords> dtrRecords { get; set; } = new List<dtrRecords>();
 
+        public leaveRequest leaveRequest { get; set; }
+
+        public List<leaveRequest> leaveRequests { get; set; }
+
+        public overtimeRequest overtimeRequest { get; set; }
+
+        public List<overtimeRequest> overtimeRequests { get; set; }
+
     }
 }

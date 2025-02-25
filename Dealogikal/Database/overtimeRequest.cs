@@ -20,7 +20,8 @@ namespace Dealogikal.Database
         public Nullable<System.DateTime> overtimeEnd { get; set; }
         public Nullable<System.DateTime> overtimeDate { get; set; }
         public string overtimeReason { get; set; }
-        public Nullable<System.DateTime> dateFiled { get; set; }
+        public System.DateTime dateFiled { get; set; }
+        public Nullable<int> status { get; set; }
     
         public virtual employeeInfo employeeInfo { get; set; }
     }

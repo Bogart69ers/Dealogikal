@@ -155,7 +155,6 @@ namespace Dealogikal.Controllers
 
         }
 
-
         [Authorize]
         public ActionResult Dtr()
         {
@@ -171,7 +170,7 @@ namespace Dealogikal.Controllers
             ErrorCode result;
 
             if (action == "TimeIn")
-            {
+            {            
                 // Create a new record for the morning Time In.
                 result = _DtrManager.CreateDtr(dtr, currentUser, ref errMsg);
                 if (result != ErrorCode.Success)
@@ -234,8 +233,74 @@ namespace Dealogikal.Controllers
         [Authorize]
         public ActionResult LeaveRequest()
         {
-            return View();
+            var user = _AccManager.GetEmployeebyEmployeeId(User.Identity.Name);
+            var currentUserId = User.Identity.Name;
+
+            ViewBag.LeaveCount = user.leaveCount;
+
+            var requests = _RequestManager.GetLeaveRequestByEmployeeId(currentUserId);
+
+            var model = new AccountViewModel
+            {
+                leaveRequests = requests,
+
+            };
+           
+            return View(model);
         }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult LeaveRequest(leaveRequest lr)
+        {
+            try
+            {
+                var user = User.Identity.Name;
+                var userInfo = _AccManager.GetEmployeebyEmployeeId(user);
+                string errMsg = string.Empty;
+
+                if (userInfo == null)
+                {
+                    ViewBag.ErrorMessage = "User not found.";
+                    return View("LeaveRequest");
+                }
+
+                // Check if Leave Type is "With Pay" and if user has available leave credits
+                if (lr.leaveType == "leavewithpay")
+                {
+                    if (userInfo.leaveCount <= 0)
+                    {
+                        ViewBag.ErrorMessage = "You have no remaining leave balance.";
+                        return View("LeaveRequest");
+                    }
+                }
+
+                // Create Leave Request
+                if (_RequestManager.CreateLeave(lr, user, ref errMsg) != ErrorCode.Success)
+                {
+                    ViewBag.ErrorMessage = errMsg;
+                    return View("LeaveRequest");
+                }
+
+                // If Leave is "With Pay", Deduct Leave Count
+                if (lr.leaveType == "leavewithpay")
+                {
+                    if (_AccManager.UpdateEmployeeLeaveCount(user, ref errMsg) != ErrorCode.Success)
+                    {
+                        ViewBag.ErrorMessage = errMsg;
+                        return View("LeaveRequest");
+                    }
+                }
+
+                return RedirectToAction("LeaveRequest");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View("LeaveRequest");
+            }
+        }
+
 
         [Authorize]
         public ActionResult OvertimeRequest()
@@ -246,8 +311,17 @@ namespace Dealogikal.Controllers
         [Authorize]
         public ActionResult DTRHistory()
         {
-            return View();
+            var currentUserId = User.Identity.Name;
+            var dtrHistory = _DtrManager.GetDtrHistoryByEmployeeId(currentUserId);
+
+            var model = new AccountViewModel
+            {
+                dtrRecords = dtrHistory
+            };
+
+            return View(model);
         }
+
 
         [AllowAnonymous]
         public ActionResult Logout()

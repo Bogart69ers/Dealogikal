@@ -34,6 +34,12 @@ namespace Dealogikal.Repository
             return _dtrRecords.GetAll();
         }
 
+        public List<dtrRecords> GetDtrHistoryByEmployeeId(string employeeId)
+        {
+            return _dtrRecords._table.Where(e => e.employeeId == employeeId).OrderByDescending(e => e.date).ToList();
+        }
+
+
         public ErrorCode UpdateDtr(dtrRecords dtr, ref string errMsg)
         {
             return _dtrRecords.Update(dtr.recordId, dtr, out errMsg);
@@ -42,10 +48,12 @@ namespace Dealogikal.Repository
         {
             try
             {
+                DateTime serverTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Singapore Standard Time");
+
                 dtr.employeeId = employeeId;
-                dtr.createdAt = DateTime.Now;
-                dtr.date = DateTime.Now.Date;
-                dtr.timeIn = DateTime.Now;
+                dtr.createdAt = serverTime.Date;
+                dtr.date = serverTime.Date;
+                dtr.timeIn = serverTime;
               
                 if (_dtrRecords.Create(dtr, out errMsg) != ErrorCode.Success) 
                 {
@@ -65,13 +73,15 @@ namespace Dealogikal.Repository
         {
             try
             {
+                DateTime serverTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Singapore Standard Time");
+
                 var record = GetRecordsByRecordId(recordId);
                 if (record == null)
                 {
                     errMsg = "No record found for Break In.";
                     return ErrorCode.Error;
                 }
-                record.breakIn = DateTime.Now;
+                record.breakIn = serverTime;
                 return _dtrRecords.Update(recordId, record, out errMsg);
             }
             catch (Exception ex)
@@ -85,6 +95,8 @@ namespace Dealogikal.Repository
         {
             try
             {
+                DateTime serverTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Singapore Standard Time");
+
                 dtrRecords record = null;
                 // If recordId is greater than 0, try to retrieve the record.
                 if (recordId > 0)
@@ -97,17 +109,17 @@ namespace Dealogikal.Repository
                     // No record exists for today (e.g. no TimeIn), so create a new record for the afternoon.
                     var newRecord = new dtrRecords();
                     newRecord.employeeId = employeeId;
-                    newRecord.createdAt = DateTime.Now;
-                    newRecord.date = DateTime.Now.Date;
+                    newRecord.createdAt = serverTime.Date;
+                    newRecord.date = serverTime.Date;
                     // Optionally, you might leave TimeIn and BreakIn as null
-                    newRecord.breakOut = DateTime.Now;
+                    newRecord.breakOut = serverTime;
                     // You can also set other fields if needed
                     return _dtrRecords.Create(newRecord, out errMsg);
                 }
                 else
                 {
                     // If a record exists, simply update the BreakOut time.
-                    record.breakOut = DateTime.Now;
+                    record.breakOut = serverTime;
                     return _dtrRecords.Update(record.recordId, record, out errMsg);
                 }
             }
@@ -123,6 +135,8 @@ namespace Dealogikal.Repository
         {
             try
             {
+                DateTime serverTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Singapore Standard Time");
+
                 var record = GetRecordsByRecordId(recordId);
 
                 if (record == null)
@@ -132,7 +146,7 @@ namespace Dealogikal.Repository
                 }
 
                 // Update the timeOut field
-                record.timeOut = DateTime.Now;
+                record.timeOut = serverTime;
 
                 // Update the record in the database
                 return _dtrRecords.Update(recordId, record, out errMsg);

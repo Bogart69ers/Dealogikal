@@ -85,6 +85,34 @@ namespace Dealogikal.Repository
                 return ErrorCode.Error; ;
             }
         }
+        public ErrorCode UpdateEmployeeLeaveCount(string employeeId, ref string errMsg)
+        {
+            try
+            {
+                var userInfo = GetEmployeebyEmployeeId(employeeId);
+                if (userInfo == null)
+                {
+                    errMsg = "No Employee Information found.";
+                    return ErrorCode.Error;
+                }
+
+                // Prevent negative leave balance
+                if (userInfo.leaveCount <= 0)
+                {
+                    errMsg = "Insufficient leave balance.";
+                    return ErrorCode.Error;
+                }
+
+                // Deduct leave count
+                userInfo.leaveCount -= 1;
+                return _employeeInf.Update(employeeId, userInfo, out errMsg);
+            }
+            catch (Exception ex)
+            {
+                errMsg = ex.Message;
+                return ErrorCode.Error;
+            }
+        }
 
         public ErrorCode UpdateEmployeeInformation(employeeInfo empinf , ref string errMsg)
         {
@@ -177,6 +205,7 @@ namespace Dealogikal.Repository
                 empInfo.city = city;
                 empInfo.phone = phone;
                 empInfo.birthdate = birthdate;
+                empInfo.leaveCount = 2;
 
 
                 _employeeInf.Create(empInfo, out err);

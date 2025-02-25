@@ -50,7 +50,9 @@
           <Property Name="leaveEnd" Type="date" />
           <Property Name="leaveType" Type="nvarchar" MaxLength="100" />
           <Property Name="leaveReason" Type="nvarchar(max)" />
-          <Property Name="dateFiled" Type="datetime" />
+          <Property Name="dateFiled" Type="datetime" Nullable="false" />
+          <Property Name="status" Type="int" />
+          <Property Name="leaveRequestType" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="overtimeRequest">
           <Key>
@@ -62,7 +64,8 @@
           <Property Name="overtimeEnd" Type="datetime" />
           <Property Name="overtimeDate" Type="date" />
           <Property Name="overtimeReason" Type="nvarchar(max)" />
-          <Property Name="dateFiled" Type="datetime" />
+          <Property Name="dateFiled" Type="datetime" Nullable="false" />
+          <Property Name="status" Type="int" />
         </EntityType>
         <EntityType Name="role">
           <Key>
@@ -248,7 +251,9 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           <Property Name="leaveEnd" Type="DateTime" Precision="0" />
           <Property Name="leaveType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="leaveReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="dateFiled" Type="DateTime" Precision="3" />
+          <Property Name="dateFiled" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="status" Type="Int32" />
+          <Property Name="leaveRequestType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="employeeInfo" Relationship="Self.FK_leaveRequest_employeeInfo" FromRole="leaveRequest" ToRole="employeeInfo" />
         </EntityType>
         <EntityType Name="overtimeRequest">
@@ -261,7 +266,8 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           <Property Name="overtimeEnd" Type="DateTime" Precision="3" />
           <Property Name="overtimeDate" Type="DateTime" Precision="0" />
           <Property Name="overtimeReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="dateFiled" Type="DateTime" Precision="3" />
+          <Property Name="dateFiled" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="status" Type="Int32" />
           <NavigationProperty Name="employeeInfo" Relationship="Self.FK_overtimeRequest_employeeInfo" FromRole="overtimeRequest" ToRole="employeeInfo" />
         </EntityType>
         <EntityType Name="role">
@@ -441,6 +447,8 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
                 <ScalarProperty Name="leaveType" ColumnName="leaveType" />
                 <ScalarProperty Name="leaveReason" ColumnName="leaveReason" />
                 <ScalarProperty Name="dateFiled" ColumnName="dateFiled" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="leaveRequestType" ColumnName="leaveRequestType" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -454,6 +462,7 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
                 <ScalarProperty Name="overtimeDate" ColumnName="overtimeDate" />
                 <ScalarProperty Name="overtimeReason" ColumnName="overtimeReason" />
                 <ScalarProperty Name="dateFiled" ColumnName="dateFiled" />
+                <ScalarProperty Name="status" ColumnName="status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

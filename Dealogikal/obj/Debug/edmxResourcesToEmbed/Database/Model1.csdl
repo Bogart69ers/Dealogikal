@@ -50,7 +50,9 @@
     <Property Name="leaveEnd" Type="DateTime" Precision="0" />
     <Property Name="leaveType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="leaveReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="dateFiled" Type="DateTime" Precision="3" />
+    <Property Name="dateFiled" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="status" Type="Int32" />
+    <Property Name="leaveRequestType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="employeeInfo" Relationship="Self.FK_leaveRequest_employeeInfo" FromRole="leaveRequest" ToRole="employeeInfo" />
   </EntityType>
   <EntityType Name="overtimeRequest">
@@ -63,7 +65,8 @@
     <Property Name="overtimeEnd" Type="DateTime" Precision="3" />
     <Property Name="overtimeDate" Type="DateTime" Precision="0" />
     <Property Name="overtimeReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-    <Property Name="dateFiled" Type="DateTime" Precision="3" />
+    <Property Name="dateFiled" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="status" Type="Int32" />
     <NavigationProperty Name="employeeInfo" Relationship="Self.FK_overtimeRequest_employeeInfo" FromRole="overtimeRequest" ToRole="employeeInfo" />
   </EntityType>
   <EntityType Name="role">

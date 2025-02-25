@@ -18,6 +18,7 @@ namespace Dealogikal.Controllers
         public BaseRepository<userAccount> _userAcc;
         public AccountManager _AccManager;
         public DtrManager _DtrManager;
+        public RequestManager _RequestManager;
          
         
         public BaseController()
@@ -25,6 +26,7 @@ namespace Dealogikal.Controllers
             _userAcc = new BaseRepository<userAccount>();
             _AccManager = new AccountManager();
             _DtrManager = new DtrManager();
+            _RequestManager = new RequestManager();
         }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
