@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "LeaveRequest";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -11,144 +10,160 @@
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
                     <h3 class="font-weight-bold">Leave Request Form</h3>
                 </div>
-                <div class="leave-request-container">
-                    <h3>Leave Request Form</h3>
-
-                    <div class="form-group">
-                        <label>Leave Request For:</label>
-                        <div class="radio-group">
-                            <label for="days"><input type="radio" id="days" name="leave_request" checked> Days</label>
-                            <label for="hours"><input type="radio" id="hours" name="leave_request"> Hours</label>
+            </div>
+            <div class="row">
+                <div class="col-md-5 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body d-flex flex-column" style="height: 100%;">
+                            <form class="forms-sample d-flex flex-column flex-grow-1">
+                                <div class="form-group">
+                                    <label for="workMode">Leave Request Type:</label>
+                                    <select id="workMode" class="form-control">
+                                        <option value="halfday-undertime">Halfday/Undertime</option>
+                                        <option value="sick-leave">Sick Leave</option>
+                                        <option value="paternity-leave">Paternity Leave</option>
+                                        <option value="maternity-leave">Maternity Leave</option>
+                                        <option value="emergency-leave">Emergency Leave</option>
+                                        <option value="work-related-accident-leave">Work Related Accident</option>
+                                        <option value="official-business">Official Business</option>
+                                        <option value="bereavement-leave">Bereavement Leave</option>
+                                        <option value="others">Others</option>
+                                    </select>
+                                    <input type="text" id="otherLeaveType" class="form-control mt-2" placeholder="Specify other leave type..." style="display: none;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="leaveStart">Leave Start:</label>
+                                    <input type="date" class="form-control" id="leaveStart" placeholder="dd/mm/yyyy">
+                                </div>
+                                <div class="form-group">
+                                    <label for="leaveEnd">Leave End:</label>
+                                    <input type="date" class="form-control" id="leaveEnd" placeholder="dd/mm/yyyy">
+                                </div>
+                                <div class="form-group">
+                                    <label for="leaveType">Leave Type:</label>
+                                    <select id="leaveType" class="form-control">
+                                        <option value="leavewithpay">Leave With Pay</option>
+                                        <option value="leavewithoutpay">Leave Without Pay</option>
+                                    </select>
+                                </div>
+                                <div class="form-group flex-grow-1">
+                                    <label for="leaveReason">Leave Reason:</label>
+                                    <textarea id="leaveReason" class="form-control" placeholder="Enter reason..." style="height:75%;"></textarea>
+                                </div>
+                                <div class="d-flex justify-content-center mt-auto">
+                                    <button type="submit" class="btn btn-primary mr-2">Submit</button>
+                                    <button class="btn btn-light" id="clearForm">Reset</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
+                </div>
+                <div class="col-md-7 grid-margin stretch-card">
+                    <div class="card">
+                        <div class="card-body d-flex flex-column pb-4">
+                            <!-- Added extra bottom padding -->
+                            <!-- Leave Count -->
+                            <div class="leave-count-container text-center mb-4">
+                                <div class="leave-count-card">
+                                    <p class="leave-count-title">Remaining Leave Count:</p>
+                                    <p class="leave-count-number">1</p>
+                                </div>
+                            </div>
 
-                    <div class="form-group">
-                        <label>Leave Start:</label>
-                        <div class="date-group">
-                            <input type="text" placeholder="MM">
-                            <input type="text" placeholder="DD">
-                            <input type="text" placeholder="YYYY">
-                            <button class="calendar-btn">📅</button>
+                            <!-- Search Bar -->
+                            <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search..." style="width: 100%; max-width: 100%;">
+
+                            <!-- Table Section -->
+                            <div class="table-responsive flex-grow-1" style="max-height: 100%; overflow-y: auto;">
+                                <table class="table table-striped table-borderless text-center">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Leave Request Type</th>
+                                            <th>Approval Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <tr>
+                                                <td>21 Sep 2018</td>
+                                                <td>Sick Leave</td>
+                                                <td class="font-weight-medium"><div class="badge badge-success">Approved</div></td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Button at Bottom with More Spacing -->
+                            <div class="mt-4 pt-3 d-flex justify-content-center">
+                                <!-- Increased margin-top and padding-top -->
+                                <button type="button" class="btn btn-primary btn-rounded btn-icon">
+                                    <i class="ti-arrow-right"></i>
+                                </button>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Leave End:</label>
-                        <div class="date-group">
-                            <input type="text" placeholder="MM">
-                            <input type="text" placeholder="DD">
-                            <input type="text" placeholder="YYYY">
-                            <button class="calendar-btn">📅</button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Leave Type:</label>
-                        <div class="radio-group grid">
-                            <label for="vacation"><input type="radio" id="vacation" name="leave_type"> Vacation</label>
-                            <label for="sick"><input type="radio" id="sick" name="leave_type"> Sick</label>
-                            <label for="quitting"><input type="radio" id="quitting" name="leave_type"> Quitting</label>
-                            <label for="other"><input type="radio" id="other" name="leave_type"> Other</label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Comments:</label>
-                        <textarea placeholder="Enter comments..."></textarea>
-                    </div>
-
-                    <div class="form-group submit-container">
-                        <button type="submit" class="submit-btn">Submit</button>
                     </div>
                 </div>
 
-                <style>
-                    .leave-request-container {
-                        background: #ffffff;
-                        padding: 20px;
-                        border-radius: 10px;
-                        box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-                        width: 100%;
-                        max-width: 700px;
-                        margin: auto;
-                    }
-
-                    .form-group {
-                        margin-bottom: 15px;
-                        display: flex;
-                        justify-content: space-between;
-                        align-items: center;
-                        width: 100%;
-                    }
-
-                    label {
-                        font-weight: bold;
-                    }
-
-                    .radio-group {
-                        display: flex;
-                        gap: 20px;
-                    }
-
-                        .radio-group.grid {
-                            display: grid;
-                            grid-template-columns: repeat(2, 1fr);
-                            gap: 10px;
-                        }
-
-                    .date-group {
-                        display: flex;
-                        gap: 5px;
-                        align-items: center;
-                    }
-
-                        .date-group input {
-                            width: 50px;
-                            text-align: center;
-                            padding: 5px;
-                        }
-
-                    .calendar-btn {
-                        background: #ddd;
-                        border: none;
-                        padding: 5px 10px;
-                        cursor: pointer;
-                    }
-
-                    textarea {
-                        width: 100%;
-                        height: 80px;
-                        padding: 10px;
-                        border-radius: 5px;
-                        border: 1px solid #ccc;
-                        resize: none;
-                    }
-
-                    .submit-container {
-                        display: flex;
-                        justify-content: center;
-                        margin-top: 20px;
-                    }
-
-                    .submit-btn {
-                        background: #007bff;
-                        color: white;
-                        border: none;
-                        padding: 10px 20px;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        font-size: 16px;
-                    }
-
-                        .submit-btn:hover {
-                            background: #0056b3;
-                        }
-                </style>
-
-
-
-
             </div>
+            <style>
+                .leave-count-container {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    margin-top: 20px;
+                }
+
+                .leave-count-card {
+                    background: #4b49ac;
+                    border-radius: 10px;
+                    padding: 20px;
+                    text-align: center;
+                    width: 150px;
+                    color: white;
+                    font-size: 18px;
+                    font-weight: bold;
+                }
+
+                .leave-count-number {
+                    font-size: 32px;
+                    font-weight: bold;
+                }
+                  .table-responsive {
+                    max-height: 350px;
+                    overflow-y: auto;
+                    width: 100%;
+                }
+            </style>
         </div>
     </div>
 </div>
+
+<script>
+    document.getElementById('workMode').addEventListener('change', function () {
+        let otherInput = document.getElementById('otherLeaveType');
+        let leaveStart = document.getElementById('leaveStart');
+        let leaveEnd = document.getElementById('leaveEnd');
+        let today = new Date();
+        let threeDaysLater = new Date();
+        threeDaysLater.setDate(today.getDate() + 3);
+        let minDate = threeDaysLater.toISOString().split('T')[0];
+
+        if (this.value === 'others') {
+            otherInput.style.display = 'block';
+        } else {
+            otherInput.style.display = 'none';
+        }
+
+        // If sick leave is selected, restrict the dates
+        if (this.value === 'sick-leave') {
+            leaveStart.setAttribute('max', minDate);
+            leaveEnd.setAttribute('max', minDate);
+        } else {
+            leaveStart.removeAttribute('max');
+            leaveEnd.removeAttribute('max');
+        }
+    });
+</script>
