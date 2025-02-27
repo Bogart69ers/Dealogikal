@@ -66,25 +66,20 @@ else
                                 </div>
 
                             </div>
+                            <div class="button-section">
+                                <div class="stacked-requests">
+                                    <div class="info-box">
+                                        <a href="~/Home/LeaveRequest">Pending Leave <br /> Request:</a>
+                                        <a href="~/Home/LeaveRequest">1</a>
+                                    </div>
+                                    <div class="info-box">
+                                        <a href="OvertimeRequest">Pending Overtime <br /> Request:</a>
+                                        <a href="OvertimeRequest">1</a>
+                                    </div>
+                                </div>
+                            </div>
                           </form>
-                        <div class="button-section">
-                            <div class="top-row">
-                                <div class="info-box">
-                                    <a href="/employees">Total Employees:</a>
-                                    <a href="/numbers1">1</a>
-                                </div>
-                                <div class="info-box">
-                                    <a href="/requests">View Requests:</a>
-                                    <a href="/numbers">1</a>
-                                </div>
-                            </div>
-                            <div class="bottom-row">
-                                <div class="info-box">
-                                    <a href="/active-employees">Active Employees:</a>
-                                    <a href="/numbers1">1</a>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
             <div class="table-container" style="margin-top: 20px; width: 100%;">
@@ -108,8 +103,9 @@ else
                         {
                             <tr>
                                 <td>@Model.dtr.date.ToString("dd MMM yyyy")</td>
-                                <td>@(Model.dtr.timeIn.HasValue ? Model.dtr.timeIn.Value.ToString("hh:mm tt") : "")</td>
-                                <td>@(Model.dtr.breakIn.HasValue ? Model.dtr.breakIn.Value.ToString("hh:mm tt") : "")</td>
+                                <td class="@(Model.dtr.timeIn.HasValue && Model.dtr.timeIn.Value.TimeOfDay > new TimeSpan(8, 5, 0) ? "late-time" : "")">
+                                    @(Model.dtr.timeIn.HasValue ? Model.dtr.timeIn.Value.ToString("hh:mm tt") : "")
+                                </td><td>@(Model.dtr.breakIn.HasValue ? Model.dtr.breakIn.Value.ToString("hh:mm tt") : "")</td>
                                 <td>@(Model.dtr.breakOut.HasValue ? Model.dtr.breakOut.Value.ToString("hh:mm tt") : "")</td>
                                 <td>@(Model.dtr.timeOut.HasValue ? Model.dtr.timeOut.Value.ToString("hh:mm tt") : "")</td>
                                 <td>@Model.dtr.workMode</td>
@@ -161,6 +157,10 @@ else
 </div>
 
 <style>
+      .late-time {
+    color: red;
+    font-weight: bold;
+    }
     .table-container {
         margin-top: 20px;
         width: 100%;
@@ -195,26 +195,36 @@ else
     }
 
     .button-section {
-        position: absolute;
-        right: 5%; /* Adjust to move further right */
-        top: 30%; /* Aligns vertically with Work Mode */
-        transform: translateY(-50%); /* Ensures perfect vertical alignment */
-        display: flex;
-        gap: 20;
-        flex-direction: column;
-        align-items: center;
-    }
-    /* Top row: Total Employees & View Requests */
-    .top-row {
-        display: flex;
-        gap: 10%; /* Space between buttons */
-    }
+    position: absolute;
+    right: 15%;
+    top: 30%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px; /* Space between stacked items */
+}
 
-    .bottom-row {
-        margin-top: 15%; /* Space between top and bottom row */
-        display: flex;
-        gap: 10%;
-    }
+/* New stacked layout */
+.stacked-requests {
+    display: flex;
+    flex-direction: column; /* Stacks items vertically */
+    gap: 10px; /* Adds spacing between them */
+}
+
+/* Ensure consistent box sizing */
+.info-box {
+    background: #4b49ac;
+    padding: 15px 25px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    width: 180px; /* Adjust width for better spacing */
+}
+
 
     /* Info Box Styling */
     .info-box {
@@ -248,6 +258,11 @@ else
             .info-box a:hover {
                 color: #3b5bdb; /* Darker blue on hover */
             }
+            .info-box a[href*="Leave Requests"] {
+    display: block; /* Forces text to stack */
+    text-align: center; /* Keeps it aligned properly */
+    white-space: pre-line; /* Ensures line breaks */
+}   
 
 
     /* Adjust To-Do Container Width */

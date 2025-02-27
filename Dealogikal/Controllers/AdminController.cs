@@ -10,7 +10,7 @@ using Dealogikal.ViewModel;
 
 namespace Dealogikal.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "HR")]
     public class AdminController : BaseController
     {
         [Authorize]

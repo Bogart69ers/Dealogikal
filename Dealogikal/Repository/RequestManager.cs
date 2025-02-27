@@ -80,6 +80,8 @@ namespace Dealogikal.Repository
                 DateTime serverTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(DateTime.UtcNow, "Singapore Standard Time");
 
                 or.dateFiled = serverTime;
+                or.employeeId = employeeId;
+                or.status = 0;
 
                 if (_overtReq.Create(or, out errMsg) != ErrorCode.Success)
                 {

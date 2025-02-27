@@ -110,7 +110,9 @@ else
                         {
                             <tr>
                                 <td>@Model.dtr.date.ToString("dd MMM yyyy")</td>
-                                <td>@(Model.dtr.timeIn.HasValue ? Model.dtr.timeIn.Value.ToString("hh:mm tt") : "")</td>
+                                <td class="@(Model.dtr.timeIn.HasValue && Model.dtr.timeIn.Value.TimeOfDay > new TimeSpan(8, 5, 0) ? "late-time" : "")">
+                                    @(Model.dtr.timeIn.HasValue ? Model.dtr.timeIn.Value.ToString("hh:mm tt") : "")
+                                </td>
                                 <td>@(Model.dtr.breakIn.HasValue ? Model.dtr.breakIn.Value.ToString("hh:mm tt") : "")</td>
                                 <td>@(Model.dtr.breakOut.HasValue ? Model.dtr.breakOut.Value.ToString("hh:mm tt") : "")</td>
                                 <td>@(Model.dtr.timeOut.HasValue ? Model.dtr.timeOut.Value.ToString("hh:mm tt") : "")</td>
@@ -161,6 +163,11 @@ else
 </div>
 
 <style>
+    .late-time {
+    color: red;
+    font-weight: bold;
+    }
+
     .table-container {
         margin-top: 20px;
         width: 100%;

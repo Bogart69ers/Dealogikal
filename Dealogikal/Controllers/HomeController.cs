@@ -305,7 +305,55 @@ namespace Dealogikal.Controllers
         [Authorize]
         public ActionResult OvertimeRequest()
         {
-            return View();
+            var user = _AccManager.GetEmployeebyEmployeeId(User.Identity.Name);
+            var currentUserId = User.Identity.Name;
+
+            ViewBag.LeaveCount = user.leaveCount;
+
+            var requests = _RequestManager.GetOvertimeRequestByEmployeeId(currentUserId);
+
+            var model = new AccountViewModel
+            {
+                overtimeRequests = requests,
+
+            };
+
+            return View(model);
+        }
+
+
+        [Authorize]
+        [HttpPost]
+
+        public ActionResult OvertimeRequest(overtimeRequest ot)
+        {
+            try
+            {
+                var user = User.Identity.Name;
+                var userInfo = _AccManager.GetEmployeebyEmployeeId(user);
+                string errMsg = string.Empty;
+
+                if (userInfo == null)
+                {
+                    ViewBag.ErrorMessage = "User not found.";
+                    return View("OvertimeRequest");
+                }
+
+                if (_RequestManager.CreateOvertime(ot, user,  ref errMsg) != ErrorCode.Success)
+                {
+                    ViewBag.ErrorMessage = errMsg;
+                    return View("OvertimeRequest");
+                }
+
+                return RedirectToAction("OvertimeRequest");
+                
+
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = ex.Message;
+                return View("OvertimeRequest");
+            }
         }
 
         [Authorize]
