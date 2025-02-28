@@ -206,5 +206,18 @@ namespace Dealogikal.Controllers
             return View();
         }
 
+        [Authorize]
+        public ActionResult LeaveRequest()
+        {
+            return View();
+        }
+
+        [Authorize]
+        public ActionResult OvertimeRequests()
+        {
+            return View();
+        }
+
+
     }
 }

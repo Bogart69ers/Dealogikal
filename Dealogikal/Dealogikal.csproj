@@ -1473,6 +1473,8 @@
     <Content Include="Views\Home\InActiveAccount.cshtml" />
     <Content Include="Views\Home\PageNotFound.cshtml" />
     <Content Include="Views\Admin\EmployeeDtr.cshtml" />
+    <Content Include="Views\Admin\LeaveRequest.cshtml" />
+    <Content Include="Views\Admin\OvertimeRequests.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

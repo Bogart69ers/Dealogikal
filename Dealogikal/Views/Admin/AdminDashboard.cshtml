@@ -69,20 +69,24 @@ else
 
                         </div>
                     </form>
-                    <div class="button-section">
+                    <div class="button-section" >
                         <div class="top-row">
                             <div class="info-box">
                                 <a href="~/Admin/Accounts">Total Employees:</a>
                                 <a href="~/Admin/Accounts">1</a>
                             </div>
                             <div class="info-box">
-                                <a href="#">View Requests:</a>
+                                <a href="#">Active Employees:</a>
                                 <a href="#">1</a>
                             </div>
                         </div>
                         <div class="bottom-row">
                             <div class="info-box">
-                                <a href="~/Admin/Accounts">Active Employees:</a>
+                                <a href="~/Admin/Accounts">Overtime Requests:</a>
+                                <a href="~/Admin/Accounts">1</a>
+                            </div>
+                            <div class="info-box">
+                                <a href="~/Admin/Accounts">Leave <br />Requests:</a>
                                 <a href="~/Admin/Accounts">1</a>
                             </div>
                         </div>
@@ -112,7 +116,6 @@ else
                                 <td>@Model.dtr.date.ToString("dd MMM yyyy")</td>
                                 <td class="@(Model.dtr.timeIn.HasValue && Model.dtr.timeIn.Value.TimeOfDay > new TimeSpan(8, 5, 0) ? "late-time" : "")">
                                     @(Model.dtr.timeIn.HasValue ? Model.dtr.timeIn.Value.ToString("hh:mm tt") : "")
-                                </td>
                                 <td>@(Model.dtr.breakIn.HasValue ? Model.dtr.breakIn.Value.ToString("hh:mm tt") : "")</td>
                                 <td>@(Model.dtr.breakOut.HasValue ? Model.dtr.breakOut.Value.ToString("hh:mm tt") : "")</td>
                                 <td>@(Model.dtr.timeOut.HasValue ? Model.dtr.timeOut.Value.ToString("hh:mm tt") : "")</td>
@@ -167,7 +170,6 @@ else
     color: red;
     font-weight: bold;
     }
-
     .table-container {
         margin-top: 20px;
         width: 100%;
@@ -200,39 +202,34 @@ else
     }
 
     .button-section {
-        position: absolute;
-        right: 5%; /* Adjust to move further right */
-        top: 30%; /* Aligns vertically with Work Mode */
-        transform: translateY(-50%); /* Ensures perfect vertical alignment */
-        display: flex;
-        gap: 20;
-        flex-direction: column;
-        align-items: center;
-    }
-    /* Top row: Total Employees & View Requests */
-    .top-row {
-        display: flex;
-        gap: 10%; /* Space between buttons */
-    }
+    position: absolute;
+    right: 5%;
+    top: 30%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px; /* Space between rows */
+}
+  /* Make the two rows equal width */
+.top-row, .bottom-row {
+    display: flex;
+    gap: 10px; /* Space between boxes */
+    justify-content: center; /* Align center */
+    width: 100%; /* Ensure full width */
+}
 
-    .bottom-row {
-        margin-top: 15%; /* Space between top and bottom row */
-        display: flex;
-        gap: 10%;
-    }
-
-    /* Info Box Styling */
-    .info-box {
-        background: #4b49ac;
-        padding: 15px 25px;
-        border-radius: 8px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        width: 100%; /* Keep size consistent */
-    }
+   .info-box {
+    background: #4b49ac;
+    padding: 15px 25px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    width: 150px; /* Set fixed width for consistency */
+}
         /* Label Styling */
         .info-box span {
             font-size: 14px;
@@ -254,6 +251,12 @@ else
                 color: #3b5bdb; /* Darker blue on hover */
             }
 
+        /* Ensure Leave Requests text appears stacked */
+.info-box a[href*="Leave Requests"] {
+    display: block; /* Forces text to stack */
+    text-align: center; /* Keeps it aligned properly */
+    white-space: pre-line; /* Ensures line breaks */
+}
 
     /* Adjust To-Do Container Width */
     .todo-container {
