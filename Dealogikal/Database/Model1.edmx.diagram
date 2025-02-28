@@ -4,9 +4,9 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="980f4d071fd54166bb0811ed943989d5" Name="Diagram1">
+      <Diagram DiagramId="bc018c92588f44bfa6ef68615eff0184" Name="Diagram1">
         <EntityTypeShape EntityType="DeologikalDTRModel.dtrRecords" Width="1.5" PointX="3" PointY="3.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="DeologikalDTRModel.employeeInfo" Width="1.5" PointX="0.75" PointY="6.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="DeologikalDTRModel.employeeInfo" Width="1.5" PointX="0.75" PointY="6" IsExpanded="true" />
         <EntityTypeShape EntityType="DeologikalDTRModel.leaveRequest" Width="1.5" PointX="3" PointY="7.125" IsExpanded="true" />
         <EntityTypeShape EntityType="DeologikalDTRModel.overtimeRequest" Width="1.5" PointX="3" PointY="10.875" IsExpanded="true" />
         <EntityTypeShape EntityType="DeologikalDTRModel.role" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />

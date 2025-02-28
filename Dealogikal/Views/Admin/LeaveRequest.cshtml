@@ -1,4 +1,5 @@
-﻿
+﻿@model Dealogikal.ViewModel.AccountViewModel
+
 @{
     ViewBag.Title = "LeaveRequest";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -12,8 +13,6 @@
         padding: 15px;
         background: #f8f9fa; /* Light background */
         border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        width: 100%;
     }
 
     .profile-section img {
@@ -26,33 +25,18 @@
 
     .info-section {
         flex-grow: 1;
-        text-align: center;
     }
 
     .info-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr); /* Two columns */
         gap: 10px 20px; /* Space between items */
-        align-items: start;
-    }
-     .info-grid p {
-        margin: 5px 0;
-    }
-      .badge {
-        background: #28a745;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 14px;
     }
 
     .edit-button {
-        text-align: left;
         margin-top: 15px;
     }
 
-    .table-responsive {
-        text-align: center;
     }
 </style>
 <div class="content-wrapper">
@@ -60,7 +44,7 @@
         <div class="col-md-12 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold" style="margin-left:5%;">Employee DTR</h3>
+                    <h3 class="font-weight-bold" style="margin-left:5%;">Leave Requests</h3>
                 </div>
                 <div class="col-md-12 grid-margin stretch-card">
                     <div class="card">
@@ -76,154 +60,60 @@
                                                 <tr>
                                                     <th onclick="sortTable(0)">Employee ID</th>
                                                     <th onclick="sortTable(1)">Name</th>
-                                                    <th onclick="sortTable(2)">Department</th>
-                                                    <th onclick="sortTable(3)">Position</th>
-                                                    <th onclick="sortTable(4)">Status</th>
+                                                    <th onclick="sortTable(2)">Date Filed</th>
+                                                    <th onclick="sortTable(4)">Request Status</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @*@foreach (var employee in Model.employeeInfos)
-                                                    {
-                                                        <tr>
-                                                            <td>@employee.employeeId</td>
-                                                            <td>@employee.firstName @employee.lastName</td>
-                                                            <td>@employee.department</td>
-                                                            <td>@employee.position</td>
-                                                            <td>
-                                                                <label class="badge @(employee.status == 0 ? "badge-danger" : employee.status == 1 ? "badge-success" : "badge-secondary")">
-                                                                    @(employee.status == 0 ? "Deactivated" : employee.status == 1 ? "Active" : "Unknown")
-                                                                </label>
-                                                            </td>
-                                                            <td style="text-align:center;">
-                                                                <button class="btn btn-outline-info btn-sm"
-                                                                        onclick="toggleDetails('details-@employee.employeeId')">
-                                                                    Details
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-
-                                                        <tr id="details-@employee.employeeId" class="details-row" style="display:none;">
-                                                            <td colspan="6">
-                                                                <div class="employee-details-container">
-                                                                    <!-- Employee Info -->
-                                                                    <div class="info-section">
-                                                                        <h4>@employee.firstName @employee.lastName</h4>
-                                                                        <div class="info-grid">
-                                                                            <p><strong>Email:</strong> @(string.IsNullOrEmpty(employee.email) ? "No Information" : employee.email)</p>
-                                                                            <p><strong>Phone:</strong> @(string.IsNullOrEmpty(employee.phone) ? "No Information" : employee.phone)</p>
-                                                                            <p><strong>Department:</strong> @employee.department</p>
-                                                                            <p><strong>Position:</strong> @employee.position</p>
-                                                                            <p>
-                                                                                <strong>Status:</strong>
-                                                                                <label class="badge @(employee.status == 0 ? "badge-danger" : employee.status == 1 ? "badge-success" : "badge-secondary")">
-                                                                                    @(employee.status == 0 ? "Deactivated" : employee.status == 1 ? "Active" : "Unknown")
-                                                                                </label>
-                                                                            </p>
-                                                                            <p>
-                                                                                <strong>Date Hired:</strong>
-                                                                                @(employee.dateHired == default(DateTime) ? "No Information" : employee.dateHired.ToString("MMMM dd, yyyy"))
-                                                                            </p>
-                                                                            <p>
-                                                                                <strong>Birthdate:</strong>
-                                                                                @(employee.birthdate.HasValue ? employee.birthdate.Value.ToString("MMMM dd, yyyy") : "No Information")
-                                                                            </p>
-                                                                            <p>
-                                                                                <strong>Address:</strong>
-                                                                                @(string.IsNullOrEmpty(employee.address) ? "No Information" : $"{employee.address}, {employee.barangay}, {employee.city}, {employee.zipcode}")
-                                                                            </p>
-                                                                        </div>
-
-                                                                        <!-- Edit Info Button -->
-                                                                        <button class="btn btn-primary btn-sm edit-button" onclick="editInfo('@employee.employeeId')">✏ Edit Info</button>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-
-
-                                                    }*@
+                                              @foreach (var leave in Model.leaveRequests) // ✅ Use leaveRequests directly
+                                              {
                                                 <tr>
-                                                    <td>0001</td>
-                                                    <td>Marvin Tatoy</td>
-                                                    <td>IT</td>
-                                                    <td>Intern</td>
+                                                    <td>@leave.employeeId</td>
+                                                    <td>@leave.employeeInfo.firstName @leave.employeeInfo.lastName</td>
+                                                    <td>@leave.dateFiled.ToString("MMMM dd, yyyy")</td>
                                                     <td>
-                                                        <label class="badge badge-success">
-                                                            Active
+                                                        <label class="badge @(leave.status == 0 ? "badge-warning" : leave.status == 1 ? "badge-success" : "badge-danger")">
+                                                            @(leave.status == 0 ? "Pending" : leave.status == 1 ? "Accepted" : "Declined")
                                                         </label>
                                                     </td>
                                                     <td style="text-align:center;">
                                                         <button class="btn btn-outline-info btn-sm"
-                                                                onclick="toggleDetails('details-EMPLOYEE_ID')">
+                                                                onclick="toggleDetails('details-@leave.requestId')">
                                                             Details
                                                         </button>
                                                     </td>
                                                 </tr>
-
-                                                <tr id="details-EMPLOYEE_ID" class="details-row" style="display:none;">
+                                              
+                                                <tr id="details-@leave.requestId" class="details-row" style="display:none;">
                                                     <td colspan="6">
                                                         <div class="employee-details-container">
-                                                            <!-- Employee Info in Table Format -->
+                                                            <!-- Employee Info -->
                                                             <div class="info-section">
-                                                                <div class="row">
-                                                                    <div class="col-md-12 grid-margin">
-                                                                        <h3 class="font-weight-bold text-center">Employee Details</h3>
-                                                                        <div class="card">
-                                                                            <div class="card-body">
-                                                                                <div class="employee-details-container">
-                                                                                    <table class="info-table">
-                                                                                        <tr>
-                                                                                            <th>Employee Name</th>
-                                                                                            <td>Marvin Tatoy</td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <th>Email</th>
-                                                                                            <td>patrickmarvs@gmail.com</td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <th>Phone</th>
-                                                                                            <td>09950358463</td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <th>Department</th>
-                                                                                            <td>IT</td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <th>Position</th>
-                                                                                            <td>Intern</td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <th>Status</th>
-                                                                                            <td><span class="badge">Active</span></td>
-                                                                                        </tr> 
-                                                                                        <tr>
-                                                                                            <th>Date Hired</th>
-                                                                                            <td>February 07, 2025</td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <th>Birthdate</th>
-                                                                                            <td>June 09, 2002</td>
-                                                                                        </tr>
-                                                                                        <tr>
-                                                                                            <th>Address</th>
-                                                                                            <td>No Information</td>
-                                                                                        </tr>
-                                                                                    </table>
-                                                                                    <div class="edit-button">
-                                                                                        <button class="btn btn-primary" onclick="editInfo('EMPLOYEE_ID')">✏ Edit Info</button>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
+                                                                <h4 style="margin-bottom:1.5rem;">@leave.employeeInfo.firstName @leave.employeeInfo.lastName</h4>
+                                                                <div class="info-grid">
+                                                                    <p><strong>Leave Request Type: </strong> @(string.IsNullOrEmpty(@leave.leaveRequestType) ? "No Information" : @leave.leaveRequestType)</p>
+                                                                    <p><strong>Leave Type: </strong>@(leave.leaveType == "leavewithpay" ? "LP" : leave.leaveType == "leavewithoutpay" ? "LWP" : leave.leaveType)</p>
+                                                                    <p><strong>Leave Start: </strong> @(leave.leaveStart.HasValue ? leave.leaveStart.Value.ToString("MMM dd,yyyy"): "N/A")</p>
+                                                                    <p><strong>Leave End: </strong> @(leave.leaveEnd.HasValue ? leave.leaveEnd.Value.ToString("MMM dd,yyyy") : "N/A")</p>
+                                                                    <p>
+                                                                        <strong>Request Status: </strong>
+                                                                        <label class="badge @(leave.status == 0 ? "badge-warning" : leave.status == 1 ? "badge-success" : "badge-danger")">
+                                                                            @(leave.status == 0 ? "Pending" : leave.status == 1 ? "Accepted" : "Declined")
+                                                                        </label>
+                                                                    </p>
+                                                                    <p>
+                                                                        <strong>Leave Reason: </strong> @leave.leaveReason</p>
                                                                 </div>
+
+                                                                <!-- Edit Info Button -->
+                                                                <button class="btn btn-primary btn-sm edit-button" onclick="editInfo('@leave.employeeId')">✏ Edit Info</button>
                                                             </div>
                                                         </div>
                                                     </td>
                                                 </tr>
 
-
+                                                }
                                             </tbody>
                                         </table>
                                     </div>

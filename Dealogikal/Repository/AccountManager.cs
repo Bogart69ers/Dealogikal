@@ -171,7 +171,7 @@ namespace Dealogikal.Repository
             }
         }
 
-        public ErrorCode EmployeeInfoSignup( DateTime? birthdate, string position, string department, string employeeId, string email, string firstname, string lastname, string phone, string address, string zipcode, string city, string barangay, DateTime dateHired, ref String err)
+        public ErrorCode EmployeeInfoSignup( DateTime? birthdate, string position, string department, string employeeId, string email, string firstname, string lastname, string phone, string address, string zipcode, string city, string barangay, DateTime dateHired, string corporation, ref String err)
         {
             try
             {
@@ -206,7 +206,7 @@ namespace Dealogikal.Repository
                 empInfo.phone = phone;
                 empInfo.birthdate = birthdate;
                 empInfo.leaveCount = 2;
-
+                empInfo.corporation = corporation;
 
                 _employeeInf.Create(empInfo, out err);
 

@@ -1,4 +1,5 @@
-﻿
+﻿@model Dealogikal.ViewModel.AccountViewModel
+
 @{
     ViewBag.Title = "OvertimeRequests";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -13,7 +14,6 @@
         background: #f8f9fa; /* Light background */
         border-radius: 10px;
     }
-
     .profile-section img {
         width: 120px;
         height: 500px;
@@ -21,12 +21,10 @@
         border-radius: 50%;
         border: 3px solid #ddd;
     }
-
     .info-section {
         flex-grow: 1;
         text-align: center;
     }
-
     .info-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr); /* Two columns */
@@ -46,7 +44,7 @@
         <div class="col-md-12 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold" style="margin-left:5%;">Employee DTR</h3>
+                    <h3 class="font-weight-bold" style="margin-left:5%;">Overtime Request</h3>
                 </div>
                 <div class="col-md-12 grid-margin stretch-card">
                     <div class="card">
@@ -62,138 +60,63 @@
                                                 <tr>
                                                     <th onclick="sortTable(0)">Employee ID</th>
                                                     <th onclick="sortTable(1)">Name</th>
-                                                    <th onclick="sortTable(2)">Department</th>
-                                                    <th onclick="sortTable(3)">Position</th>
-                                                    <th onclick="sortTable(4)">Status</th>
+                                                    <th onclick="sortTable(2)">Date Filed</th>
+                                                    <th onclick="sortTable(4)">Request Status</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @*@foreach (var employee in Model.employeeInfos)
-                                                    {
-                                                        <tr>
-                                                            <td>@employee.employeeId</td>
-                                                            <td>@employee.firstName @employee.lastName</td>
-                                                            <td>@employee.department</td>
-                                                            <td>@employee.position</td>
-                                                            <td>
-                                                                <label class="badge @(employee.status == 0 ? "badge-danger" : employee.status == 1 ? "badge-success" : "badge-secondary")">
-                                                                    @(employee.status == 0 ? "Deactivated" : employee.status == 1 ? "Active" : "Unknown")
-                                                                </label>
-                                                            </td>
-                                                            <td style="text-align:center;">
-                                                                <button class="btn btn-outline-info btn-sm"
-                                                                        onclick="toggleDetails('details-@employee.employeeId')">
-                                                                    Details
-                                                                </button>
-                                                            </td>
-                                                        </tr>
+                                                @foreach (var overtime in Model.overtimeRequests) // ✅ Use leaveRequests directly
+                                                {
+                                                    <tr>
+                                                        <td>@overtime.employeeId</td>
+                                                        <td>@overtime.employeeInfo.firstName @overtime.employeeInfo.lastName</td>
+                                                        <td>@overtime.dateFiled.ToString("MMMM dd, yyyy")</td>
+                                                        <td>
+                                                            <label class="badge @(overtime.status == 0 ? "badge-warning" : overtime.status == 1 ? "badge-success" : "badge-danger")">
+                                                                @(overtime.status == 0 ? "Pending" : overtime.status == 1 ? "Accepted" : "Declined")
+                                                            </label>
+                                                        </td>
+                                                        <td style="text-align:center;">
+                                                            <button class="btn btn-outline-info btn-sm"
+                                                                    onclick="toggleDetails('details-@overtime.requestId')">
+                                                                Details
+                                                            </button>
+                                                        </td>
+                                                    </tr>
 
-                                                        <tr id="details-@employee.employeeId" class="details-row" style="display:none;">
-                                                            <td colspan="6">
-                                                                <div class="employee-details-container">
-                                                                    <!-- Employee Info -->
-                                                                    <div class="info-section">
-                                                                        <h4>@employee.firstName @employee.lastName</h4>
-                                                                        <div class="info-grid">
-                                                                            <p><strong>Email:</strong> @(string.IsNullOrEmpty(employee.email) ? "No Information" : employee.email)</p>
-                                                                            <p><strong>Phone:</strong> @(string.IsNullOrEmpty(employee.phone) ? "No Information" : employee.phone)</p>
-                                                                            <p><strong>Department:</strong> @employee.department</p>
-                                                                            <p><strong>Position:</strong> @employee.position</p>
-                                                                            <p>
-                                                                                <strong>Status:</strong>
-                                                                                <label class="badge @(employee.status == 0 ? "badge-danger" : employee.status == 1 ? "badge-success" : "badge-secondary")">
-                                                                                    @(employee.status == 0 ? "Deactivated" : employee.status == 1 ? "Active" : "Unknown")
-                                                                                </label>
-                                                                            </p>
-                                                                            <p>
-                                                                                <strong>Date Hired:</strong>
-                                                                                @(employee.dateHired == default(DateTime) ? "No Information" : employee.dateHired.ToString("MMMM dd, yyyy"))
-                                                                            </p>
-                                                                            <p>
-                                                                                <strong>Birthdate:</strong>
-                                                                                @(employee.birthdate.HasValue ? employee.birthdate.Value.ToString("MMMM dd, yyyy") : "No Information")
-                                                                            </p>
-                                                                            <p>
-                                                                                <strong>Address:</strong>
-                                                                                @(string.IsNullOrEmpty(employee.address) ? "No Information" : $"{employee.address}, {employee.barangay}, {employee.city}, {employee.zipcode}")
-                                                                            </p>
-                                                                        </div>
-
-                                                                        <!-- Edit Info Button -->
-                                                                        <button class="btn btn-primary btn-sm edit-button" onclick="editInfo('@employee.employeeId')">✏ Edit Info</button>
+                                                    <tr id="details-@overtime.requestId" class="details-row" style="display:none;">
+                                                        <td colspan="6">
+                                                            <div class="employee-details-container">
+                                                                <!-- Employee Info -->
+                                                                <div class="info-section">
+                                                                    <h4 style="margin-bottom:1.5rem;">@overtime.employeeInfo.firstName @overtime.employeeInfo.lastName</h4>
+                                                                    <div class="info-grid">
+                                                                        <p><strong>Overtime Date: </strong> @(overtime.overtimeDate.HasValue ? overtime.overtimeDate.Value.ToString("MMM dd,yyyy") : "N/A")</p>
+                                                                        <p><strong>Overtime Start: </strong> @(overtime.overtimeStart.HasValue ? overtime.overtimeStart.Value.ToString("hh:mm:tt") : "N/A")</p>
+                                                                        <p><strong>Overtime End: </strong> @(overtime.overtimeEnd.HasValue ? overtime.overtimeEnd.Value.ToString("hh:mm:tt") : "N/A")</p>
+                                                                        <p>
+                                                                            <strong>Request Status: </strong>
+                                                                            <label class="badge @(overtime.status == 0 ? "badge-warning" : overtime.status == 1 ? "badge-success" : "badge-danger")">
+                                                                                @(overtime.status == 0 ? "Pending" : overtime.status == 1 ? "Accepted" : "Declined")
+                                                                            </label>
+                                                                        </p>
+                                                                        <p>
+                                                                            <strong>Leave Reason: </strong> @overtime.overtimeReason
+                                                                        </p>
                                                                     </div>
+
+                                                                    <!-- Edit Info Button -->
+                                                                    <button class="btn btn-primary btn-sm edit-button" onclick="editInfo('@overtime.employeeId')">✏ Edit Info</button>
                                                                 </div>
-                                                            </td>
-                                                        </tr>
-
-
-                                                    }*@
-                                                <tr>
-                                                    <td>0001</td>
-                                                    <td>Marvin Tatoy</td>
-                                                    <td>IT</td>
-                                                    <td>Intern</td>
-                                                    <td>
-                                                        <label class="badge badge-success">
-                                                            Active
-                                                        </label>
-                                                    </td>
-                                                    <td style="text-align:center;">
-                                                        <button class="btn btn-outline-info btn-sm"
-                                                                onclick="toggleDetails('details-EMPLOYEE_ID')">
-                                                            Details
-                                                        </button>
-                                                    </td>
-                                                </tr>
-
-                                                <tr id="details-EMPLOYEE_ID" class="details-row" style="display:none;">
-                                                    <td colspan="6">
-                                                        <div class="employee-details-container">
-                                                            <!-- Employee Info in Table Format -->
-                                                            <div class="info-section">
-                                                                <h4>Marvin Tatoy</h4>
-                                                                <div class="table-responsive">
-                                                                    <table class="table table-bordered">
-                                                                        <thead style="background: #4646a3; color: white;">
-                                                                            <tr>
-                                                                                <th rowspan="2">Date</th>
-                                                                                <th colspan="2">Morning</th>
-                                                                                <th colspan="2">Afternoon</th>
-                                                                                <th rowspan="2">Work Mode</th>
-                                                                            </tr>
-                                                                            <tr>
-                                                                                <th>Time In</th>
-                                                                                <th>Break In</th>
-                                                                                <th>Break Out</th>
-                                                                                <th>Time Out</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                            <tr>
-                                                                                <td>05/21/2025</td>
-                                                                                <td>8:00 AM</td>
-                                                                                <td>8:00 AM</td>
-                                                                                <td>8:00 AM</td>
-                                                                                <td>8:00 AM</td>
-                                                                                <td>Onsite</td>
-                                                                            </tr>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-
-                                                                <!-- Edit Info Button -->
-                                                                <button class="btn btn-primary btn-sm edit-button" onclick="editInfo('EMPLOYEE_ID')">✏ Edit Info</button>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                        </td>
+                                                    </tr>
 
-
+                                                }
                                             </tbody>
                                         </table>
                                     </div>
-
                                     <!-- Pagination Controls -->
                                     <div class="mt-3">
                                         <button id="prevPage" class="btn btn-secondary btn-sm">Previous</button>

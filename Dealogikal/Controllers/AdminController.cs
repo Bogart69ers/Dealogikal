@@ -48,7 +48,7 @@ namespace Dealogikal.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateAccount(userAccount ua, string email, DateTime? birthdate, string firstName, string lastName ,string department, string position, string address, string barangay, string city, string zipcode, string phone, DateTime dateHired)
+        public ActionResult CreateAccount(userAccount ua, string email, DateTime? birthdate, string firstName, string lastName ,string department, string position, string address, string barangay, string city, string zipcode, string phone, DateTime dateHired, string corporation)
         {
             try
             {
@@ -57,7 +57,7 @@ namespace Dealogikal.Controllers
                     return View("CreateAccount");
                 }
 
-                if (_AccManager.EmployeeInfoSignup(birthdate, position, department, ua.employeeId, email, firstName, lastName, phone, address, zipcode, city, barangay, dateHired, ref ErrorMessage) != ErrorCode.Success)
+                if (_AccManager.EmployeeInfoSignup(birthdate, position, department, ua.employeeId, email, firstName, lastName, phone, address, zipcode, city, barangay, dateHired, corporation, ref ErrorMessage) != ErrorCode.Success)
                 {
                     ViewBag.ErrorMessage = ErrorMessage;
                     return View("CreateAccount");
@@ -130,7 +130,15 @@ namespace Dealogikal.Controllers
         [Authorize]
         public ActionResult Dtr()
         {
-            return View();
+            var currentUserId = User.Identity.Name;
+            var dtrHistory = _DtrManager.GetDtrHistoryByEmployeeId(currentUserId);
+
+            var model = new AccountViewModel
+            {
+                dtrRecords = dtrHistory
+            };
+
+            return View(model);
         }
 
         [Authorize]
@@ -203,19 +211,37 @@ namespace Dealogikal.Controllers
         [Authorize]
         public ActionResult EmployeeDtr()
         {
-            return View();
+            var model = new AccountViewModel
+            {
+                employeeInfos = _AccManager.GetAllEmployee(), 
+                dtrRecords = _DtrManager.GetAllDtr()
+            };
+
+            return View(model);
         }
 
         [Authorize]
         public ActionResult LeaveRequest()
         {
-            return View();
+            var model = new AccountViewModel
+            {
+                employeeInfos = _AccManager.GetAllEmployee(),
+                leaveRequests = _RequestManager.GetAllLeaveRequestsDesc()
+            };
+
+            return View(model);
         }
 
         [Authorize]
         public ActionResult OvertimeRequests()
         {
-            return View();
+            var model = new AccountViewModel
+            {
+                employeeInfos = _AccManager.GetAllEmployee(),
+                overtimeRequests = _RequestManager.GetAllOvertimeRequestsDesc()
+            };
+
+            return View(model);
         }
 
 

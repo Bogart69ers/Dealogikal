@@ -35,6 +35,7 @@
     <Property Name="createdAt" Type="DateTime" Precision="3" />
     <Property Name="phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
     <Property Name="leaveCount" Type="Int32" />
+    <Property Name="corporation" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="dtrRecords" Relationship="Self.FK_dtrRecords_employeeInfo" FromRole="employeeInfo" ToRole="dtrRecords" />
     <NavigationProperty Name="leaveRequest" Relationship="Self.FK_leaveRequest_employeeInfo" FromRole="employeeInfo" ToRole="leaveRequest" />
     <NavigationProperty Name="overtimeRequest" Relationship="Self.FK_overtimeRequest_employeeInfo" FromRole="employeeInfo" ToRole="overtimeRequest" />

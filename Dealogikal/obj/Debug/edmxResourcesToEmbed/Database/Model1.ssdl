@@ -34,6 +34,7 @@
     <Property Name="createdAt" Type="datetime" />
     <Property Name="phone" Type="nvarchar" MaxLength="20" />
     <Property Name="leaveCount" Type="int" />
+    <Property Name="corporation" Type="nvarchar" MaxLength="100" />
   </EntityType>
   <EntityType Name="leaveRequest">
     <Key>

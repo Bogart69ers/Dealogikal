@@ -1,10 +1,12 @@
-﻿@{
+﻿@model Dealogikal.ViewModel.AccountViewModel
+
+@{
     ViewBag.Title = "Dtr";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="content-wrapper">
-    <h3 class="font-weight-bold">Daily Time Record</h3>
+    <h3 class="font-weight-bold" style="margin-left:3%;">Daily Time Record</h3>
 
     <div class="card-body" style="background-color:white; min-height:490px; border-radius:20px; padding: 20px;">
         <!-- Search Bar -->
@@ -28,7 +30,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @*@if (Model.dtrRecords != null && Model.dtrRecords.Any())
+                    @if (Model.dtrRecords != null && Model.dtrRecords.Any())
                     {
                         foreach (var record in Model.dtrRecords)
                         {
@@ -47,15 +49,7 @@
                         <tr>
                             <td colspan="6">No DTR records found.</td>
                         </tr>
-                    }*@
-                    <tr>
-                        <td>05/21/2025</td>
-                        <td>8:00 AM</td>
-                        <td>8:00 AM</td>
-                        <td>8:00 AM</td>
-                        <td>8:00 AM</td>
-                        <td>Onsite</td>
-                    </tr>
+                    }                
                 </tbody>
             </table>
         </div>

@@ -28,6 +28,11 @@ namespace Dealogikal.Repository
             return _leaveReq._table.Where(l => l.employeeId == employeeId).OrderByDescending(l => l.dateFiled).ToList();
         }
 
+        public List<leaveRequest> GetAllLeaveRequestsDesc() // Better naming
+        {
+            return _leaveReq.GetAll().OrderByDescending(l => l.dateFiled).ToList();
+        }
+
         public List<leaveRequest> GetAllLeaveRequest()
         {
             return _leaveReq.GetAll();
@@ -47,8 +52,11 @@ namespace Dealogikal.Repository
         {
             return _overtReq.GetAll();
         }
+        public List<overtimeRequest> GetAllOvertimeRequestsDesc() // Better naming
+        {
+            return _overtReq.GetAll().OrderByDescending(l => l.dateFiled).ToList();
+        }
 
-       
         public ErrorCode CreateLeave(leaveRequest lr, string employeeId, ref string errMsg)
         {
             try

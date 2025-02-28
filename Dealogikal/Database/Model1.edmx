@@ -39,6 +39,7 @@
           <Property Name="createdAt" Type="datetime" />
           <Property Name="phone" Type="nvarchar" MaxLength="20" />
           <Property Name="leaveCount" Type="int" />
+          <Property Name="corporation" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="leaveRequest">
           <Key>
@@ -236,6 +237,7 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           <Property Name="createdAt" Type="DateTime" Precision="3" />
           <Property Name="phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="leaveCount" Type="Int32" />
+          <Property Name="corporation" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="dtrRecords" Relationship="Self.FK_dtrRecords_employeeInfo" FromRole="employeeInfo" ToRole="dtrRecords" />
           <NavigationProperty Name="leaveRequest" Relationship="Self.FK_leaveRequest_employeeInfo" FromRole="employeeInfo" ToRole="leaveRequest" />
           <NavigationProperty Name="overtimeRequest" Relationship="Self.FK_overtimeRequest_employeeInfo" FromRole="employeeInfo" ToRole="overtimeRequest" />
@@ -434,6 +436,7 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
                 <ScalarProperty Name="createdAt" ColumnName="createdAt" />
                 <ScalarProperty Name="phone" ColumnName="phone" />
                 <ScalarProperty Name="leaveCount" ColumnName="leaveCount" />
+                <ScalarProperty Name="corporation" ColumnName="corporation" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

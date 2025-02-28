@@ -35,6 +35,7 @@
           <ScalarProperty Name="createdAt" ColumnName="createdAt" />
           <ScalarProperty Name="phone" ColumnName="phone" />
           <ScalarProperty Name="leaveCount" ColumnName="leaveCount" />
+          <ScalarProperty Name="corporation" ColumnName="corporation" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
