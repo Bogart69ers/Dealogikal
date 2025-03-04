@@ -1,8 +1,8 @@
 ﻿@model Dealogikal.ViewModel.AccountViewModel
 
 @{
-    ViewBag.Title = "LeaveRequest";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.Title = "OvertimeApproval";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style>
@@ -37,6 +37,7 @@
         margin-top: 15px;
     }
 
+    .table-responsive {
     }
 </style>
 <div class="content-wrapper">
@@ -44,7 +45,7 @@
         <div class="col-md-12 grid-margin">
             <div class="row">
                 <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold" style="margin-left:5%;">Leave Requests</h3>
+                    <h3 class="font-weight-bold" style="margin-left:5%;">Overtime Request</h3>
                 </div>
                 <div class="col-md-12 grid-margin stretch-card">
                     <div class="card">
@@ -66,58 +67,66 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                              @foreach (var leave in Model.leaveRequests) // ✅ Use leaveRequests directly
-                                              {
-                                                <tr>
-                                                    <td>@leave.employeeId</td>
-                                                    <td>@leave.employeeInfo.firstName @leave.employeeInfo.lastName</td>
-                                                    <td>@leave.dateFiled.ToString("MMMM dd, yyyy")</td>
-                                                    <td>
-                                                        <label class="badge @(leave.status == 0 ? "badge-warning" : leave.status == 1 ? "badge-success" : "badge-danger")">
-                                                            @(leave.status == 0 ? "Pending" : leave.status == 1 ? "Accepted" : "Declined")
-                                                        </label>
-                                                    </td>
-                                                    <td style="text-align:center;">
-                                                        <button class="btn btn-outline-info btn-sm"
-                                                                onclick="toggleDetails('details-@leave.requestId')">
-                                                            Details
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                              
-                                                <tr id="details-@leave.requestId" class="details-row" style="display:none;">
-                                                    <td colspan="6">
-                                                        <div class="employee-details-container">
-                                                            <!-- Employee Info -->
-                                                            <div class="info-section">
-                                                                <h4 style="margin-bottom:1.5rem;">@leave.employeeInfo.firstName @leave.employeeInfo.lastName</h4>
-                                                                <div class="info-grid">
-                                                                    <p><strong>Leave Request Type: </strong> @(string.IsNullOrEmpty(@leave.leaveRequestType) ? "No Information" : @leave.leaveRequestType)</p>
-                                                                    <p><strong>Leave Type: </strong>@(leave.leaveType == "leavewithpay" ? "LP" : leave.leaveType == "leavewithoutpay" ? "LWP" : leave.leaveType)</p>
-                                                                    <p><strong>Leave Start: </strong> @(leave.leaveStart.HasValue ? leave.leaveStart.Value.ToString("MMM dd,yyyy"): "N/A")</p>
-                                                                    <p><strong>Leave End: </strong> @(leave.leaveEnd.HasValue ? leave.leaveEnd.Value.ToString("MMM dd,yyyy") : "N/A")</p>
-                                                                    <p>
-                                                                        <strong>Request Status: </strong>
-                                                                        <label class="badge @(leave.status == 0 ? "badge-warning" : leave.status == 1 ? "badge-success" : "badge-danger")">
-                                                                            @(leave.status == 0 ? "Pending" : leave.status == 1 ? "Accepted" : "Declined")
-                                                                        </label>
-                                                                    </p>
-                                                                    <p>
-                                                                        <strong>Leave Reason: </strong> @leave.leaveReason</p>
-                                                                </div>
+                                                @foreach (var overtime in Model.overtimeRequests) // ✅ Use leaveRequests directly
+                                                {
+                                                    <tr>
+                                                        <td>@overtime.employeeId</td>
+                                                        <td>@overtime.employeeInfo.firstName @overtime.employeeInfo.lastName</td>
+                                                        <td>@overtime.dateFiled.ToString("MMMM dd, yyyy")</td>
+                                                        <td>
+                                                            <label class="badge @(overtime.status == 0 ? "badge-warning" : overtime.status == 1 ? "badge-success" : "badge-danger")">
+                                                                @(overtime.status == 0 ? "Pending" : overtime.status == 1 ? "Accepted" : "Declined")
+                                                            </label>
+                                                        </td>
+                                                        <td style="text-align:center;">
+                                                            <button class="btn btn-outline-info btn-sm"
+                                                                    onclick="toggleDetails('details-@overtime.requestId')">
+                                                                Details
+                                                            </button>
+                                                        </td>
+                                                    </tr>
 
-                                                                <!-- Edit Info Button -->
-                                                                <button class="btn btn-primary btn-sm edit-button" onclick="editInfo('@leave.employeeId')">✏ Edit Info</button>
+                                                    <tr id="details-@overtime.requestId" class="details-row" style="display:none;">
+                                                        <td colspan="6">
+                                                            <div class="employee-details-container">
+                                                                <!-- Employee Info -->
+                                                                <div class="info-section">
+                                                                    <h4 style="margin-bottom:1.5rem;">@overtime.employeeInfo.firstName @overtime.employeeInfo.lastName</h4>
+                                                                    <div class="info-grid">
+                                                                        <p><strong>Overtime Date: </strong> @(overtime.overtimeDate.HasValue ? overtime.overtimeDate.Value.ToString("MMM dd,yyyy") : "N/A")</p>
+                                                                        <p><strong>Overtime Start: </strong> @(overtime.overtimeStart.HasValue ? overtime.overtimeStart.Value.ToString("hh:mm:tt") : "N/A")</p>
+                                                                        <p><strong>Overtime End: </strong> @(overtime.overtimeEnd.HasValue ? overtime.overtimeEnd.Value.ToString("hh:mm:tt") : "N/A")</p>
+                                                                        <p>
+                                                                            <strong>Request Status: </strong>
+                                                                            <label class="badge @(overtime.status == 0 ? "badge-warning" : overtime.status == 1 ? "badge-success" : "badge-danger")">
+                                                                                @(overtime.status == 0 ? "Pending" : overtime.status == 1 ? "Accepted" : "Declined")
+                                                                            </label>
+                                                                        </p>
+                                                                        <p>
+                                                                            <strong>Leave Reason: </strong> @overtime.overtimeReason
+                                                                        </p>
+                                                                    </div>
+
+                                                                    <!-- Edit Info Button -->
+                                                                    @if (overtime.status == 0)
+                                                                    {
+                                                                        <form action="@Url.Action("OvertimeApproval", "Home")" method="post">
+                                                                            <input type="hidden" name="requestId" value="@overtime.requestId" />
+                                                                            <input type="hidden" name="employeeId" value="@overtime.employeeId" />
+                                                                            <button class="btn btn-primary btn-sm edit-button btn-success" type="submit" name="action" value="Accept">Accept</button>
+
+                                                                            <button class="btn btn-primary btn-sm edit-button btn-danger" type="submit" name="action" value="Decline">Decline</button>
+                                                                        </form>
+                                                                    }                                                              
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                        </td>
+                                                    </tr>
 
                                                 }
                                             </tbody>
                                         </table>
                                     </div>
-
                                     <!-- Pagination Controls -->
                                     <div class="mt-3">
                                         <button id="prevPage" class="btn btn-secondary btn-sm">Previous</button>
@@ -237,11 +246,5 @@ document.addEventListener("DOMContentLoaded", function () {
         row.style.display = (row.style.display === "none" || row.style.display === "") ? "table-row" : "none";
     };
 });
-</script>
-
-<script>
-function editInfo(employeeId) {
-    window.location.href = "/Admin/EditEmployee?employeeId=" + employeeId;
-}
 </script>
 

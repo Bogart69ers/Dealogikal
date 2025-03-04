@@ -42,16 +42,21 @@
     <div class="row">
         <div class="col-md-12 grid-margin">
             <div class="row">
-                <div class="col-12 col-xl-8 mb-4 mb-xl-0">
-                    <h3 class="font-weight-bold" style="margin-left:5%;">Employee Information</h3>
+                <div class="col-12 mb-4 mb-xl-0">
+                    <div class="d-flex justify-content-between align-items-center" style="margin-left:3%; margin-bottom: 10px">
+                        <h3 class="font-weight-bold">Employee Information</h3>
+                        <button class="btn btn-info btn-md" onclick="addEmployee()">+ Create Employee</button>
+                    </div>
                 </div>
+
                 <div class="col-md-12 grid-margin stretch-card">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">
+                                    
                                     <!-- 🔍 Search Bar -->
-                                    <input type="text" id="searchInput" class="form-control mb-3" placeholder="Search Employees...">
+                                    <input type="text" id="searchInput" class="form-control mb-3 w-25" placeholder="Search Employees..." style="margin-left: 75%">
 
                                     <div class="table-responsive">
                                         <table id="employeeTable" class="table table-bordered">
@@ -252,7 +257,12 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <script>
-function editInfo(employeeId) {
+
+    function editInfo(employeeId) {
     window.location.href = "/Admin/EditEmployee?employeeId=" + employeeId;
-}
+    }
+
+    function addEmployee() {
+        window.location.href = '/Admin/CreateAccount';
+    }
 </script>

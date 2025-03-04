@@ -97,6 +97,10 @@
                             <img src="~/Assets/img/profile.jpg" alt="profile" />
                         </a>
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+                            <a class="dropdown-item" href="~/Home/MyProfile">
+                                <i class="ti-face-smile text-primary"></i>
+                                My Profile
+                            </a>
                             <a class="dropdown-item">
                                 <i class="ti-settings text-primary"></i>
                                 Settings
@@ -150,8 +154,8 @@
                                 @if (ViewBag.EmployeeInfo != null && ViewBag.EmployeeInfo.position == "Department Head")
                                 {
                                     <ul class="nav flex-column sub-menu">
-                                        <li class="nav-item"><a class="nav-link" href="~/Home/LeaveRequest">Leave Requests</a></li>
-                                        <li class="nav-item"><a class="nav-link" href="~/Home/OvertimeRequest">Overtime Requests</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="~/Home/LeaveApproval">Leave Requests</a></li>
+                                        <li class="nav-item"><a class="nav-link" href="~/Home/OvertimeApproval">Overtime Requests</a></li>
                                     </ul>
                                 }
                                 else if (ViewBag.EmployeeInfo != null)

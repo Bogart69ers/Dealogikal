@@ -1,8 +1,8 @@
 ﻿@model Dealogikal.ViewModel.AccountViewModel
 
 @{
-    ViewBag.Title = "LeaveRequest";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.Title = "LeaveApproval";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style>
@@ -66,52 +66,61 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                              @foreach (var leave in Model.leaveRequests) // ✅ Use leaveRequests directly
-                                              {
-                                                <tr>
-                                                    <td>@leave.employeeId</td>
-                                                    <td>@leave.employeeInfo.firstName @leave.employeeInfo.lastName</td>
-                                                    <td>@leave.dateFiled.ToString("MMMM dd, yyyy")</td>
-                                                    <td>
-                                                        <label class="badge @(leave.status == 0 ? "badge-warning" : leave.status == 1 ? "badge-success" : "badge-danger")">
-                                                            @(leave.status == 0 ? "Pending" : leave.status == 1 ? "Accepted" : "Declined")
-                                                        </label>
-                                                    </td>
-                                                    <td style="text-align:center;">
-                                                        <button class="btn btn-outline-info btn-sm"
-                                                                onclick="toggleDetails('details-@leave.requestId')">
-                                                            Details
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                              
-                                                <tr id="details-@leave.requestId" class="details-row" style="display:none;">
-                                                    <td colspan="6">
-                                                        <div class="employee-details-container">
-                                                            <!-- Employee Info -->
-                                                            <div class="info-section">
-                                                                <h4 style="margin-bottom:1.5rem;">@leave.employeeInfo.firstName @leave.employeeInfo.lastName</h4>
-                                                                <div class="info-grid">
-                                                                    <p><strong>Leave Request Type: </strong> @(string.IsNullOrEmpty(@leave.leaveRequestType) ? "No Information" : @leave.leaveRequestType)</p>
-                                                                    <p><strong>Leave Type: </strong>@(leave.leaveType == "leavewithpay" ? "LP" : leave.leaveType == "leavewithoutpay" ? "LWP" : leave.leaveType)</p>
-                                                                    <p><strong>Leave Start: </strong> @(leave.leaveStart.HasValue ? leave.leaveStart.Value.ToString("MMM dd,yyyy"): "N/A")</p>
-                                                                    <p><strong>Leave End: </strong> @(leave.leaveEnd.HasValue ? leave.leaveEnd.Value.ToString("MMM dd,yyyy") : "N/A")</p>
-                                                                    <p>
-                                                                        <strong>Request Status: </strong>
-                                                                        <label class="badge @(leave.status == 0 ? "badge-warning" : leave.status == 1 ? "badge-success" : "badge-danger")">
-                                                                            @(leave.status == 0 ? "Pending" : leave.status == 1 ? "Accepted" : "Declined")
-                                                                        </label>
-                                                                    </p>
-                                                                    <p>
-                                                                        <strong>Leave Reason: </strong> @leave.leaveReason</p>
-                                                                </div>
+                                                @foreach (var leave in Model.leaveRequests) // ✅ Use leaveRequests directly
+                                                {
+                                                    <tr>
+                                                        <td>@leave.employeeId</td>
+                                                        <td>@leave.employeeInfo.firstName @leave.employeeInfo.lastName</td>
+                                                        <td>@leave.dateFiled.ToString("MMMM dd, yyyy")</td>
+                                                        <td>
+                                                            <label class="badge @(leave.status == 0 ? "badge-warning" : leave.status == 1 ? "badge-success" : "badge-danger")">
+                                                                @(leave.status == 0 ? "Pending" : leave.status == 1 ? "Accepted" : "Declined")
+                                                            </label>
+                                                        </td>
+                                                        <td style="text-align:center;">
+                                                            <button class="btn btn-outline-info btn-sm"
+                                                                    onclick="toggleDetails('details-@leave.requestId')">
+                                                                Details
+                                                            </button>
+                                                        </td>
+                                                    </tr>
 
-                                                                <!-- Edit Info Button -->
-                                                                <button class="btn btn-primary btn-sm edit-button" onclick="editInfo('@leave.employeeId')">✏ Edit Info</button>
+                                                    <tr id="details-@leave.requestId" class="details-row" style="display:none;">
+                                                        <td colspan="6">
+                                                            <div class="employee-details-container">
+                                                                <!-- Employee Info -->
+                                                                <div class="info-section">
+                                                                    <h4 style="margin-bottom:1.5rem;">@leave.employeeInfo.firstName @leave.employeeInfo.lastName</h4>
+                                                                    <div class="info-grid">
+                                                                        <p><strong>Leave Request Type: </strong> @(string.IsNullOrEmpty(@leave.leaveRequestType) ? "No Information" : @leave.leaveRequestType)</p>
+                                                                        <p><strong>Leave Type: </strong>@(leave.leaveType == "leavewithpay" ? "LP" : leave.leaveType == "leavewithoutpay" ? "LWP" : leave.leaveType)</p>
+                                                                        <p><strong>Leave Start: </strong> @(leave.leaveStart.HasValue ? leave.leaveStart.Value.ToString("MMM dd,yyyy") : "N/A")</p>
+                                                                        <p><strong>Leave End: </strong> @(leave.leaveEnd.HasValue ? leave.leaveEnd.Value.ToString("MMM dd,yyyy") : "N/A")</p>
+                                                                        <p>
+                                                                            <strong>Request Status: </strong>
+                                                                            <label class="badge @(leave.status == 0 ? "badge-warning" : leave.status == 1 ? "badge-success" : "badge-danger")">
+                                                                                @(leave.status == 0 ? "Pending" : leave.status == 1 ? "Accepted" : "Declined")
+                                                                            </label>
+                                                                        </p>
+                                                                        <p>
+                                                                            <strong>Leave Reason: </strong> @leave.leaveReason
+                                                                        </p>
+                                                                    </div>
+
+                                                                    <!-- Edit Info Button -->
+                                                                    @if (leave.status == 0)
+                                                                    {
+                                                                        <form action="@Url.Action("LeaveApproval","Home")" method="post">
+                                                                            <input type="hidden" name="requestId" value="@leave.requestId" />
+                                                                            <input type="hidden" name="empoyeeId" value="@leave.employeeId" />
+                                                                            <button class="btn btn-primary btn-sm edit-button btn-success" type="submit" name="action" value="Accept">Accept</button>
+                                                                            <button class="btn btn-primary btn-sm edit-button btn-danger" type="submit" name="action" value="Decline">Decline</button>
+                                                                        </form>
+                                                                    }                                                                                  
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                        </td>
+                                                    </tr>
 
                                                 }
                                             </tbody>
@@ -123,7 +132,6 @@
                                         <button id="prevPage" class="btn btn-secondary btn-sm">Previous</button>
                                         <button id="nextPage" class="btn btn-secondary btn-sm">Next</button>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -244,4 +252,3 @@ function editInfo(employeeId) {
     window.location.href = "/Admin/EditEmployee?employeeId=" + employeeId;
 }
 </script>
-

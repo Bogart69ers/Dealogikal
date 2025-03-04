@@ -70,7 +70,7 @@
                                                         <td>@(otrequest.overtimeDate.HasValue ? otrequest.overtimeDate.Value.ToString("MMM dd, yyyy") : "N/A")</td>
                                                         <td>@(otrequest.overtimeStart.HasValue ? otrequest.overtimeStart.Value.ToString("hh:mm tt") : "N/A")</td>
                                                         <td>@(otrequest.overtimeEnd.HasValue ? otrequest.overtimeEnd.Value.ToString("hh:mm tt") : "N/A")</td>
-                                                        <td class="font-weight-medium"><div class="badge @(otrequest.status == 0 ? "badge-warning" : otrequest.status == 1 ? "badge-success" : "badge-secondary")">@(otrequest.status == 0 ? "Pending" : otrequest.status == 1 ? "Approved" : "Unknown")</div></td>
+                                                        <td class="font-weight-medium"><div class="badge @(otrequest.status == 0 ? "badge-warning" : otrequest.status == 1 ? "badge-success" : otrequest.status == 2 ? "badge-danger": "badge-secondary")">@(otrequest.status == 0 ? "Pending" : otrequest.status == 1 ? "Approved" : otrequest.status == 2 ? "Declined": "Unknown")</div></td>
                                                     </tr>
                                                 }
                                             }

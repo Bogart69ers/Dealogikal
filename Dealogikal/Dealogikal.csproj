@@ -1475,6 +1475,9 @@
     <Content Include="Views\Admin\EmployeeDtr.cshtml" />
     <Content Include="Views\Admin\LeaveRequest.cshtml" />
     <Content Include="Views\Admin\OvertimeRequests.cshtml" />
+    <Content Include="Views\Home\LeaveApproval.cshtml" />
+    <Content Include="Views\Home\OvertimeApproval.cshtml" />
+    <Content Include="Views\Home\MyProfile.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

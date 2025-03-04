@@ -230,7 +230,7 @@ namespace Dealogikal.Controllers
             };
 
             return View(model);
-        }
+        } 
 
         [Authorize]
         public ActionResult OvertimeRequests()
@@ -244,6 +244,10 @@ namespace Dealogikal.Controllers
             return View(model);
         }
 
-
+        [Authorize]
+        public ActionResult MyProfile()
+        {
+            return View();
+        }
     }
 }

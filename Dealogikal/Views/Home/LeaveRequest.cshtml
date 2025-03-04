@@ -108,7 +108,7 @@
                                                     <td>
                                                         @(request.leaveType == "leavewithpay" ? "LP" : request.leaveType == "leavewithoutpay" ? "LWP" : request.leaveType)
                                                     </td>
-                                                    <td class="font-weight-medium"><div class="badge @(request.status == 0 ? "badge-warning" : request.status == 1 ? "badge-success" : "badge-secondary")">@(request.status == 0 ? "Pending" : request.status == 1 ? "Approved" : "Unknown")</div></td>
+                                                    <td class="font-weight-medium"><div class="badge @(request.status == 0 ? "badge-warning" : request.status == 1 ? "badge-success" :  request.status == 2 ? "badge-danger" : "badge-secondary")">@(request.status == 0 ? "Pending" : request.status == 1 ? "Approved" : request.status == 2 ? "Declined":"Unknown")</div></td>
                                                 </tr>
                                             }
                                         }

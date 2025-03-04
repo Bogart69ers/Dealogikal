@@ -389,5 +389,98 @@ namespace Dealogikal.Controllers
         {
             return View();
         }
+
+        [Authorize]
+        public ActionResult LeaveApproval()
+        {
+            var model = new AccountViewModel
+            {
+                employeeInfos = _AccManager.GetAllEmployee(),
+                leaveRequests = _RequestManager.GetAllLeaveRequestsDesc()
+            };
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult LeaveApproval(leaveRequest lr, string employeeId ,int requestId, string action)
+        {
+            string errMsg = string.Empty;
+            ErrorCode result;
+
+            if (action == "Accept")
+            {
+                // Create a new record for the morning Time In.
+                result = _RequestManager.ApproveLeaveRequest(employeeId, requestId, ref errMsg);
+                if (result != ErrorCode.Success)
+                {
+                    ViewBag.Error = "Error Updating Leave Request: " + errMsg;
+                    return RedirectToAction("LeaveApproval");
+                }
+            }
+            else if (action == "Decline")
+            {
+                result = _RequestManager.DeclineLeaveRequest(employeeId, requestId, ref errMsg);
+                if (result != ErrorCode.Success)
+                {
+                    ViewBag.Error = "Error Updating Leave Request: " + errMsg;
+                    return RedirectToAction("LeaveApproval");
+                }
+            }
+
+
+            return RedirectToAction("LeaveApproval");
+        }
+
+        [Authorize]
+        public ActionResult OvertimeApproval()
+        {
+            var model = new AccountViewModel
+            {
+                employeeInfos = _AccManager.GetAllEmployee(),
+                overtimeRequests = _RequestManager.GetAllOvertimeRequestsDesc()
+            };
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult OvertimeApproval(overtimeRequest or, string employeeId ,int requestId, string action)
+        {
+            string errMsg = string.Empty;
+            ErrorCode result;
+
+            if (action == "Accept")
+            {
+                // Create a new record for the morning Time In.
+                result = _RequestManager.ApproveOvertimeRequest(employeeId, requestId, ref errMsg);
+                if (result != ErrorCode.Success)
+                {
+                    ViewBag.Error = "Error Updating Overtime Request: " + errMsg;
+                    return RedirectToAction("OvertimeApproval");
+                }
+            }
+            else if ( action == "Decline")
+            {
+                result = _RequestManager.DeclineOvertimeRequest(employeeId, requestId, ref errMsg);
+                if (result != ErrorCode.Success)
+                {
+                    ViewBag.Error = "Error Updating Overtime Request: " + errMsg;
+                    return RedirectToAction("OvertimeApproval");
+                }
+            }
+
+
+            return RedirectToAction("OvertimeApproval");
+        }
+
+        [Authorize]
+        public ActionResult MyProfile()
+        {
+            return View();
+        }
+
     }
 }

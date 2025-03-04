@@ -30,7 +30,10 @@ namespace Dealogikal.Repository
 
         public List<leaveRequest> GetAllLeaveRequestsDesc() // Better naming
         {
-            return _leaveReq.GetAll().OrderByDescending(l => l.dateFiled).ToList();
+            return _leaveReq.GetAll()
+                            .OrderBy(l => l.status != 0) // status 0 first (false < true)
+                            .ThenByDescending(l => l.dateFiled) // newest dateFiled first
+                            .ToList();
         }
 
         public List<leaveRequest> GetAllLeaveRequest()
@@ -54,7 +57,20 @@ namespace Dealogikal.Repository
         }
         public List<overtimeRequest> GetAllOvertimeRequestsDesc() // Better naming
         {
-            return _overtReq.GetAll().OrderByDescending(l => l.dateFiled).ToList();
+            return _overtReq.GetAll()
+                .OrderBy(l => l.status != 0) // status 0 first (false < true)
+                .ThenByDescending(l => l.dateFiled) // newest dateFiled first
+                .ToList();
+        }
+
+        public leaveRequest GetLeaveRequestByRequestId(int requestId)
+        {
+            return _leaveReq.Get(requestId);
+        }
+
+        public overtimeRequest GetOvertimeByRequestdId(int requestId)
+        {
+            return _overtReq.Get(requestId);
         }
 
         public ErrorCode CreateLeave(leaveRequest lr, string employeeId, ref string errMsg)
@@ -105,5 +121,82 @@ namespace Dealogikal.Repository
             }
         }
 
+        public ErrorCode ApproveLeaveRequest(string employeeId, int requestId, ref string errMsg)
+        {
+            try
+            {
+                var request = GetLeaveRequestByRequestId(requestId);
+                if (request == null)
+                {
+                    errMsg = "No request found";
+                    return ErrorCode.Error;
+                }
+                request.status = 1;
+                return _leaveReq.Update(requestId, request, out errMsg);
+            }
+            catch (Exception ex)
+            {
+                errMsg = ex.Message;
+                return ErrorCode.Error;
+            }
+        }
+        public ErrorCode ApproveOvertimeRequest(string employeeId, int requestId, ref string errMsg)
+        {
+            try
+            {
+                var request = GetOvertimeByRequestdId(requestId);
+                if (request == null)
+                {
+                    errMsg = "No request found";
+                    return ErrorCode.Error;
+                }
+                request.status = 1;
+                return _overtReq.Update(requestId, request, out errMsg);
+            }
+            catch (Exception ex)
+            {
+                errMsg = ex.Message;
+                return ErrorCode.Error;
+            }
+        }
+
+        public ErrorCode DeclineLeaveRequest(string employeeId, int requestId, ref string errMsg)
+        {
+            try
+            {
+                var request = GetLeaveRequestByRequestId(requestId);
+                if (request == null)
+                {
+                    errMsg = "No request found";
+                    return ErrorCode.Error;
+                }
+                request.status = 2;
+                return _leaveReq.Update(requestId, request, out errMsg);
+            }
+            catch (Exception ex)
+            {
+                errMsg = ex.Message;
+                return ErrorCode.Error;
+            }
+        }
+        public ErrorCode DeclineOvertimeRequest(string employeeId, int requestId, ref string errMsg)
+        {
+            try
+            {
+                var request = GetOvertimeByRequestdId(requestId);
+                if (request == null)
+                {
+                    errMsg = "No request found";
+                    return ErrorCode.Error;
+                }
+                request.status = 2;
+                return _overtReq.Update(requestId, request, out errMsg);
+            }
+            catch (Exception ex)
+            {
+                errMsg = ex.Message;
+                return ErrorCode.Error;
+            }
+        }
     }
 }
