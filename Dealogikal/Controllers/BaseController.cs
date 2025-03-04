@@ -19,6 +19,7 @@ namespace Dealogikal.Controllers
         public AccountManager _AccManager;
         public DtrManager _DtrManager;
         public RequestManager _RequestManager;
+        public ImageManager _ImgManager;
          
         
         public BaseController()
@@ -27,6 +28,7 @@ namespace Dealogikal.Controllers
             _AccManager = new AccountManager();
             _DtrManager = new DtrManager();
             _RequestManager = new RequestManager();
+            _ImgManager = new ImageManager();
         }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)

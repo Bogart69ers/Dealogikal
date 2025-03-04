@@ -18,8 +18,10 @@ namespace Dealogikal.Database
         public employeeInfo()
         {
             this.dtrRecords = new HashSet<dtrRecords>();
+            this.images = new HashSet<images>();
             this.leaveRequest = new HashSet<leaveRequest>();
             this.overtimeRequest = new HashSet<overtimeRequest>();
+            this.todoLists = new HashSet<todoLists>();
             this.userAccount = new HashSet<userAccount>();
         }
     
@@ -44,9 +46,13 @@ namespace Dealogikal.Database
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<dtrRecords> dtrRecords { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<images> images { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<leaveRequest> leaveRequest { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<overtimeRequest> overtimeRequest { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<todoLists> todoLists { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<userAccount> userAccount { get; set; }
     }

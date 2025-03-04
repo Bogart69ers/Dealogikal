@@ -70,11 +70,11 @@ else
                                 <div class="stacked-requests">
                                     <div class="info-box">
                                         <a href="~/Home/LeaveRequest">Pending Leave <br /> Request:</a>
-                                        <a href="~/Home/LeaveRequest">1</a>
+                                        <a href="~/Home/LeaveRequest">@Model.leaveRequests.Count(c => c.status == 0)</a>
                                     </div>
                                     <div class="info-box">
                                         <a href="OvertimeRequest">Pending Overtime <br /> Request:</a>
-                                        <a href="OvertimeRequest">1</a>
+                                        <a href="OvertimeRequest">@Model.overtimeRequests.Count(o => o.status == 0)</a>
                                     </div>
                                 </div>
                             </div>

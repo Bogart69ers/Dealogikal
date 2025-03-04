@@ -37,9 +37,20 @@
     <Property Name="leaveCount" Type="Int32" />
     <Property Name="corporation" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="dtrRecords" Relationship="Self.FK_dtrRecords_employeeInfo" FromRole="employeeInfo" ToRole="dtrRecords" />
+    <NavigationProperty Name="images" Relationship="Self.FK_images_employeeInfo" FromRole="employeeInfo" ToRole="images" />
     <NavigationProperty Name="leaveRequest" Relationship="Self.FK_leaveRequest_employeeInfo" FromRole="employeeInfo" ToRole="leaveRequest" />
     <NavigationProperty Name="overtimeRequest" Relationship="Self.FK_overtimeRequest_employeeInfo" FromRole="employeeInfo" ToRole="overtimeRequest" />
+    <NavigationProperty Name="todoLists" Relationship="Self.FK_todoLists_employeeInfo" FromRole="employeeInfo" ToRole="todoLists" />
     <NavigationProperty Name="userAccount" Relationship="Self.FK_userAccount_employeeInfo" FromRole="employeeInfo" ToRole="userAccount" />
+  </EntityType>
+  <EntityType Name="images">
+    <Key>
+      <PropertyRef Name="mediaId" />
+    </Key>
+    <Property Name="mediaId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="imageFile" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="employeeInfo" Relationship="Self.FK_images_employeeInfo" FromRole="images" ToRole="employeeInfo" />
   </EntityType>
   <EntityType Name="leaveRequest">
     <Key>
@@ -78,6 +89,15 @@
     <Property Name="roleName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="userAccount" Relationship="Self.FK_userAccount_role" FromRole="role" ToRole="userAccount" />
   </EntityType>
+  <EntityType Name="todoLists">
+    <Key>
+      <PropertyRef Name="contentId" />
+    </Key>
+    <Property Name="contentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="contents" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="employeeInfo" Relationship="Self.FK_todoLists_employeeInfo" FromRole="todoLists" ToRole="employeeInfo" />
+  </EntityType>
   <EntityType Name="userAccount">
     <Key>
       <PropertyRef Name="userId" />
@@ -111,6 +131,20 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_images_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="images" Type="Self.images" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="images">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_leaveRequest_employeeInfo">
     <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
@@ -135,6 +169,20 @@
         <PropertyRef Name="employeeId" />
       </Principal>
       <Dependent Role="overtimeRequest">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_todoLists_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="todoLists" Type="Self.todoLists" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="todoLists">
         <PropertyRef Name="employeeId" />
       </Dependent>
     </ReferentialConstraint>
@@ -168,14 +216,20 @@
   <EntityContainer Name="DeologikalDTREntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="dtrRecords" EntityType="Self.dtrRecords" />
     <EntitySet Name="employeeInfo" EntityType="Self.employeeInfo" />
+    <EntitySet Name="images" EntityType="Self.images" />
     <EntitySet Name="leaveRequest" EntityType="Self.leaveRequest" />
     <EntitySet Name="overtimeRequest" EntityType="Self.overtimeRequest" />
     <EntitySet Name="role" EntityType="Self.role" />
+    <EntitySet Name="todoLists" EntityType="Self.todoLists" />
     <EntitySet Name="userAccount" EntityType="Self.userAccount" />
     <EntitySet Name="vw_Role" EntityType="Self.vw_Role" />
     <AssociationSet Name="FK_dtrRecords_employeeInfo" Association="Self.FK_dtrRecords_employeeInfo">
       <End Role="employeeInfo" EntitySet="employeeInfo" />
       <End Role="dtrRecords" EntitySet="dtrRecords" />
+    </AssociationSet>
+    <AssociationSet Name="FK_images_employeeInfo" Association="Self.FK_images_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="images" EntitySet="images" />
     </AssociationSet>
     <AssociationSet Name="FK_leaveRequest_employeeInfo" Association="Self.FK_leaveRequest_employeeInfo">
       <End Role="employeeInfo" EntitySet="employeeInfo" />
@@ -184,6 +238,10 @@
     <AssociationSet Name="FK_overtimeRequest_employeeInfo" Association="Self.FK_overtimeRequest_employeeInfo">
       <End Role="employeeInfo" EntitySet="employeeInfo" />
       <End Role="overtimeRequest" EntitySet="overtimeRequest" />
+    </AssociationSet>
+    <AssociationSet Name="FK_todoLists_employeeInfo" Association="Self.FK_todoLists_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="todoLists" EntitySet="todoLists" />
     </AssociationSet>
     <AssociationSet Name="FK_userAccount_employeeInfo" Association="Self.FK_userAccount_employeeInfo">
       <End Role="employeeInfo" EntitySet="employeeInfo" />

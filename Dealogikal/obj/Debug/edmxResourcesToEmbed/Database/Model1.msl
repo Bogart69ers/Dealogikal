@@ -39,6 +39,15 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="images">
+      <EntityTypeMapping TypeName="DeologikalDTRModel.images">
+        <MappingFragment StoreEntitySet="images">
+          <ScalarProperty Name="mediaId" ColumnName="mediaId" />
+          <ScalarProperty Name="employeeId" ColumnName="employeeId" />
+          <ScalarProperty Name="imageFile" ColumnName="imageFile" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="leaveRequest">
       <EntityTypeMapping TypeName="DeologikalDTRModel.leaveRequest">
         <MappingFragment StoreEntitySet="leaveRequest">
@@ -73,6 +82,15 @@
         <MappingFragment StoreEntitySet="role">
           <ScalarProperty Name="roleId" ColumnName="roleId" />
           <ScalarProperty Name="roleName" ColumnName="roleName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="todoLists">
+      <EntityTypeMapping TypeName="DeologikalDTRModel.todoLists">
+        <MappingFragment StoreEntitySet="todoLists">
+          <ScalarProperty Name="contentId" ColumnName="contentId" />
+          <ScalarProperty Name="employeeId" ColumnName="employeeId" />
+          <ScalarProperty Name="contents" ColumnName="contents" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -147,6 +147,8 @@ namespace Dealogikal.Controllers
             var model = new AccountViewModel
             {
                 employeeInfos = _AccManager.GetAllEmployee(),
+                leaveRequests = _RequestManager.GetLeaveRequestByEmployeeId(User.Identity.Name),
+                overtimeRequests = _RequestManager.GetOvertimeRequestByEmployeeId(User.Identity.Name),
                 dtr = currentDtr,
                 dtrRecords = _DtrManager.GetAllDtr()
             };
@@ -479,8 +481,93 @@ namespace Dealogikal.Controllers
         [Authorize]
         public ActionResult MyProfile()
         {
-            return View();
+            var currentUser = User.Identity.Name;
+            var employee = _AccManager.GetEmployeebyEmployeeId(currentUser);
+            var user = _AccManager.GetUserByEmployeeId(currentUser);
+
+            var model = new AccountViewModel
+            {
+                employeeInfo = employee,
+                userAccount = user
+            };
+
+            return View(model);
         }
 
+        [Authorize]
+        [HttpPost]
+        public ActionResult MyProfile(employeeInfo empInf, string password, string phone, string email, HttpPostedFileBase profilePicture)
+        {
+            if (ModelState.IsValid)
+            {
+                var currentUser = User.Identity.Name;
+                var employee = _AccManager.GetEmployeebyEmployeeId(currentUser);
+                var user = _AccManager.GetUserByEmployeeId(currentUser);
+
+                if (profilePicture != null && profilePicture.ContentLength > 0)
+                {
+                    var uploadsFolderPath = Server.MapPath("~/UploadedFiles/");
+                    if (!Directory.Exists(uploadsFolderPath))
+                        Directory.CreateDirectory(uploadsFolderPath);
+
+                    var profileFileName = Path.GetFileName(profilePicture.FileName);
+                    var profileSavePath = Path.Combine(uploadsFolderPath, profileFileName);
+                    profilePicture.SaveAs(profileSavePath);
+
+                    var existingImage = _ImgManager.ListImageByEmployeeId(employee.employeeId).FirstOrDefault();
+                    if (existingImage != null)
+                    {
+                        existingImage.imageFile = profileFileName;
+                        if (_ImgManager.UpdateImg(existingImage, ref ErrorMessage) == ErrorCode.Error)
+                        {
+                            ModelState.AddModelError(String.Empty, ErrorMessage);
+                            return View(empInf);
+                        }
+                    }
+                    else
+                    {
+                        images img = new images
+                        {
+                            imageFile = profileFileName,
+                            employeeId = employee.employeeId
+                        };
+
+                        if (_ImgManager.CreateImg(img, ref ErrorMessage) == ErrorCode.Error)
+                        {
+                            ModelState.AddModelError(String.Empty, ErrorMessage);
+                            return View(empInf);
+                        }
+                    }
+                }
+
+                userAccount userAcc = new userAccount
+                {
+                    password = password
+                };
+
+                if (_AccManager.UpdateUser(userAcc, ref ErrorMessage) == ErrorCode.Error)
+                {
+                    ModelState.AddModelError(String.Empty, ErrorMessage);
+                    return View(empInf);
+                }
+
+                employeeInfo empIn = new employeeInfo
+                {
+                    phone = phone,
+                    email = email
+                };
+
+                if (_AccManager.UpdateEmployeeInformation(empIn, ref ErrorMessage) == ErrorCode.Error)
+                {
+                    ModelState.AddModelError(String.Empty, ErrorMessage);
+                    return View(empInf);
+                }
+
+                TempData["SuccessMessage"] = "Profile Updated successfully.";
+                return RedirectToAction("MyProfile");
+
+            }
+            return View(empInf);
+        }  
     }
 }

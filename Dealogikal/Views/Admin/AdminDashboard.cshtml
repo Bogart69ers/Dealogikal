@@ -73,21 +73,21 @@ else
                         <div class="top-row">
                             <div class="info-box">
                                 <a href="~/Admin/Accounts">Total Employees:</a>
-                                <a href="~/Admin/Accounts">1</a>
+                                <a href="~/Admin/Accounts">@Model.employeeInfos.Count(m => m.status == 1)</a>
                             </div>
                             <div class="info-box">
-                                <a href="#">Active Employees:</a>
-                                <a href="#">1</a>
+                                <a href="~/Admin/EmployeeDtr">Total Late Today:</a>
+                                <a href="~/Admin/EmployeeDtr">@ViewBag.LateEmployeesCount</a>
                             </div>
                         </div>
                         <div class="bottom-row">
                             <div class="info-box">
                                 <a href="~/Admin/Accounts">Overtime Requests:</a>
-                                <a href="~/Admin/Accounts">1</a>
+                                <a href="~/Admin/Accounts">@Model.overtimeRequests.Count(o => o.status == 0)</a>
                             </div>
                             <div class="info-box">
                                 <a href="~/Admin/Accounts">Leave <br />Requests:</a>
-                                <a href="~/Admin/Accounts">1</a>
+                                <a href="~/Admin/Accounts">@Model.leaveRequests.Count(l => l.status == 0)</a>
                             </div>
                         </div>
                     </div>

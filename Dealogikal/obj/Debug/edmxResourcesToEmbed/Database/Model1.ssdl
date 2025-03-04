@@ -36,6 +36,14 @@
     <Property Name="leaveCount" Type="int" />
     <Property Name="corporation" Type="nvarchar" MaxLength="100" />
   </EntityType>
+  <EntityType Name="images">
+    <Key>
+      <PropertyRef Name="mediaId" />
+    </Key>
+    <Property Name="mediaId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" />
+    <Property Name="imageFile" Type="nvarchar(max)" />
+  </EntityType>
   <EntityType Name="leaveRequest">
     <Key>
       <PropertyRef Name="requestId" />
@@ -70,6 +78,14 @@
     <Property Name="roleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="roleName" Type="nvarchar" MaxLength="100" />
   </EntityType>
+  <EntityType Name="todoLists">
+    <Key>
+      <PropertyRef Name="contentId" />
+    </Key>
+    <Property Name="contentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" />
+    <Property Name="contents" Type="nvarchar(max)" />
+  </EntityType>
   <EntityType Name="userAccount">
     <Key>
       <PropertyRef Name="userId" />
@@ -103,6 +119,20 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_images_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="images" Type="Self.images" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="images">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_leaveRequest_employeeInfo">
     <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
@@ -127,6 +157,20 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
         <PropertyRef Name="employeeId" />
       </Principal>
       <Dependent Role="overtimeRequest">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_todoLists_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="todoLists" Type="Self.todoLists" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="todoLists">
         <PropertyRef Name="employeeId" />
       </Dependent>
     </ReferentialConstraint>
@@ -160,9 +204,11 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
   <EntityContainer Name="DeologikalDTRModelStoreContainer">
     <EntitySet Name="dtrRecords" EntityType="Self.dtrRecords" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="employeeInfo" EntityType="Self.employeeInfo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="images" EntityType="Self.images" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="leaveRequest" EntityType="Self.leaveRequest" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="overtimeRequest" EntityType="Self.overtimeRequest" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="role" EntityType="Self.role" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="todoLists" EntityType="Self.todoLists" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="userAccount" EntityType="Self.userAccount" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="vw_Role" EntityType="Self.vw_Role" store:Type="Views" store:Schema="dbo">
       <DefiningQuery>SELECT 
@@ -175,6 +221,10 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
       <End Role="employeeInfo" EntitySet="employeeInfo" />
       <End Role="dtrRecords" EntitySet="dtrRecords" />
     </AssociationSet>
+    <AssociationSet Name="FK_images_employeeInfo" Association="Self.FK_images_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="images" EntitySet="images" />
+    </AssociationSet>
     <AssociationSet Name="FK_leaveRequest_employeeInfo" Association="Self.FK_leaveRequest_employeeInfo">
       <End Role="employeeInfo" EntitySet="employeeInfo" />
       <End Role="leaveRequest" EntitySet="leaveRequest" />
@@ -182,6 +232,10 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
     <AssociationSet Name="FK_overtimeRequest_employeeInfo" Association="Self.FK_overtimeRequest_employeeInfo">
       <End Role="employeeInfo" EntitySet="employeeInfo" />
       <End Role="overtimeRequest" EntitySet="overtimeRequest" />
+    </AssociationSet>
+    <AssociationSet Name="FK_todoLists_employeeInfo" Association="Self.FK_todoLists_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="todoLists" EntitySet="todoLists" />
     </AssociationSet>
     <AssociationSet Name="FK_userAccount_employeeInfo" Association="Self.FK_userAccount_employeeInfo">
       <End Role="employeeInfo" EntitySet="employeeInfo" />
