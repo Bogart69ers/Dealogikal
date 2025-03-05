@@ -23,6 +23,7 @@
 
 .info-section {
     flex-grow: 1;
+    padding:20px;
 }
 
 .info-grid {
@@ -102,6 +103,8 @@
                                                                         <p><strong>Phone:</strong> @(string.IsNullOrEmpty(employee.phone) ? "No Information" : employee.phone)</p>
                                                                         <p><strong>Department:</strong> @employee.department</p>
                                                                         <p><strong>Position:</strong> @employee.position</p>
+                                                                        <p><strong>Corporation:</strong> @employee.corporation</p>
+
                                                                         <p>
                                                                             <strong>Status:</strong>
                                                                             <label class="badge @(employee.status == 0 ? "badge-danger" : employee.status == 1 ? "badge-success" : "badge-secondary")">
@@ -118,7 +121,7 @@
                                                                         </p>
                                                                         <p>
                                                                             <strong>Address:</strong>
-                                                                            @(string.IsNullOrEmpty(employee.address) ? "No Information" : $"{employee.address}, {employee.barangay}, {employee.city}, {employee.zipcode}")
+                                                                            @(string.IsNullOrEmpty(employee.address) ? "No Information" : $"{employee.address}, {employee.barangay}, {employee.city}")
                                                                         </p>
                                                                     </div>
 

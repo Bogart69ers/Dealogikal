@@ -28,7 +28,7 @@ namespace Dealogikal.Controllers
 
             var currentDtr = _DtrManager.GetAllDtr().FirstOrDefault(r => r.employeeId == user.employeeId && r.date == DateTime.Now.Date);
 
-            ViewBag.Name = user.firstName + " " + user.lastName;
+            ViewBag.Name = user.firstName;
 
             var today = DateTime.Now.Date;
             var lateThreshold = new TimeSpan(8, 0, 0); // 8:00 AM cutoff
@@ -65,7 +65,7 @@ namespace Dealogikal.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateAccount(userAccount ua, string email, DateTime? birthdate, string firstName, string lastName ,string department, string position, string address, string barangay, string city, string zipcode, string phone, DateTime dateHired, string corporation)
+        public ActionResult CreateAccount(userAccount ua, string email, DateTime? birthdate, string firstName, string lastName ,string department, string position, string address, string barangay, string city, string phone, DateTime dateHired, string corporation)
         {
             try
             {
@@ -74,14 +74,14 @@ namespace Dealogikal.Controllers
                     return View("CreateAccount");
                 }
 
-                if (_AccManager.EmployeeInfoSignup(birthdate, position, department, ua.employeeId, email, firstName, lastName, phone, address, zipcode, city, barangay, dateHired, corporation, ref ErrorMessage) != ErrorCode.Success)
+                if (_AccManager.EmployeeInfoSignup(birthdate, position, department, ua.employeeId, email, firstName, lastName, phone, address, city, barangay, dateHired, corporation, ref ErrorMessage) != ErrorCode.Success)
                 {
                     ViewBag.ErrorMessage = ErrorMessage;
                     return View("CreateAccount");
                 }
 
 
-                if (_AccManager.CreateEmployee(ua, ref ErrorMessage) != ErrorCode.Success)
+                if (_AccManager.CreateEmployee(ua, department, ref ErrorMessage) != ErrorCode.Success)
                 {
                     ViewBag.ErrorMessage = "Employee Already Exist";
                     return View("CreateAccount");
@@ -131,7 +131,7 @@ namespace Dealogikal.Controllers
                 {
                     Email = employee.email,
                     Phone = employee.phone,
-                    Address = $"{employee.address}, {employee.barangay}, {employee.city}, {employee.zipcode}",
+                    Address = $"{employee.address}, {employee.barangay}, {employee.city}",
                     Birthdate = employee.birthdate?.ToString("yyyy-MM-dd")
                 };
 
@@ -160,7 +160,7 @@ namespace Dealogikal.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult Dtr(dtrRecords dtr, int? recordId, string action)
+        public ActionResult Dtr(dtrRecords dtr, int? recordId,  string action)
         {
             var currentUser = User.Identity.Name;
             string errMsg = string.Empty;
@@ -196,7 +196,7 @@ namespace Dealogikal.Controllers
             }
             else if (action == "BreakOut")
             {
-                result = _DtrManager.UpdateBreakOut(currentUser, recordId.Value, ref errMsg);
+                result = _DtrManager.UpdateBreakOut(currentUser, recordId.Value, dtr.workMode, ref errMsg);
                 if (result != ErrorCode.Success)
                 {
                     ViewBag.Error = "Error Updating Break Out: " + errMsg;
@@ -279,14 +279,24 @@ namespace Dealogikal.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult MyProfile(employeeInfo empInf, string password, string phone, string email ,HttpPostedFileBase profilePicture)
+        public ActionResult MyProfile(string phone, string email, string address, string barangay, string city, HttpPostedFileBase profilePicture)
         {
             if (ModelState.IsValid)
             {
                 var currentUser = User.Identity.Name;
+
+                // Retrieve the existing employee and user records
+                var image = _ImgManager.GetImagebyEmployeeId(currentUser);
                 var employee = _AccManager.GetEmployeebyEmployeeId(currentUser);
                 var user = _AccManager.GetUserByEmployeeId(currentUser);
 
+                if (employee == null || user == null)
+                {
+                    ModelState.AddModelError(String.Empty, "User not found.");
+                    return View();
+                }
+
+                // Profile Picture Upload Handling
                 if (profilePicture != null && profilePicture.ContentLength > 0)
                 {
                     var uploadsFolderPath = Server.MapPath("~/UploadedFiles/");
@@ -304,7 +314,7 @@ namespace Dealogikal.Controllers
                         if (_ImgManager.UpdateImg(existingImage, ref ErrorMessage) == ErrorCode.Error)
                         {
                             ModelState.AddModelError(String.Empty, ErrorMessage);
-                            return View(empInf);
+                            return View();
                         }
                     }
                     else
@@ -318,39 +328,40 @@ namespace Dealogikal.Controllers
                         if (_ImgManager.CreateImg(img, ref ErrorMessage) == ErrorCode.Error)
                         {
                             ModelState.AddModelError(String.Empty, ErrorMessage);
-                            return View(empInf);
+                            return View();
                         }
                     }
+
                 }
 
-                userAccount userAcc = new userAccount
-                {
-                    password = password
-                };
+                // Update Employee Information ONLY IF new values are provided
+                employee.phone = !string.IsNullOrEmpty(phone) ? phone : employee.phone;
+                employee.email = !string.IsNullOrEmpty(email) ? email : employee.email;
+                employee.address = !string.IsNullOrEmpty(address) ? address : employee.address;
+                employee.barangay = !string.IsNullOrEmpty(barangay) ? barangay : employee.barangay;
+                employee.city = !string.IsNullOrEmpty(city) ? city : employee.city;
 
-                if(_AccManager.UpdateUser(userAcc, ref ErrorMessage) == ErrorCode.Error)
+                if (_AccManager.UpdateEmployeeInformation(employee, ref ErrorMessage) == ErrorCode.Error)
                 {
                     ModelState.AddModelError(String.Empty, ErrorMessage);
-                    return View(empInf);
+                    return View();
                 }
 
-                employeeInfo empIn = new employeeInfo
-                {
-                    phone = phone,
-                    email = email
-                };
-
-                if(_AccManager.UpdateEmployeeInformation(empIn, ref ErrorMessage) == ErrorCode.Error )
-                {
-                    ModelState.AddModelError(String.Empty, ErrorMessage);
-                    return View(empInf);
-                }
-
-                TempData["SuccessMessage"] = "Profile Updated successfully.";
+                TempData["SuccessMessage"] = "Profile updated successfully.";
                 return RedirectToAction("MyProfile");
-
             }
-            return View(empInf);
+
+            return View();
         }
+
+
+
+
+
+
+
+
+
+
     }
 }

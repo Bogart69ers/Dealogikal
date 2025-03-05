@@ -23,7 +23,8 @@
     }
     .info-section {
         flex-grow: 1;
-        text-align: center;
+        text-align: left;
+        padding:20px;
     }
     .info-grid {
         display: grid;
@@ -55,7 +56,7 @@
                                     <input type="text" id="searchInput" class="form-control mb-3 w-25" placeholder="Search Employees..." style="margin-left: 75%">
 
                                     <div class="table-responsive">
-                                        <table id="employeeTable" class="table table-bordered">
+                                        <table id="employeeTable" class="table table-bordered text-left">
                                             <thead>
                                                 <tr>
                                                     <th onclick="sortTable(0)">Employee ID</th>
@@ -93,8 +94,8 @@
                                                                     <h4 style="margin-bottom:1.5rem;">@overtime.employeeInfo.firstName @overtime.employeeInfo.lastName</h4>
                                                                     <div class="info-grid">
                                                                         <p><strong>Overtime Date: </strong> @(overtime.overtimeDate.HasValue ? overtime.overtimeDate.Value.ToString("MMM dd,yyyy") : "N/A")</p>
-                                                                        <p><strong>Overtime Start: </strong> @(overtime.overtimeStart.HasValue ? overtime.overtimeStart.Value.ToString("hh:mm:tt") : "N/A")</p>
-                                                                        <p><strong>Overtime End: </strong> @(overtime.overtimeEnd.HasValue ? overtime.overtimeEnd.Value.ToString("hh:mm:tt") : "N/A")</p>
+                                                                        <p><strong>Overtime Start: </strong> @(overtime.overtimeStart.HasValue ? overtime.overtimeStart.Value.ToString("hh:mm tt") : "N/A")</p>
+                                                                        <p><strong>Overtime End: </strong> @(overtime.overtimeEnd.HasValue ? overtime.overtimeEnd.Value.ToString("hh:mm tt") : "N/A")</p>
                                                                         <p>
                                                                             <strong>Request Status: </strong>
                                                                             <label class="badge @(overtime.status == 0 ? "badge-warning" : overtime.status == 1 ? "badge-success" : "badge-danger")">
@@ -105,9 +106,7 @@
                                                                             <strong>Leave Reason: </strong> @overtime.overtimeReason
                                                                         </p>
                                                                     </div>
-
                                                                     <!-- Edit Info Button -->
-                                                                    <button class="btn btn-primary btn-sm edit-button" onclick="editInfo('@overtime.employeeId')">✏ Edit Info</button>
                                                                 </div>
                                                             </div>
                                                         </td>

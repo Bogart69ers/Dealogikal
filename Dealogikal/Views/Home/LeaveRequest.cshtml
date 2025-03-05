@@ -233,17 +233,87 @@
             otherInput.style.display = 'none';
         }
 
-        // If sick leave is selected, restrict the dates
-        if (this.value === 'sick-leave') {
-            leaveStart.setAttribute('max', minDate);
-            leaveEnd.setAttribute('max', minDate);
-        } else {
-            leaveStart.removeAttribute('max');
-            leaveEnd.removeAttribute('max');
-        }
+       
     });
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let leaveTypeSelect = document.getElementById("workMode");
+        let leaveStart = document.getElementById("leaveStart");
+        let leaveEnd = document.getElementById("leaveEnd");
 
+        function setMinDateForSickLeave() {
+            let today = new Date();
+            leaveStart.min = today.toISOString().split("T")[0];
+        }
+
+        function setMinDateForEmergencyLeave() {
+            let today = new Date();
+            leaveStart.min = today.toISOString().split("T")[0];
+        }
+
+        function setMinDateForRegularLeave() {
+            let today = new Date();
+            let fourDaysLater = new Date();
+            fourDaysLater.setDate(today.getDate() + 4);
+            leaveStart.min = fourDaysLater.toISOString().split("T")[0];
+        }
+
+        function updateMinDate() {
+            let selectedType = leaveTypeSelect.value;
+
+            if (selectedType === "sick-leave") {
+                setMinDateForSickLeave();
+            } else if (selectedType === "emergency-leave") {
+                setMinDateForEmergencyLeave();
+            } else {
+                setMinDateForRegularLeave();
+            }
+        }
+
+        function updateLeaveEndMinDate() {
+            leaveEnd.min = leaveStart.value; // Leave End cannot be before Leave Start
+        }
+
+        // Ensure Leave End cannot be before Leave Start
+        leaveStart.addEventListener("change", updateLeaveEndMinDate);
+
+        // Set the correct min date on page load
+        updateMinDate();
+
+        // Update min date when leave type changes
+        leaveTypeSelect.addEventListener("change", updateMinDate);
+
+        // Validate on form submit
+        document.querySelector("form").addEventListener("submit", function (event) {
+            let selectedType = leaveTypeSelect.value;
+            let leaveStartDate = new Date(leaveStart.value);
+            let leaveEndDate = new Date(leaveEnd.value);
+            let today = new Date();
+            let fourDaysLater = new Date();
+            fourDaysLater.setDate(today.getDate() + 4);
+
+            // Remove time part for proper comparison
+            today.setHours(0, 0, 0, 0);
+            fourDaysLater.setHours(0, 0, 0, 0);
+            leaveStartDate.setHours(0, 0, 0, 0);
+            leaveEndDate.setHours(0, 0, 0, 0);
+
+            if (
+                (selectedType !== "sick-leave" && selectedType !== "emergency-leave" && leaveStartDate < fourDaysLater) ||
+                (selectedType === "sick-leave" && leaveStartDate < today) ||
+                (selectedType === "emergency-leave" && leaveStartDate < today)
+            ) {
+                event.preventDefault();
+                alert("Invalid leave start date! \n\n- Regular leave must be at least 4 days from today.\n- Sick and emergency leave cannot be before today.");
+            } else if (leaveEndDate < leaveStartDate) {
+                event.preventDefault();
+                alert("Invalid leave end date! \n\n- Leave End date cannot be before the Leave Start date.");
+            }
+        });
+    });
+
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         let searchInput = document.getElementById("searchInput");

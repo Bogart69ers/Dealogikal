@@ -17,8 +17,8 @@ namespace Dealogikal.Utils
     public enum RoleType
     {
         HR,
-        Employee,
-        DepartmentHead
+        Employee
+        
     }
     public enum Status
     {

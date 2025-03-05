@@ -22,6 +22,11 @@ namespace Dealogikal.Repository
             return _img._table.Where(m => m.employeeId == employeeId).ToList();
         }
 
+        public images GetImagebyEmployeeId(string employeeId)
+        {
+            return _img._table.FirstOrDefault(i => i.employeeId == employeeId);
+        }
+
         public ErrorCode CreateImg(images img, ref string err)
         {
             return _img.Create(img, out err);

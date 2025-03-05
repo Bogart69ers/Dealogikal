@@ -53,6 +53,10 @@ namespace Dealogikal.Controllers
                     ViewBag.AccountViewModel = accountViewModel;
                     // Optionally, you can pass the employee info directly if your layout references it:
                     ViewBag.EmployeeInfo = employeeInfo;
+
+                    var profileImage = _ImgManager.ListImageByEmployeeId(employeeInfo.employeeId).FirstOrDefault();
+                    ViewBag.ProfilePicture = profileImage != null ? profileImage.imageFile : null;
+
                 }
             }
         }

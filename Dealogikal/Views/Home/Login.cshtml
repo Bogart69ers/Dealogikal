@@ -50,6 +50,7 @@
                                 <label for="employeeId" class="form-label">ID Number <span class="text-danger">*</span></label>
                                 <input type="text" class="form-control" name="employeeId" id="employeeId" placeholder="Employee ID" required>
                             </div>
+
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
                                 <div class="input-group">
@@ -58,23 +59,33 @@
                                         <i class="bi bi-eye"></i>
                                     </span>
                                 </div>
-                                <div class="col-12 form-group">
-                                    @if (!String.IsNullOrEmpty(ViewBag.Error as String))
-                                    {
-                                        <div style="color: red;">
-                                            @ViewBag.Error
-                                        </div>
-                                    }
-                                </div>
                             </div>
+
+                            <!-- Remember Me Checkbox -->
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" name="rememberMe" id="rememberMe" value="true">
+                                <label class="form-check-label" for="rememberMe">Remember Me</label>
+                            </div>
+
+                            <div class="col-12 form-group">
+                                @if (!String.IsNullOrEmpty(ViewBag.Error as String))
+                                {
+                                    <div style="color: red;">
+                                        @ViewBag.Error
+                                    </div>
+                                }
+                            </div>
+
                             <div class="d-grid">
                                 <button class="btn btn-secondary btn-xs" type="submit">Log in</button>
                             </div>
                         </form>
+
                         <hr class="mt-4">
                         <div class="text-end">
-                            <a href="" class="link-secondary text-decoration-none">Forgot password?</a>
+                            <a href="#" class="link-secondary text-decoration-none">Forgot password?</a>
                         </div>
+
                     </div>
                 </div>
             </div>

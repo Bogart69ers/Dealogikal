@@ -125,12 +125,20 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group row">
-                                            <label class="col-sm-3 col-form-label">Position </label>
+                                            <label class="col-sm-3 col-form-label">Position</label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" placeholder="Position" name="position" id="position" />
+                                                <select class="form-control" name="position" id="positionDropdown" required onchange="togglePositionInput(this)">
+                                                    <option value="" disabled selected>Select Position</option>
+                                                    <option value="Employee">Employee</option>
+                                                    <option value="Department Head">Department Head</option>
+                                                    <option value="Others">Others</option>
+                                                </select>
+                                                <!-- Hidden input field that will be displayed when "Others" is selected -->
+                                                <input type="text" class="form-control mt-2 d-none" placeholder="Enter Position" name="customPosition" id="customPositionInput">
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
 
                                 <div class="row">
@@ -144,9 +152,15 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group row">
-                                            <label class="col-sm-3 col-form-label">Barangay</label>
+                                            <label class="col-sm-3 col-form-label">Corporation</label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" placeholder="Barangay" name="barangay" id="barangay" />
+                                                <select class="form-control" name="corporation" id="corporationDropdown" required>
+                                                    <option value="" disabled selected>Select Corporation</option>
+                                                    <option value="Dealogikal">Dealogikal</option>
+                                                    <option value="KPEC">KPEC</option>
+                                                </select>
+                                                <!-- Hidden input field that will be displayed when "Others" is selected -->
+                                                <input type="text" class="form-control mt-2 d-none" placeholder="Enter Position" name="customPosition" id="customPositionInput">
                                             </div>
                                         </div>
                                     </div>
@@ -162,9 +176,9 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group row">
-                                            <label class="col-sm-3 col-form-label">Postal Code</label>
+                                            <label class="col-sm-3 col-form-label">Barangay</label>
                                             <div class="col-sm-9">
-                                                <input type="text" class="form-control" name="zipcode" placeholder="Zip Code" pattern="\d{4,5}" title="Please enter a valid zip code with 4 to 5 digits" />
+                                                <input type="text" class="form-control" name="barangay" placeholder="Barangay"/>
                                             </div>
                                         </div>
                                     </div>
@@ -196,6 +210,20 @@
     </div>
 </div>
 
+<script>
+    function togglePositionInput(selectElement) {
+        var customInput = document.getElementById("customPositionInput");
+        if (selectElement.value === "Others") {
+            customInput.classList.remove("d-none"); // Show input field
+            customInput.setAttribute("name", "position"); // Ensure input value is submitted
+            selectElement.removeAttribute("name"); // Remove name from dropdown to prevent duplicate form submission
+        } else {
+            customInput.classList.add("d-none"); // Hide input field
+            customInput.removeAttribute("name"); // Remove name so it doesn’t interfere with submission
+            selectElement.setAttribute("name", "position"); // Restore dropdown name
+        }
+    }
+</script>
 
 
 <script>

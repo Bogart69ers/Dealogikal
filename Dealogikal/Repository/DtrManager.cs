@@ -91,7 +91,7 @@ namespace Dealogikal.Repository
             }
         }
 
-        public ErrorCode UpdateBreakOut(string employeeId, int recordId, ref string errMsg)
+        public ErrorCode UpdateBreakOut(string employeeId, int recordId, string workmode, ref string errMsg)
         {
             try
             {
@@ -111,6 +111,7 @@ namespace Dealogikal.Repository
                     newRecord.employeeId = employeeId;
                     newRecord.createdAt = serverTime.Date;
                     newRecord.date = serverTime.Date;
+                    newRecord.workMode = workmode;
                     // Optionally, you might leave TimeIn and BreakIn as null
                     newRecord.breakOut = serverTime;
                     // You can also set other fields if needed

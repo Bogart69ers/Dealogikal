@@ -58,7 +58,7 @@ namespace Dealogikal.Controllers
 
         [AllowAnonymous]
         [HttpPost]
-        public ActionResult Login(string employeeId, string password, string returnUrl)
+        public ActionResult Login(string employeeId, string password, string returnUrl, bool rememberMe = false)
         {
             if (_AccManager == null)
             {
@@ -74,65 +74,65 @@ namespace Dealogikal.Controllers
                     ViewBag.Error = "User not found";
                     return View();
                 }
+
                 var info = _AccManager.GetEmployeebyEmployeeId(employeeId);
                 if (info == null)
                 {
-                    ViewBag.Error = "Employee Information not found";
+                    ViewBag.Error = "Employee information not found";
                     return View();
                 }
 
-                if (info != null && info.status == 0)
+                // Check if account is inactive
+                if (info.status == 0)
                 {
                     return RedirectToAction("InActiveAccount", "Home");
                 }
 
+                // Create Authentication Ticket
                 FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(
-                    1, 
-                    employeeId, 
-                    DateTime.Now, 
-                    DateTime.Now.AddDays(30), 
-                    true, 
-                    "", 
-                    FormsAuthentication.FormsCookiePath 
+                    1,
+                    employeeId,
+                    DateTime.Now,
+                    rememberMe ? DateTime.Now.AddDays(30) : DateTime.Now.AddMinutes(30), // Remember me logic
+                    rememberMe,
+                    "",
+                    FormsAuthentication.FormsCookiePath
                 );
 
                 // Encrypt the ticket
                 string encryptedTicket = FormsAuthentication.Encrypt(ticket);
 
-                // Create the authentication cookie
-                HttpCookie authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket);
-                authCookie.Expires = ticket.Expiration; // Set expiration
-                authCookie.HttpOnly = true; // Prevent JavaScript access
+                // Create authentication cookie
+                HttpCookie authCookie = new HttpCookie(FormsAuthentication.FormsCookieName, encryptedTicket)
+                {
+                    Expires = rememberMe ? ticket.Expiration : DateTime.MinValue, // Expire when session ends if not persistent
+                    HttpOnly = true, // Prevent JavaScript access
+                    Secure = Request.IsSecureConnection // Ensures HTTPS-only transmission
+                };
 
-                // Add the cookie to the response
                 Response.Cookies.Add(authCookie);
 
-
+                // Redirect if returnUrl is valid
                 if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 {
                     return Redirect(returnUrl);
                 }
 
-                if (user.role1 == null)
+                // Validate User Role
+                if (user.role == null)
                 {
                     ViewBag.Error = "User role is not defined.";
                     return View();
                 }
 
-                switch (user.role1.roleName)
-                {
-                    case Constant.Role_HR:
-                        return RedirectToAction("AdminDashboard", "Admin");
-                    case Constant.Role_Employee:
-                        return RedirectToAction("Dashboard", "Home");                                
-                }
+                // Redirect Based on Role
+                return user.role == 1 ? RedirectToAction("AdminDashboard", "Admin") : RedirectToAction("Dashboard", "Home");
             }
 
             ViewBag.Error = ErrorMessage;
-
             return View();
-
         }
+
 
         [Authorize]
         public ActionResult Dashboard()
@@ -142,7 +142,7 @@ namespace Dealogikal.Controllers
 
             var currentDtr = _DtrManager.GetAllDtr().FirstOrDefault(r => r.employeeId == user.employeeId && r.date == DateTime.Now.Date);
 
-            ViewBag.Name = user.firstName + " " + user.lastName;
+            ViewBag.Name = user.firstName;
 
             var model = new AccountViewModel
             {
@@ -201,7 +201,7 @@ namespace Dealogikal.Controllers
             }
             else if (action == "BreakOut")
             {
-                result = _DtrManager.UpdateBreakOut(currentUser, recordId.Value, ref errMsg);
+                result = _DtrManager.UpdateBreakOut(currentUser, recordId.Value, dtr.workMode, ref errMsg);
                 if (result != ErrorCode.Success)
                 {
                     ViewBag.Error = "Error Updating Break Out: " + errMsg;
@@ -496,32 +496,51 @@ namespace Dealogikal.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult MyProfile(employeeInfo empInf, string password, string phone, string email, HttpPostedFileBase profilePicture)
+        public ActionResult MyProfile(string phone, string email, string address, string barangay, string city, HttpPostedFileBase profilePicture)
         {
             if (ModelState.IsValid)
             {
                 var currentUser = User.Identity.Name;
+
+                // Retrieve the existing employee and user records
+                var image = _ImgManager.GetImagebyEmployeeId(currentUser);
                 var employee = _AccManager.GetEmployeebyEmployeeId(currentUser);
                 var user = _AccManager.GetUserByEmployeeId(currentUser);
 
+                if (employee == null || user == null)
+                {
+                    ModelState.AddModelError(String.Empty, "User not found.");
+                    return View();
+                }
+
+                // Profile Picture Upload Handling
                 if (profilePicture != null && profilePicture.ContentLength > 0)
                 {
                     var uploadsFolderPath = Server.MapPath("~/UploadedFiles/");
                     if (!Directory.Exists(uploadsFolderPath))
                         Directory.CreateDirectory(uploadsFolderPath);
 
-                    var profileFileName = Path.GetFileName(profilePicture.FileName);
-                    var profileSavePath = Path.Combine(uploadsFolderPath, profileFileName);
+                    string fileExtension = Path.GetExtension(profilePicture.FileName);
+                    string profileFileName = $"{employee.employeeId}_{DateTime.Now.ToString("yyyyMMdd")}{fileExtension}";
+                    string profileSavePath = Path.Combine(uploadsFolderPath, profileFileName);
+
+                    if (image != null && !string.IsNullOrEmpty(image.imageFile))
+                    {
+                        var oldImagePath = Path.Combine(uploadsFolderPath, image.imageFile);
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath); // **Deletes old profile picture**
+                        }
+                    }
                     profilePicture.SaveAs(profileSavePath);
 
-                    var existingImage = _ImgManager.ListImageByEmployeeId(employee.employeeId).FirstOrDefault();
-                    if (existingImage != null)
+                    if (image != null)
                     {
-                        existingImage.imageFile = profileFileName;
-                        if (_ImgManager.UpdateImg(existingImage, ref ErrorMessage) == ErrorCode.Error)
+                        image.imageFile = profileFileName;
+                        if (_ImgManager.UpdateImg(image, ref ErrorMessage) == ErrorCode.Error)
                         {
                             ModelState.AddModelError(String.Empty, ErrorMessage);
-                            return View(empInf);
+                            return View();
                         }
                     }
                     else
@@ -535,39 +554,29 @@ namespace Dealogikal.Controllers
                         if (_ImgManager.CreateImg(img, ref ErrorMessage) == ErrorCode.Error)
                         {
                             ModelState.AddModelError(String.Empty, ErrorMessage);
-                            return View(empInf);
+                            return View();
                         }
                     }
                 }
 
-                userAccount userAcc = new userAccount
-                {
-                    password = password
-                };
+                // Update Employee Information ONLY IF new values are provided
+                employee.phone = !string.IsNullOrEmpty(phone) ? phone : employee.phone;
+                employee.email = !string.IsNullOrEmpty(email) ? email : employee.email;
+                employee.address = !string.IsNullOrEmpty(address) ? address : employee.address;
+                employee.barangay = !string.IsNullOrEmpty(barangay) ? barangay : employee.barangay;
+                employee.city = !string.IsNullOrEmpty(city) ? city : employee.city;
 
-                if (_AccManager.UpdateUser(userAcc, ref ErrorMessage) == ErrorCode.Error)
-                {
-                    ModelState.AddModelError(String.Empty, ErrorMessage);
-                    return View(empInf);
-                }
-
-                employeeInfo empIn = new employeeInfo
-                {
-                    phone = phone,
-                    email = email
-                };
-
-                if (_AccManager.UpdateEmployeeInformation(empIn, ref ErrorMessage) == ErrorCode.Error)
+                if (_AccManager.UpdateEmployeeInformation(employee, ref ErrorMessage) == ErrorCode.Error)
                 {
                     ModelState.AddModelError(String.Empty, ErrorMessage);
-                    return View(empInf);
+                    return View();
                 }
 
-                TempData["SuccessMessage"] = "Profile Updated successfully.";
+                TempData["SuccessMessage"] = "Profile updated successfully.";
                 return RedirectToAction("MyProfile");
-
             }
-            return View(empInf);
-        }  
+
+            return View();
+        }
     }
 }

@@ -143,12 +143,20 @@ namespace Dealogikal.Repository
             return ErrorCode.Success;
         }
 
-        public ErrorCode CreateEmployee(userAccount ua, ref string errMsg)
+        public ErrorCode CreateEmployee(userAccount ua, string department, ref string errMsg)
         {
             try
             {
-                ua.role = 1;
-                ua.createdAt = DateTime.Now;
+                if(department == "HR")
+                {
+                    ua.role = 1;
+                    ua.createdAt = DateTime.Now;
+                }
+                else
+                {
+                    ua.role = 2;
+                    ua.createdAt = DateTime.Now;
+                }
 
                 if (GetUserByEmployeeId(ua.employeeId) != null)
                 {
@@ -171,7 +179,7 @@ namespace Dealogikal.Repository
             }
         }
 
-        public ErrorCode EmployeeInfoSignup( DateTime? birthdate, string position, string department, string employeeId, string email, string firstname, string lastname, string phone, string address, string zipcode, string city, string barangay, DateTime dateHired, string corporation, ref String err)
+        public ErrorCode EmployeeInfoSignup( DateTime? birthdate, string position, string department, string employeeId, string email, string firstname, string lastname, string phone, string address, string city, string barangay, DateTime dateHired, string corporation, ref String err)
         {
             try
             {
@@ -200,7 +208,6 @@ namespace Dealogikal.Repository
                 empInfo.firstName = firstname;
                 empInfo.lastName = lastname;
                 empInfo.address = address;
-                empInfo.zipcode = zipcode;
                 empInfo.barangay = barangay;
                 empInfo.city = city;
                 empInfo.phone = phone;
