@@ -71,22 +71,36 @@ namespace Dealogikal.Controllers
         {
             try
             {
-                    if (_FeedbackManager.CreateFeedback(fb, ref ErrorMessage) != ErrorCode.Success)
-                    {
-                        ViewBag.ErrorMessage = "Feedback Failed to create";
-                        return View("CreateAccount");
-                    }
+                if (fb == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Feedback data is null.");
+                    return View("AdminDashboard");
+                }
+
+                // Manually set the dateCreated since it is not submitted from the form
+                fb.dateCreated = DateTime.Now;
+
+                if (_FeedbackManager.CreateFeedback(fb, ref ErrorMessage) != ErrorCode.Success)
+                {
+                    ViewBag.ErrorMessage = "Feedback Failed to create";
+                    return View("AdminDashboard");
+                }
+
+                // Store success message in TempData
+                TempData["FeedbackSuccess"] = "Thank you for your feedback!";
             }
             catch (Exception ex)
             {
-
                 ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
                 return View("AdminDashboard");
             }
-            return View();
+
+            return RedirectToAction("AdminDashboard"); // Redirect to dashboard after successful submission
         }
 
 
+
+        [Authorize]
         [HttpPost]
         public ActionResult CreateAccount(userAccount ua, string email, DateTime? birthdate, string firstName, string lastName ,string department, string position, string address, string barangay, string city, string phone, DateTime dateHired, string corporation)
         {

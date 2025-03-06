@@ -30,18 +30,17 @@ namespace Dealogikal.Database
         public string lastName { get; set; }
         public string email { get; set; }
         public Nullable<System.DateTime> birthdate { get; set; }
+        public string phone { get; set; }
         public string position { get; set; }
         public string department { get; set; }
-        public System.DateTime dateHired { get; set; }
+        public string corporation { get; set; }
         public string address { get; set; }
         public string barangay { get; set; }
         public string city { get; set; }
-        public string zipcode { get; set; }
         public Nullable<int> status { get; set; }
+        public System.DateTime dateHired { get; set; }
         public Nullable<System.DateTime> createdAt { get; set; }
-        public string phone { get; set; }
         public Nullable<int> leaveCount { get; set; }
-        public string corporation { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<dtrRecords> dtrRecords { get; set; }

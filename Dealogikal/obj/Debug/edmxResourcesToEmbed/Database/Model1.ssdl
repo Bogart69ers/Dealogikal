@@ -23,18 +23,17 @@
     <Property Name="lastName" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="email" Type="nvarchar" MaxLength="255" />
     <Property Name="birthdate" Type="date" />
+    <Property Name="phone" Type="nvarchar" MaxLength="20" />
     <Property Name="position" Type="nvarchar" MaxLength="100" Nullable="false" />
     <Property Name="department" Type="nvarchar" MaxLength="100" Nullable="false" />
-    <Property Name="dateHired" Type="date" Nullable="false" />
+    <Property Name="corporation" Type="nvarchar" MaxLength="100" />
     <Property Name="address" Type="nvarchar(max)" />
     <Property Name="barangay" Type="nvarchar" MaxLength="255" />
     <Property Name="city" Type="nvarchar" MaxLength="255" />
-    <Property Name="zipcode" Type="nchar" MaxLength="10" />
     <Property Name="status" Type="int" />
+    <Property Name="dateHired" Type="date" Nullable="false" />
     <Property Name="createdAt" Type="datetime" />
-    <Property Name="phone" Type="nvarchar" MaxLength="20" />
     <Property Name="leaveCount" Type="int" />
-    <Property Name="corporation" Type="nvarchar" MaxLength="100" />
   </EntityType>
   <EntityType Name="feedback">
     <Key>
@@ -44,6 +43,7 @@
     <Property Name="name" Type="nvarchar" MaxLength="100" />
     <Property Name="feedbackType" Type="nvarchar" MaxLength="255" />
     <Property Name="feedbackMessage" Type="nvarchar(max)" />
+    <Property Name="dateCreated" Type="datetime" />
   </EntityType>
   <EntityType Name="images">
     <Key>

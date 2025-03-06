@@ -579,6 +579,39 @@ namespace Dealogikal.Controllers
             return View();
         }
 
+        [Authorize]
+        [HttpPost]
+        public ActionResult CreateFeedback(feedback fb)
+        {
+            try
+            {
+                if (fb == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Feedback data is null.");
+                    return View("Dashboard");
+                }
+
+                // Manually set the dateCreated since it is not submitted from the form
+                fb.dateCreated = DateTime.Now;
+
+                if (_FeedbackManager.CreateFeedback(fb, ref ErrorMessage) != ErrorCode.Success)
+                {
+                    ViewBag.ErrorMessage = "Feedback Failed to create";
+                    return View("Dashboard");
+                }
+
+                // Store success message in TempData
+                TempData["FeedbackSuccess"] = "Thank you for your feedback!";
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
+                return View("Dashboard");
+            }
+
+            return RedirectToAction("Dashboard"); // Redirect to dashboard after successful submission
+        }
+
 
         [Authorize]
         public ActionResult ViewFeedback()
@@ -586,11 +619,13 @@ namespace Dealogikal.Controllers
             var currentUser = User.Identity.Name;
             var employee = _AccManager.GetEmployeebyEmployeeId(currentUser);
             var user = _AccManager.GetUserByEmployeeId(currentUser);
+            var feed = _FeedbackManager.GetAllDtr();
 
             var model = new AccountViewModel
             {
                 employeeInfo = employee,
-                userAccount = user
+                userAccount = user,
+                feedbacks = feed
             };
 
             return View(model);

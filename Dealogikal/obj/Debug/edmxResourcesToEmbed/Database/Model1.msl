@@ -24,18 +24,17 @@
           <ScalarProperty Name="lastName" ColumnName="lastName" />
           <ScalarProperty Name="email" ColumnName="email" />
           <ScalarProperty Name="birthdate" ColumnName="birthdate" />
+          <ScalarProperty Name="phone" ColumnName="phone" />
           <ScalarProperty Name="position" ColumnName="position" />
           <ScalarProperty Name="department" ColumnName="department" />
-          <ScalarProperty Name="dateHired" ColumnName="dateHired" />
+          <ScalarProperty Name="corporation" ColumnName="corporation" />
           <ScalarProperty Name="address" ColumnName="address" />
           <ScalarProperty Name="barangay" ColumnName="barangay" />
           <ScalarProperty Name="city" ColumnName="city" />
-          <ScalarProperty Name="zipcode" ColumnName="zipcode" />
           <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="dateHired" ColumnName="dateHired" />
           <ScalarProperty Name="createdAt" ColumnName="createdAt" />
-          <ScalarProperty Name="phone" ColumnName="phone" />
           <ScalarProperty Name="leaveCount" ColumnName="leaveCount" />
-          <ScalarProperty Name="corporation" ColumnName="corporation" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -46,6 +45,7 @@
           <ScalarProperty Name="name" ColumnName="name" />
           <ScalarProperty Name="feedbackType" ColumnName="feedbackType" />
           <ScalarProperty Name="feedbackMessage" ColumnName="feedbackMessage" />
+          <ScalarProperty Name="dateCreated" ColumnName="dateCreated" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

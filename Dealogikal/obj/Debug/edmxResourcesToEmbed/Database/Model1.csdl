@@ -24,18 +24,17 @@
     <Property Name="lastName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
     <Property Name="birthdate" Type="DateTime" Precision="0" />
+    <Property Name="phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
     <Property Name="position" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="department" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
-    <Property Name="dateHired" Type="DateTime" Nullable="false" Precision="0" />
+    <Property Name="corporation" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="barangay" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
     <Property Name="city" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-    <Property Name="zipcode" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
     <Property Name="status" Type="Int32" />
+    <Property Name="dateHired" Type="DateTime" Nullable="false" Precision="0" />
     <Property Name="createdAt" Type="DateTime" Precision="3" />
-    <Property Name="phone" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
     <Property Name="leaveCount" Type="Int32" />
-    <Property Name="corporation" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="dtrRecords" Relationship="Self.FK_dtrRecords_employeeInfo" FromRole="employeeInfo" ToRole="dtrRecords" />
     <NavigationProperty Name="images" Relationship="Self.FK_images_employeeInfo" FromRole="employeeInfo" ToRole="images" />
     <NavigationProperty Name="leaveRequest" Relationship="Self.FK_leaveRequest_employeeInfo" FromRole="employeeInfo" ToRole="leaveRequest" />
@@ -51,6 +50,7 @@
     <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="feedbackType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
     <Property Name="feedbackMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="dateCreated" Type="DateTime" Precision="3" />
   </EntityType>
   <EntityType Name="images">
     <Key>

@@ -162,24 +162,23 @@ else
             </div>
         </div>
     </div>
-    <!-- Table Section -->
 </div>
 
 <style>
-    .late-time {
-    color: red;
-    font-weight: bold;
-    }
-    .table-container {
-        margin-top: 20px;
-        width: 100%;
-    }
+        .late-time {
+        color: red;
+        font-weight: bold;
+        }
+        .table-container {
+            margin-top: 20px;
+            width: 100%;
+        }
 
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        background: #f9f9f9;
-    }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #f9f9f9;
+        }
 
         .table th, .table td {
             border: 1px solid #ddd;
@@ -191,46 +190,44 @@ else
             background: #f1f1f1;
             font-weight: bold;
         }
-</style>
-<style>
-    /* Move To-Do List Back to the Right Side */
-    .right-section {
-        width: 350px;
+        z
+        .right-section {
+            width: 350px;
+            position: absolute;
+            right: 20px; 
+            top: 80px;
+        }
+
+        .button-section {
         position: absolute;
-        right: 20px; /* Adjust to move it back to the right */
-        top: 80px;
-    }
+        right: 5%;
+        top: 30%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px; 
+        }
 
-    .button-section {
-    position: absolute;
-    right: 5%;
-    top: 30%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px; /* Space between rows */
-}
-  /* Make the two rows equal width */
-.top-row, .bottom-row {
-    display: flex;
-    gap: 10px; /* Space between boxes */
-    justify-content: center; /* Align center */
-    width: 100%; /* Ensure full width */
-}
+        .top-row, .bottom-row {
+            display: flex;
+            gap: 10px; 
+            justify-content: center; /* Align center */
+            width: 100%; /* Ensure full width */
+        }
 
-   .info-box {
-    background: #4b49ac;
-    padding: 15px 25px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    width: 150px; /* Set fixed width for consistency */
-}
-        /* Label Styling */
+       .info-box {
+        background: #4b49ac;
+        padding: 15px 25px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        width: 150px; 
+        }
+
         .info-box span {
             font-size: 14px;
             font-weight: bold;
@@ -238,7 +235,6 @@ else
             margin-bottom: 5px;
         }
 
-        /* Link Styling */
         .info-box a {
             text-decoration: none;
             font-size: 14px;
@@ -247,9 +243,9 @@ else
             transition: color 0.3s ease;
         }
 
-            .info-box a:hover {
-                color: #3b5bdb; /* Darker blue on hover */
-            }
+        .info-box a:hover {
+            color: #3b5bdb; 
+         }
 
         /* Ensure Leave Requests text appears stacked */
 .info-box a[href*="Leave Requests"] {
