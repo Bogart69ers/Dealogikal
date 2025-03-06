@@ -188,16 +188,16 @@
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal" aria-label="Close" style="min-width:10px; min-height:10px;">Close</button>
                 </div>
                 <div class="modal-body">
-                    <form class="forms-sample d-flex flex-column flex-grow-1" action="~/Home/SubmitFeedback" method="post">
+                    <form class="forms-sample d-flex flex-column flex-grow-1" action="@Url.Action("CreateFeedback", "Admin")" method="post">
                         <!-- Name Field -->
                         <div class="form-group">
                             <label for="feedbackname">Name:</label>
-                            <input type="text" id="feedbackname" name="Name" class="form-control" placeholder="Enter name..." required style="min-width:100%">
+                            <input type="text" id="feedbackname" name="name" class="form-control" placeholder="Enter name..." required style="min-width:100%">
                         </div>
                         <!-- Review Type -->
                         <div class="form-group">
                             <label for="reviewtype">Review Type:</label>
-                            <select id="reviewtype" class="form-control" style="min-width:100%; border:solid 1px" name="ReviewType" required>
+                            <select id="reviewtype" class="form-control" style="min-width:100%; border:solid 1px" name="feedbackType" required>
                                 <option value="" disabled selected>Select Review Type</option>
                                 <option value="feedback">Feedback</option>
                                 <option value="bugs">Bugs</option>
@@ -208,7 +208,7 @@
                         <!-- Feedback Message -->
                         <div class="form-group flex-grow-1">
                             <label for="feedbackMessage">Feedback Message:</label>
-                            <textarea id="feedbackMessage" class="form-control" name="Message" placeholder="Enter your feedback..." style="height:75%; min-width:100%;" required></textarea>
+                            <textarea id="feedbackMessage" class="form-control" name="feedbackMessage" placeholder="Enter your feedback..." style="height:75%; min-width:100%;" required></textarea>
                         </div>
                         <!-- Buttons -->
                         <div class="d-flex justify-content-center mt-auto">

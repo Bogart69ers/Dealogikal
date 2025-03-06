@@ -1398,6 +1398,9 @@
     <Compile Include="Database\employeeInfo.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
+    <Compile Include="Database\feedback.cs">
+      <DependentUpon>Model1.tt</DependentUpon>
+    </Compile>
     <Compile Include="Database\images.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -1442,6 +1445,7 @@
     <Compile Include="Repository\AccountManager.cs" />
     <Compile Include="Repository\BaseRepository.cs" />
     <Compile Include="Repository\DtrManager.cs" />
+    <Compile Include="Repository\FeedbackManager.cs" />
     <Compile Include="Repository\IBaseRepository.cs" />
     <Compile Include="Repository\ImageManager.cs" />
     <Compile Include="Repository\RequestManager.cs" />
@@ -1486,6 +1490,7 @@
     <Content Include="Views\Home\OvertimeApproval.cshtml" />
     <Content Include="Views\Admin\MyProfile.cshtml" />
     <Content Include="Views\Home\MyProfile.cshtml" />
+    <Content Include="Views\Home\ViewFeedback.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

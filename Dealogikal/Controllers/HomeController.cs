@@ -578,5 +578,23 @@ namespace Dealogikal.Controllers
 
             return View();
         }
+
+
+        [Authorize]
+        public ActionResult ViewFeedback()
+        {
+            var currentUser = User.Identity.Name;
+            var employee = _AccManager.GetEmployeebyEmployeeId(currentUser);
+            var user = _AccManager.GetUserByEmployeeId(currentUser);
+
+            var model = new AccountViewModel
+            {
+                employeeInfo = employee,
+                userAccount = user
+            };
+
+            return View(model);
+        }
+
     }
 }

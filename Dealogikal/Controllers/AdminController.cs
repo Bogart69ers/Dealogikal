@@ -64,6 +64,29 @@ namespace Dealogikal.Controllers
             return View();
         }
 
+
+        [Authorize]
+        [HttpPost]
+        public ActionResult CreateFeedback(feedback fb)
+        {
+            try
+            {
+                    if (_FeedbackManager.CreateFeedback(fb, ref ErrorMessage) != ErrorCode.Success)
+                    {
+                        ViewBag.ErrorMessage = "Feedback Failed to create";
+                        return View("CreateAccount");
+                    }
+            }
+            catch (Exception ex)
+            {
+
+                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
+                return View("AdminDashboard");
+            }
+            return View();
+        }
+
+
         [HttpPost]
         public ActionResult CreateAccount(userAccount ua, string email, DateTime? birthdate, string firstName, string lastName ,string department, string position, string address, string barangay, string city, string phone, DateTime dateHired, string corporation)
         {

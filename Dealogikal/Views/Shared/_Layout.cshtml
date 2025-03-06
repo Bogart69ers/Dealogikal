@@ -167,7 +167,17 @@
                                     </ul>
                                 }
                         </div>
-                    </li>                    
+                    </li>
+                    
+                    @if (ViewBag.EmployeeInfo != null && ViewBag.EmployeeInfo.department == "IT")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Home/ViewFeedback">
+                                <i class="icon-paper menu-icon"></i>
+                                <span class="menu-title">User Feedback</span>
+                            </a>
+                        </li>
+                    }               
                 </ul>
             </nav>
             <!-- partial -->

@@ -41,6 +41,15 @@
           <Property Name="leaveCount" Type="int" />
           <Property Name="corporation" Type="nvarchar" MaxLength="100" />
         </EntityType>
+        <EntityType Name="feedback">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="100" />
+          <Property Name="feedbackType" Type="nvarchar" MaxLength="255" />
+          <Property Name="feedbackMessage" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="images">
           <Key>
             <PropertyRef Name="mediaId" />
@@ -113,7 +122,9 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           <Property Name="roleName" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <Association Name="FK_dtrRecords_employeeInfo">
-          <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1" />
+          <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="dtrRecords" Type="Self.dtrRecords" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="employeeInfo">
@@ -209,6 +220,7 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
         <EntityContainer Name="DeologikalDTRModelStoreContainer">
           <EntitySet Name="dtrRecords" EntityType="Self.dtrRecords" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="employeeInfo" EntityType="Self.employeeInfo" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="feedback" EntityType="Self.feedback" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="images" EntityType="Self.images" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="leaveRequest" EntityType="Self.leaveRequest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="overtimeRequest" EntityType="Self.overtimeRequest" Schema="dbo" store:Type="Tables" />
@@ -299,6 +311,15 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           <NavigationProperty Name="todoLists" Relationship="Self.FK_todoLists_employeeInfo" FromRole="employeeInfo" ToRole="todoLists" />
           <NavigationProperty Name="userAccount" Relationship="Self.FK_userAccount_employeeInfo" FromRole="employeeInfo" ToRole="userAccount" />
         </EntityType>
+        <EntityType Name="feedback">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="feedbackType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="feedbackMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="images">
           <Key>
             <PropertyRef Name="mediaId" />
@@ -376,7 +397,9 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           <Property Name="roleName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_dtrRecords_employeeInfo">
-          <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1" />
+          <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="dtrRecords" Type="Self.dtrRecords" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="employeeInfo">
@@ -472,6 +495,7 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
         <EntityContainer Name="DeologikalDTREntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="dtrRecords" EntityType="Self.dtrRecords" />
           <EntitySet Name="employeeInfo" EntityType="Self.employeeInfo" />
+          <EntitySet Name="feedback" EntityType="Self.feedback" />
           <EntitySet Name="images" EntityType="Self.images" />
           <EntitySet Name="leaveRequest" EntityType="Self.leaveRequest" />
           <EntitySet Name="overtimeRequest" EntityType="Self.overtimeRequest" />
@@ -549,6 +573,16 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
                 <ScalarProperty Name="phone" ColumnName="phone" />
                 <ScalarProperty Name="leaveCount" ColumnName="leaveCount" />
                 <ScalarProperty Name="corporation" ColumnName="corporation" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="feedback">
+            <EntityTypeMapping TypeName="DeologikalDTRModel.feedback">
+              <MappingFragment StoreEntitySet="feedback">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="feedbackType" ColumnName="feedbackType" />
+                <ScalarProperty Name="feedbackMessage" ColumnName="feedbackMessage" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -27,6 +27,7 @@ namespace Dealogikal.Database
     
         public virtual DbSet<dtrRecords> dtrRecords { get; set; }
         public virtual DbSet<employeeInfo> employeeInfo { get; set; }
+        public virtual DbSet<feedback> feedback { get; set; }
         public virtual DbSet<images> images { get; set; }
         public virtual DbSet<leaveRequest> leaveRequest { get; set; }
         public virtual DbSet<overtimeRequest> overtimeRequest { get; set; }

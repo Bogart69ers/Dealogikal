@@ -43,6 +43,15 @@
     <NavigationProperty Name="todoLists" Relationship="Self.FK_todoLists_employeeInfo" FromRole="employeeInfo" ToRole="todoLists" />
     <NavigationProperty Name="userAccount" Relationship="Self.FK_userAccount_employeeInfo" FromRole="employeeInfo" ToRole="userAccount" />
   </EntityType>
+  <EntityType Name="feedback">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="feedbackType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="feedbackMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
   <EntityType Name="images">
     <Key>
       <PropertyRef Name="mediaId" />
@@ -120,7 +129,9 @@
     <Property Name="roleName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
   </EntityType>
   <Association Name="FK_dtrRecords_employeeInfo">
-    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1" />
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
     <End Role="dtrRecords" Type="Self.dtrRecords" Multiplicity="*" />
     <ReferentialConstraint>
       <Principal Role="employeeInfo">
@@ -216,6 +227,7 @@
   <EntityContainer Name="DeologikalDTREntities" annotation:LazyLoadingEnabled="true">
     <EntitySet Name="dtrRecords" EntityType="Self.dtrRecords" />
     <EntitySet Name="employeeInfo" EntityType="Self.employeeInfo" />
+    <EntitySet Name="feedback" EntityType="Self.feedback" />
     <EntitySet Name="images" EntityType="Self.images" />
     <EntitySet Name="leaveRequest" EntityType="Self.leaveRequest" />
     <EntitySet Name="overtimeRequest" EntityType="Self.overtimeRequest" />

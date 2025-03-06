@@ -39,6 +39,16 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="feedback">
+      <EntityTypeMapping TypeName="DeologikalDTRModel.feedback">
+        <MappingFragment StoreEntitySet="feedback">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="name" ColumnName="name" />
+          <ScalarProperty Name="feedbackType" ColumnName="feedbackType" />
+          <ScalarProperty Name="feedbackMessage" ColumnName="feedbackMessage" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="images">
       <EntityTypeMapping TypeName="DeologikalDTRModel.images">
         <MappingFragment StoreEntitySet="images">

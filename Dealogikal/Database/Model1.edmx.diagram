@@ -4,16 +4,17 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="4b899cca52a94890886858e50aaca7ec" Name="Diagram1">
+      <Diagram DiagramId="6c32bfe3377544dabfa4677892942d20" Name="Diagram1">
         <EntityTypeShape EntityType="DeologikalDTRModel.dtrRecords" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
         <EntityTypeShape EntityType="DeologikalDTRModel.employeeInfo" Width="1.5" PointX="0.75" PointY="8.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="DeologikalDTRModel.feedback" Width="1.5" PointX="0.75" PointY="1.375" IsExpanded="true" />
         <EntityTypeShape EntityType="DeologikalDTRModel.images" Width="1.5" PointX="3" PointY="7.625" IsExpanded="true" />
         <EntityTypeShape EntityType="DeologikalDTRModel.leaveRequest" Width="1.5" PointX="3" PointY="10.125" IsExpanded="true" />
         <EntityTypeShape EntityType="DeologikalDTRModel.overtimeRequest" Width="1.5" PointX="3" PointY="13.875" IsExpanded="true" />
         <EntityTypeShape EntityType="DeologikalDTRModel.role" Width="1.5" PointX="3.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="DeologikalDTRModel.todoLists" Width="1.5" PointX="3" PointY="17.375" IsExpanded="true" />
         <EntityTypeShape EntityType="DeologikalDTRModel.userAccount" Width="1.5" PointX="6" PointY="10.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="DeologikalDTRModel.vw_Role" Width="1.5" PointX="0.75" PointY="1.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="DeologikalDTRModel.vw_Role" Width="1.5" PointX="5.75" PointY="1.375" IsExpanded="true" />
         <AssociationConnector Association="DeologikalDTRModel.FK_dtrRecords_employeeInfo" ManuallyRouted="false" />
         <AssociationConnector Association="DeologikalDTRModel.FK_images_employeeInfo" ManuallyRouted="false" />
         <AssociationConnector Association="DeologikalDTRModel.FK_leaveRequest_employeeInfo" ManuallyRouted="false" />
