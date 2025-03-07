@@ -51,6 +51,7 @@
     <Property Name="feedbackType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
     <Property Name="feedbackMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
     <Property Name="dateCreated" Type="DateTime" Precision="3" />
+    <Property Name="status" Type="Int32" />
   </EntityType>
   <EntityType Name="images">
     <Key>
@@ -105,6 +106,8 @@
     <Property Name="contentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
     <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="contents" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="status" Type="Int32" />
+    <Property Name="dateCreated" Type="DateTime" Precision="3" />
     <NavigationProperty Name="employeeInfo" Relationship="Self.FK_todoLists_employeeInfo" FromRole="todoLists" ToRole="employeeInfo" />
   </EntityType>
   <EntityType Name="userAccount">

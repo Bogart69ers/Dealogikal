@@ -46,6 +46,7 @@
           <ScalarProperty Name="feedbackType" ColumnName="feedbackType" />
           <ScalarProperty Name="feedbackMessage" ColumnName="feedbackMessage" />
           <ScalarProperty Name="dateCreated" ColumnName="dateCreated" />
+          <ScalarProperty Name="status" ColumnName="status" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -101,6 +102,8 @@
           <ScalarProperty Name="contentId" ColumnName="contentId" />
           <ScalarProperty Name="employeeId" ColumnName="employeeId" />
           <ScalarProperty Name="contents" ColumnName="contents" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="dateCreated" ColumnName="dateCreated" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -25,11 +25,11 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="overtimeStart" class="mb-lg-2">Overtime Start:</label> <!-- Adjusted gap -->
-                                    <input type="time" class="form-control mb-lg-3" style="min-width:100%" name="overtimeStart" required/>
+                                    <input type="time" class="form-control mb-lg-3" style="min-width:100%" name="overtimeStart" required />
                                 </div>
                                 <div class="form-group">
                                     <label for="overtimeEnd" class="mb-2">Overtime End:</label> <!-- Adjusted gap -->
-                                    <input type="time" class="form-control" style="min-width:100%" name="overtimeEnd" required/>
+                                    <input type="time" class="form-control" style="min-width:100%" name="overtimeEnd" required />
                                 </div>
                                 <div class="form-group">
                                     <label for="overtimeReason">Overtime Reason:</label>
@@ -70,7 +70,7 @@
                                                         <td>@(otrequest.overtimeDate.HasValue ? otrequest.overtimeDate.Value.ToString("MMM dd, yyyy") : "N/A")</td>
                                                         <td>@(otrequest.overtimeStart.HasValue ? otrequest.overtimeStart.Value.ToString("hh:mm tt") : "N/A")</td>
                                                         <td>@(otrequest.overtimeEnd.HasValue ? otrequest.overtimeEnd.Value.ToString("hh:mm tt") : "N/A")</td>
-                                                        <td class="font-weight-medium"><div class="badge @(otrequest.status == 0 ? "badge-warning" : otrequest.status == 1 ? "badge-success" : otrequest.status == 2 ? "badge-danger": "badge-secondary")">@(otrequest.status == 0 ? "Pending" : otrequest.status == 1 ? "Approved" : otrequest.status == 2 ? "Declined": "Unknown")</div></td>
+                                                        <td class="font-weight-medium"><div class="badge @(otrequest.status == 0 ? "badge-warning" : otrequest.status == 1 ? "badge-success" : otrequest.status == 2 ? "badge-danger": "badge-secondary")">@(otrequest.status == 0 ? "Pending" : otrequest.status == 1 ? "Approved" : otrequest.status == 2 ? "Declined" : "Unknown")</div></td>
                                                     </tr>
                                                 }
                                             }
@@ -99,64 +99,63 @@
                 </div>
             </div>
             <style>
-              .table-container {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    display: block;
-    height: 350px; /* Fixed height for 6 rows */
-}
+                .table-container {
+                    width: 100%;
+                    max-width: 100%;
+                    overflow-x: auto;
+                    overflow-y: hidden;
+                    display: block;
+                    height: 350px; /* Fixed height for 6 rows */
+                }
 
-/* Fix table structure */
-.table {
-    width: 100%;
-    table-layout: fixed;
-    border-collapse: collapse;
-}
+                /* Fix table structure */
+                .table {
+                    width: 100%;
+                    table-layout: auto;
+                    border-collapse: collapse;
+                }
 
-.table th, .table td {
-    padding: 12px;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+                    .table th, .table td {
+                        padding: 12px;
+                        text-align: center;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
 
-/* Sticky table header */
-.table thead {
-    background: #f8f9fa;
-    font-weight: bold;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-}
+                    /* Sticky table header */
+                    .table thead {
+                        background: #f8f9fa;
+                        font-weight: bold;
+                        position: sticky;
+                        top: 0;
+                        z-index: 2;
+                    }
 
-/* Pagination Button Alignment */
-/* Ensure buttons are visible */
-.mt-4.pt-3 {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
+                /* Pagination Button Alignment */
+                /* Ensure buttons are visible */
+                .mt-4.pt-3 {
+                    display: flex;
+                    justify-content: center;
+                    gap: 10px;
+                }
 
-/* Ensure buttons are not hidden */
-.prev-button, .next-button {
-    visibility: visible;
-    opacity: 1;
-}
+                /* Ensure buttons are not hidden */
+                .prev-button, .next-button {
+                    visibility: visible;
+                    opacity: 1;
+                }
 
-/* Ensure button alignment */
-.prev-button {
-    background-color: #f8f9fa;
-    color: black;
-}
+                /* Ensure button alignment */
+                .prev-button {
+                    background-color: #f8f9fa;
+                    color: black;
+                }
 
-.next-button {
-    background-color: #4b49ac;
-    color: white;
-}
-
+                .next-button {
+                    background-color: #4b49ac;
+                    color: white;
+                }
             </style>
         </div>
     </div>
@@ -220,6 +219,5 @@
         showPage(currentPage); // Show first page on load
     });
 </script>
-
 
 

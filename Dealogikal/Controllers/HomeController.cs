@@ -375,9 +375,19 @@ namespace Dealogikal.Controllers
         [AllowAnonymous]
         public ActionResult Logout()
         {
-            Session.Clear();
             FormsAuthentication.SignOut();
-            return RedirectToAction("Login");
+
+            if (Request.Cookies[FormsAuthentication.FormsCookieName] != null)
+            {
+                var authCookie = new HttpCookie(FormsAuthentication.FormsCookieName)
+                {
+                    Expires = DateTime.Now.AddDays(-1),
+                    HttpOnly = true
+                };
+                Response.Cookies.Add(authCookie);
+            }
+
+            return RedirectToAction("Login", "Home");
         }
 
         [AllowAnonymous]
@@ -581,36 +591,32 @@ namespace Dealogikal.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult CreateFeedback(feedback fb)
+        public JsonResult CreateFeedback(feedback fb)
         {
             try
             {
                 if (fb == null)
                 {
-                    ModelState.AddModelError(string.Empty, "Feedback data is null.");
-                    return View("Dashboard");
+                    return Json(new { success = false, message = "Feedback data is null." });
                 }
 
                 // Manually set the dateCreated since it is not submitted from the form
                 fb.dateCreated = DateTime.Now;
+                fb.status = 0;
 
                 if (_FeedbackManager.CreateFeedback(fb, ref ErrorMessage) != ErrorCode.Success)
                 {
-                    ViewBag.ErrorMessage = "Feedback Failed to create";
-                    return View("Dashboard");
+                    return Json(new { success = false, message = "Feedback Failed to create." });
                 }
 
-                // Store success message in TempData
-                TempData["FeedbackSuccess"] = "Thank you for your feedback!";
+                return Json(new { success = true, message = "Thank you for your feedback!" });
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
-                return View("Dashboard");
+                return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
             }
-
-            return RedirectToAction("Dashboard"); // Redirect to dashboard after successful submission
         }
+
 
 
         [Authorize]

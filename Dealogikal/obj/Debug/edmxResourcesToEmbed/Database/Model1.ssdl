@@ -44,6 +44,7 @@
     <Property Name="feedbackType" Type="nvarchar" MaxLength="255" />
     <Property Name="feedbackMessage" Type="nvarchar(max)" />
     <Property Name="dateCreated" Type="datetime" />
+    <Property Name="status" Type="int" />
   </EntityType>
   <EntityType Name="images">
     <Key>
@@ -94,6 +95,8 @@
     <Property Name="contentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
     <Property Name="employeeId" Type="nvarchar" MaxLength="100" />
     <Property Name="contents" Type="nvarchar(max)" />
+    <Property Name="status" Type="int" />
+    <Property Name="dateCreated" Type="datetime" />
   </EntityType>
   <EntityType Name="userAccount">
     <Key>

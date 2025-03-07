@@ -67,36 +67,32 @@ namespace Dealogikal.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult CreateFeedback(feedback fb)
+        public JsonResult CreateFeedback(feedback fb)
         {
             try
             {
                 if (fb == null)
                 {
-                    ModelState.AddModelError(string.Empty, "Feedback data is null.");
-                    return View("AdminDashboard");
+                    return Json(new { success = false, message = "Feedback data is null." });
                 }
 
                 // Manually set the dateCreated since it is not submitted from the form
                 fb.dateCreated = DateTime.Now;
+                fb.status = 0;
 
                 if (_FeedbackManager.CreateFeedback(fb, ref ErrorMessage) != ErrorCode.Success)
                 {
-                    ViewBag.ErrorMessage = "Feedback Failed to create";
-                    return View("AdminDashboard");
+                    return Json(new { success = false, message = "Feedback Failed to create." });
                 }
 
-                // Store success message in TempData
-                TempData["FeedbackSuccess"] = "Thank you for your feedback!";
+                return Json(new { success = true, message = "Thank you for your feedback!" });
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, $"An error occurred: {ex.Message}");
-                return View("AdminDashboard");
+                return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
             }
-
-            return RedirectToAction("AdminDashboard"); // Redirect to dashboard after successful submission
         }
+
 
 
 
@@ -143,10 +139,12 @@ namespace Dealogikal.Controllers
 
         [Authorize]
         public ActionResult Accounts()
-        {
+        {         
+
             var model = new AccountViewModel
             {
-                employeeInfos = _AccManager.GetAllEmployee() // Ensure this method returns a List<employeeInfo>
+                employeeInfos = _AccManager.GetAllEmployee(),
+                images = _ImgManager.GetAllImages()               
             };
 
             return View(model);
@@ -391,8 +389,23 @@ namespace Dealogikal.Controllers
             return View();
         }
 
+        [Authorize]
+        [HttpPost]
+        public ActionResult CreateTodo(todoLists tl)
+        {
+            tl.employeeId = User.Identity.Name;
+            tl.status = 0;
+            tl.dateCreated = DateTime.Now;
 
+            if(_TodoManager.CreateTodo(tl , ref ErrorMessage) != ErrorCode.Error)
+            {
+                ModelState.AddModelError(String.Empty, ErrorMessage);
+                return View();
+            }
 
+            ModelState.AddModelError(String.Empty, ErrorMessage);
+            return RedirectToAction("AdminDashboard");
+        }
 
 
 

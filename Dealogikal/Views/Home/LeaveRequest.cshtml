@@ -108,7 +108,7 @@
                                                     <td>
                                                         @(request.leaveType == "leavewithpay" ? "LP" : request.leaveType == "leavewithoutpay" ? "LWP" : request.leaveType)
                                                     </td>
-                                                    <td class="font-weight-medium"><div class="badge @(request.status == 0 ? "badge-warning" : request.status == 1 ? "badge-success" :  request.status == 2 ? "badge-danger" : "badge-secondary")">@(request.status == 0 ? "Pending" : request.status == 1 ? "Approved" : request.status == 2 ? "Declined":"Unknown")</div></td>
+                                                    <td class="font-weight-medium"><div class="badge @(request.status == 0 ? "badge-warning" : request.status == 1 ? "badge-success" :  request.status == 2 ? "badge-danger" : "badge-secondary")">@(request.status == 0 ? "Pending" : request.status == 1 ? "Approved" : request.status == 2 ? "Declined" : "Unknown")</div></td>
                                                 </tr>
                                             }
                                         }
@@ -160,62 +160,63 @@
                     font-size: 32px;
                     font-weight: bold;
                 }
-                 /* Ensure table responsiveness */
-.table-container {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    display: block;
-}
+                /* Ensure table responsiveness */
+                .table-container {
+                    width: 100%;
+                    max-width: 100%;
+                    overflow-x: auto;
+                    overflow-y: hidden;
+                    display: block;
+                }
 
-/* Fix column widths */
-.table {
-    width: 100%;
-    table-layout: fixed; /* Prevents breaking when zooming out */
-    border-collapse: collapse;
-}
+                /* Fix column widths */
+                .table {
+                    width: 100%;
+                    table-layout: auto; /* Prevents breaking when zooming out */
+                    border-collapse: collapse;
+                }
 
-.table th, .table td {
-    padding: 12px; /* Add spacing */
-    text-align: center;
-    white-space: nowrap; /* Prevents text from wrapping */
-    overflow: hidden;
-    text-overflow: ellipsis; /* Adds "..." if text is too long */
-}
+                    .table th, .table td {
+                        padding: 12px; /* Add spacing */
+                        text-align: center;
+                        white-space: nowrap; /* Prevents text from wrapping */
+                        overflow: hidden;
+                        text-overflow: ellipsis; /* Adds "..." if text is too long */
+                    }
 
-/* Fix table headers */
-.table thead {
-    background: #f8f9fa; /* Light gray header */
-    font-weight: bold;
-    position: sticky;
-    top: 0;
-    z-index: 2;
-}
+                    /* Fix table headers */
+                    .table thead {
+                        background: #f8f9fa; /* Light gray header */
+                        font-weight: bold;
+                        position: sticky;
+                        top: 0;
+                        z-index: 2;
+                    }
 
-/* Add spacing for better readability */
-.table tbody tr {
-    border-bottom: 1px solid #ddd;
-}
+                    /* Add spacing for better readability */
+                    .table tbody tr {
+                        border-bottom: 1px solid #ddd;
+                    }
 
-/* Improve badge styling */
-.badge {
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-size: 12px;
-}
+                /* Improve badge styling */
+                .badge {
+                    padding: 5px 10px;
+                    border-radius: 8px;
+                    font-size: 12px;
+                }
 
-/* Fix table breaking when zooming out */
-.table-responsive {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: auto;
-}
-
+                /* Fix table breaking when zooming out */
+                .table-responsive {
+                    width: 100%;
+                    max-width: 100%;
+                    overflow-x: auto;
+                }
             </style>
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     document.getElementById('workMode').addEventListener('change', function () {
@@ -233,7 +234,7 @@
             otherInput.style.display = 'none';
         }
 
-       
+
     });
 </script>
 <script>
@@ -371,6 +372,4 @@
         showPage(currentPage); // Show first page on load
     });
 </script>
-
-
 

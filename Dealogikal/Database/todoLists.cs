@@ -17,6 +17,8 @@ namespace Dealogikal.Database
         public int contentId { get; set; }
         public string employeeId { get; set; }
         public string contents { get; set; }
+        public Nullable<int> status { get; set; }
+        public Nullable<System.DateTime> dateCreated { get; set; }
     
         public virtual employeeInfo employeeInfo { get; set; }
     }

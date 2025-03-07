@@ -18,6 +18,14 @@ namespace Dealogikal.Repository
             _feedback = new BaseRepository<feedback>();
         }
 
+        public List<feedback> GetAllDtrDesc()
+        {
+            return _feedback.GetAll()
+                            .OrderBy(l => l.status != 0) // status 0 first (false < true)
+                            .ThenByDescending(l => l.dateCreated) // newest dateFiled first
+                            .ToList();
+        }
+
         public List<feedback> GetAllDtr()
         {
             return _feedback.GetAll();

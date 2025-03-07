@@ -49,6 +49,7 @@
           <Property Name="feedbackType" Type="nvarchar" MaxLength="255" />
           <Property Name="feedbackMessage" Type="nvarchar(max)" />
           <Property Name="dateCreated" Type="datetime" />
+          <Property Name="status" Type="int" />
         </EntityType>
         <EntityType Name="images">
           <Key>
@@ -99,6 +100,8 @@
           <Property Name="contentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="employeeId" Type="nvarchar" MaxLength="100" />
           <Property Name="contents" Type="nvarchar(max)" />
+          <Property Name="status" Type="int" />
+          <Property Name="dateCreated" Type="datetime" />
         </EntityType>
         <EntityType Name="userAccount">
           <Key>
@@ -319,6 +322,7 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           <Property Name="feedbackType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="feedbackMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="dateCreated" Type="DateTime" Precision="3" />
+          <Property Name="status" Type="Int32" />
         </EntityType>
         <EntityType Name="images">
           <Key>
@@ -373,6 +377,8 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           <Property Name="contentId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="contents" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="status" Type="Int32" />
+          <Property Name="dateCreated" Type="DateTime" Precision="3" />
           <NavigationProperty Name="employeeInfo" Relationship="Self.FK_todoLists_employeeInfo" FromRole="todoLists" ToRole="employeeInfo" />
         </EntityType>
         <EntityType Name="userAccount">
@@ -583,6 +589,7 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
                 <ScalarProperty Name="feedbackType" ColumnName="feedbackType" />
                 <ScalarProperty Name="feedbackMessage" ColumnName="feedbackMessage" />
                 <ScalarProperty Name="dateCreated" ColumnName="dateCreated" />
+                <ScalarProperty Name="status" ColumnName="status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -638,6 +645,8 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
                 <ScalarProperty Name="contentId" ColumnName="contentId" />
                 <ScalarProperty Name="employeeId" ColumnName="employeeId" />
                 <ScalarProperty Name="contents" ColumnName="contents" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="dateCreated" ColumnName="dateCreated" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

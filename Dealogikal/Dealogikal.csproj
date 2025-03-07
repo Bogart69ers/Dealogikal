@@ -1449,6 +1449,7 @@
     <Compile Include="Repository\IBaseRepository.cs" />
     <Compile Include="Repository\ImageManager.cs" />
     <Compile Include="Repository\RequestManager.cs" />
+    <Compile Include="Repository\TodoListManager.cs" />
     <Compile Include="Utils\Roles.cs" />
     <Compile Include="Utils\Utilities.cs" />
     <Compile Include="ViewModel\AccountViewModel.cs" />
@@ -1473,8 +1474,6 @@
     <Content Include="scripts\popper-utils.min.js.map" />
     <Content Include="scripts\popper-utils.js.map" />
     <Content Include="Views\Home\Dtr.cshtml" />
-    <Content Include="Views\Home\LeaveRequest.cshtml" />
-    <Content Include="Views\Home\OvertimeRequest.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\Admin\AdminDashboard.cshtml" />
     <Content Include="Views\Admin\CreateAccount.cshtml" />
@@ -1491,6 +1490,8 @@
     <Content Include="Views\Admin\MyProfile.cshtml" />
     <Content Include="Views\Home\MyProfile.cshtml" />
     <Content Include="Views\Home\ViewFeedback.cshtml" />
+    <Content Include="Views\Home\LeaveRequest.cshtml" />
+    <Content Include="Views\Home\OvertimeRequest.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

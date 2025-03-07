@@ -19,5 +19,6 @@ namespace Dealogikal.Database
         public string feedbackType { get; set; }
         public string feedbackMessage { get; set; }
         public Nullable<System.DateTime> dateCreated { get; set; }
+        public Nullable<int> status { get; set; }
     }
 }

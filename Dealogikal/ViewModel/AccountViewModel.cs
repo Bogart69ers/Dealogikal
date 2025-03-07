@@ -31,6 +31,14 @@ namespace Dealogikal.ViewModel
 
         public List<feedback> feedbacks { get; set; } = new List<feedback>();
 
+        public images image { get; set; }
+
+        public List<images> images { get; set; }
+
+        public todoLists todoList { get; set; }
+
+        public List<todoLists> todoLists { get; set; } = new List<todoLists>();
+
 
     }
 }

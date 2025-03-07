@@ -27,6 +27,11 @@ namespace Dealogikal.Repository
             return _img._table.FirstOrDefault(i => i.employeeId == employeeId);
         }
 
+        public List<images> GetAllImages()
+        {
+            return _img.GetAll();
+        }
+
         public ErrorCode CreateImg(images img, ref string err)
         {
             return _img.Create(img, out err);

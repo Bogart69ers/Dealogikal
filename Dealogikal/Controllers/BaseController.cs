@@ -21,6 +21,7 @@ namespace Dealogikal.Controllers
         public RequestManager _RequestManager;
         public ImageManager _ImgManager;
         public FeedbackManager _FeedbackManager;
+        public TodoListManager _TodoManager;
          
         
         public BaseController()
@@ -31,6 +32,7 @@ namespace Dealogikal.Controllers
             _RequestManager = new RequestManager();
             _ImgManager = new ImageManager();
             _FeedbackManager = new FeedbackManager();
+            _TodoManager = new TodoListManager();
         }
 
         protected override void OnActionExecuting(ActionExecutingContext filterContext)

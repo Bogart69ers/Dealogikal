@@ -45,8 +45,7 @@
             <div class="row">
                 <div class="col-12 mb-4 mb-xl-0">
                     <div class="d-flex justify-content-between align-items-center" style="margin-left:3%; margin-bottom: 10px">
-                        <h3 class="font-weight-bold">Employee Information</h3>
-                        <button class="btn btn-info btn-md" onclick="addEmployee()">+ Create Employee</button>
+                        <h3 class="font-weight-bold">User Feedback</h3>
                     </div>
                 </div>
 
@@ -57,15 +56,16 @@
                                 <div class="col-12">
 
                                     <!-- 🔍 Search Bar -->
-                                    <input type="text" id="searchInput" class="form-control mb-3 w-25" placeholder="Search Employees..." style="margin-left: 75%">
+                                    <input type="text" id="searchInput" class="form-control mb-3 w-25" placeholder="Search Reviews..." style="margin-left: 75%">
 
                                     <div class="table-responsive">
                                         <table id="employeeTable" class="table table-bordered">
                                             <thead>
                                                 <tr>
                                                     <th onclick="sortTable(1)">Date</th>
-                                                    <th onclick="sortTable(1)">Name</th>
-                                                    <th onclick="sortTable(2)">Review Type</th>
+                                                    <th onclick="sortTable(2)">Name</th>
+                                                    <th onclick="sortTable(3)">Review Type</th>
+                                                    <th onclick="sortTable(4)">Status</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -76,6 +76,11 @@
                                                         <td>@(feedback.dateCreated == default(DateTime) ? "No Information" : feedback.dateCreated.Value.ToString("MMMM dd, yyyy"))</td>
                                                         <td>@feedback.name</td>
                                                         <td>@feedback.feedbackType</td>
+                                                        <td>
+                                                            <label class="badge @(feedback.status == 0 ? "badge-warning" : feedback.status == 1 ? "badge-success" : "badge-danger")">
+                                                                @(feedback.status == 0 ? "Unsolved" : feedback.status == 1 ? "Accepted" : "Unsolved")
+                                                            </label>
+                                                        </td>
                                                         <td style="text-align:center;">
                                                             <button class="btn btn-outline-info btn-sm"
                                                                     onclick="toggleDetails('details-@feedback.id')">

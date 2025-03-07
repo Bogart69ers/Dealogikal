@@ -221,61 +221,101 @@
             </div>
         </div>
     </div>
-    <script>
-    document.getElementById('reviewtype').addEventListener('change', function () {
-        let otherInput = document.getElementById('otherReviewType');
-
-        if (this.value === 'Others') {
-            otherInput.style.display = 'block';
-            otherInput.setAttribute('required', 'required'); // Make required if "Others" is selected
-        } else {
-            otherInput.style.display = 'none';
-            otherInput.removeAttribute('required'); // Remove required when not needed
-        }
-    });
-
-    document.querySelector(".forms-sample").addEventListener("submit", function (event) {
-        let reviewTypeDropdown = document.getElementById("reviewtype");
-        let otherInput = document.getElementById("otherReviewType");
-
-        // If "Others" is selected and a value is provided, replace dropdown value
-        if (reviewTypeDropdown.value === "Others" && otherInput.value.trim() !== "") {
-            reviewTypeDropdown.value = otherInput.value.trim(); // Set the dropdown value as input value
-        }
-    });
-
-    document.getElementById('clearForm').addEventListener('click', function () {
-        document.querySelector(".forms-sample").reset();
-        document.getElementById('otherReviewType').style.display = 'none'; // Hide "Others" input
-    });
-    </script>
-
-
-    <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var feedbackMessage = '@TempData["FeedbackSuccess"]';
-        if (feedbackMessage) {
-            Swal.fire({
-                title: 'Success',
-                text: feedbackMessage,
-                icon: 'success',
-                timer: 2500, // Popup disappears after 2.5 seconds
-                timerProgressBar: true, // Show progress bar for timer
-                showConfirmButton: false, // Completely remove OK button
-                allowOutsideClick: false, // Prevent closing before timeout
-                width: '350px', // Reduce popup width for better alignment
-                customClass: {
-                    popup: 'custom-swal-popup', // Custom styling for popup
-                    icon: 'custom-swal-icon' // Custom styling for check icon
-                }
-            });
-        }
-    });
-    </script>
-
 
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("🚀 JavaScript Loaded! Ready to handle form submission.");
+
+        // Ensure the form exists inside the modal
+        let feedbackForm = document.querySelector("#feedbackModal .forms-sample");
+
+        if (!feedbackForm) {
+            console.error("⚠️ Feedback form not found! Check modal structure.");
+            return;
+        }
+
+        feedbackForm.addEventListener("submit", function (event) {
+            event.preventDefault(); // ✅ Prevent full-page reload
+            console.log("📩 Form submitted, preparing AJAX request...");
+
+            let formData = new FormData(feedbackForm);
+            let actionUrl = feedbackForm.getAttribute("action");
+
+            fetch(actionUrl, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json()) // ✅ Ensure response is parsed as JSON
+            .then(data => {
+                console.log("✅ AJAX Response:", data); // ✅ Log response for debugging
+
+                if (data.success) {
+                    console.log("🎉 Success! Showing SweetAlert...");
+
+                    Swal.fire({
+                        title: "Success",
+                        text: data.message,
+                        icon: "success",
+                        timer: 2000, // Auto-close after 2 seconds
+                        timerProgressBar: true,
+                        width: '350px', // Reduce popup width
+                        showConfirmButton: false
+                    });
+
+                    // ✅ Close modal & refresh page after success
+                    setTimeout(() => {
+                        console.log("🔄 Closing modal and reloading page...");
+                        $('#feedbackModal').modal('hide'); // Hide Bootstrap modal
+                        document.body.classList.remove("modal-open");
+                        document.getElementById("feedbackModal").style.display = "none";
+                        location.reload(); // Refresh to show updates
+                    }, 2000);
+                } else {
+                    console.log("❌ Error response received, showing error alert...");
+                    Swal.fire({
+                        title: "Error",
+                        text: data.message,
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("🚨 AJAX Error:", error);
+
+                Swal.fire({
+                    title: "Error",
+                    text: "Something went wrong. Please try again.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
+            });
+        });
+    });
+    </script>
+    <script>
+        // Handle the "Others" dropdown selection
+        document.getElementById('reviewtype').addEventListener('change', function () {
+            let otherInput = document.getElementById('otherReviewType');
+            if (this.value === "Others") {
+                otherInput.style.display = 'block';
+                otherInput.setAttribute("required", "required");
+            } else {
+                otherInput.style.display = 'none';
+                otherInput.removeAttribute("required");
+            }
+        });
+
+        // Reset form and hide "Others" input when clicking reset
+        document.getElementById('clearForm').addEventListener('click', function () {
+            document.querySelector(".forms-sample").reset();
+            document.getElementById('otherReviewType').style.display = 'none';
+        });
+    });
+    </script>
+
 
     <!-- Bootstrap JS (Ensure Bootstrap is included in your project) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
