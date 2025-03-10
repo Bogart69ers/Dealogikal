@@ -1,0 +1,594 @@
+﻿@model Dealogikal.ViewModel.AccountViewModel
+@{
+    ViewBag.Title = "AdminDashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var user = ViewBag.Name;
+}
+
+@if (Model.dtr != null)
+{
+    <input type="hidden" id="timeIn" value="@(Model.dtr.timeIn.HasValue ? Model.dtr.timeIn.Value.ToString("HH:mm") : "")" />
+    <input type="hidden" id="breakIn" value="@(Model.dtr.breakIn.HasValue ? Model.dtr.breakIn.Value.ToString("HH:mm") : "")" />
+    <input type="hidden" id="breakOut" value="@(Model.dtr.breakOut.HasValue ? Model.dtr.breakOut.Value.ToString("HH:mm") : "")" />
+    <input type="hidden" id="timeOut" value="@(Model.dtr.timeOut.HasValue ? Model.dtr.timeOut.Value.ToString("HH:mm") : "")" />
+}
+else
+{
+    <input type="hidden" id="timeIn" value="" />
+    <input type="hidden" id="breakIn" value="" />
+    <input type="hidden" id="breakOut" value="" />
+    <input type="hidden" id="timeOut" value="" />
+}
+
+
+<div class="content-wrapper">
+    <div class="row">
+        <h2 class="font-weight-bold text-left">Welcome @user</h2>
+        <div class="col-md-12 d-flex flex-column align-items-start" style="background-color:white;padding:30px;border-radius:20px">
+            <div class="d-flex flex-column align-items-start" style="margin-top: 10px;">
+                <div class="d-flex align-items-center">
+                    <!-- Live Analog Clock and Digital Clock with Date -->
+                    <div class="d-flex flex-column align-items-center" style="margin-right: 20px;">
+                        <canvas id="analogClock" width="200" height="200" style="background: white; border-radius: 50%; box-shadow: 0px 0px 10px rgba(0,0,0,0.1);border:1px solid lightblue"></canvas>
+                        <div id="digitalClock" style="font-size: 18px; margin-top: 5px; font-weight: bold; text-align: center;"></div>
+                        <div id="liveDate" style="font-size: 16px; font-weight: bold; text-align: center; color: gray; margin-top: 5px;"></div>
+                    </div>
+                    <form class="form-sample" action="@Url.Action("Dtr", "Admin")" method="post">
+
+                        <input type="hidden" name="recordId" value="@(Model.dtr != null ? Model.dtr.recordId : 0)" />
+
+                        <!-- Work Mode Dropdown and Buttons -->
+                        <div class="d-flex flex-column align-items-center" style="margin-right: 20px; margin-top: -10%;">
+                            <select id="workMode" class="form-control" name="workMode" style="margin-bottom: 5px; width: 200px; text-align: center; display:block" required>
+                                @if (Model.dtr != null && Model.dtr.recordId > 0)
+                                {
+                                    <option value="Onsite" @(Model.dtr.workMode == "Onsite" ? "selected" : "")>Onsite</option>
+                                    <option value="WFH" @(Model.dtr.workMode == "WFH" ? "selected" : "")>Work from Home</option>
+                                }
+                                else
+                                {
+                                    <option value="" disabled selected>Work Mode</option>
+                                    <option value="Onsite">Onsite</option>
+                                        <option value="WFH">Work from Home</option>
+                                }
+                            </select>
+                            <div class="d-flex justify-content-between" style="width: 100%; margin-top: 10%">
+                                <button type="submit" id="btn1" class="btn btn-inverse-info btn-icon"
+                                        style="font-size: 15px; padding: 18px 38px; display: flex; justify-content: center; align-items: center; white-space: nowrap; width: 100%;"
+                                        name="action" value="">
+                                    Time In
+                                </button>
+                                &nbsp;
+                                <button type="submit" id="btn2" class="btn btn-inverse-dark btn-icon"
+                                        style="font-size: 15px; padding: 18px 38px; display: flex; justify-content: center; align-items: center; white-space: nowrap; width: 100%;"
+                                        name="action" value="">
+                                    Time Out
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                    <div class="button-section" >
+                        <div class="top-row">
+                            <div class="info-box">
+                                <a href="~/Admin/Accounts">Total Employees:</a>
+                                <a href="~/Admin/Accounts">@Model.employeeInfos.Count(m => m.status == 1)</a>
+                            </div>
+                            <div class="info-box">
+                                <a href="~/Admin/EmployeeDtr">Total Late Today:</a>
+                                <a href="~/Admin/EmployeeDtr">@ViewBag.LateEmployeesCount</a>
+                            </div>
+                        </div>
+                        <div class="bottom-row">
+                            <div class="info-box">
+                                <a href="~/Admin/Accounts">Overtime Requests:</a>
+                                <a href="~/Admin/Accounts">@Model.overtimeRequests.Count(o => o.status == 0)</a>
+                            </div>
+                            <div class="info-box">
+                                <a href="~/Admin/Accounts">Leave <br />Requests:</a>
+                                <a href="~/Admin/Accounts">@Model.leaveRequests.Count(l => l.status == 0)</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-container" style="margin-top: 20px; width: 100%;">
+                <table class="table table-bordered text-center" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Date</th>
+                            <th colspan="2">Morning</th>
+                            <th colspan="2">Afternoon</th>
+                            <th rowspan="2">Work Mode</th>
+                        </tr>
+                        <tr>
+                            <th>Time In</th>
+                            <th>Time Out</th>
+                            <th>Time In</th>
+                            <th>Time Out</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.dtr != null)
+                        {
+                            <tr>
+                                <td>@Model.dtr.date.ToString("dd MMM yyyy")</td>
+                                <td class="@(Model.dtr.timeIn.HasValue && Model.dtr.timeIn.Value.TimeOfDay > new TimeSpan(8, 5, 0) ? "late-time" : "")">
+                                    @(Model.dtr.timeIn.HasValue ? Model.dtr.timeIn.Value.ToString("hh:mm tt") : "")</td>
+                                <td>@(Model.dtr.breakIn.HasValue ? Model.dtr.breakIn.Value.ToString("hh:mm tt") : "")</td>
+                                <td>@(Model.dtr.breakOut.HasValue ? Model.dtr.breakOut.Value.ToString("hh:mm tt") : "")</td>
+                                <td>@(Model.dtr.timeOut.HasValue ? Model.dtr.timeOut.Value.ToString("hh:mm tt") : "")</td>
+                                <td>@Model.dtr.workMode</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>@DateTime.Now.ToString("dd MMM yyyy")</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="right-section">
+        <div class="todo-container minimized">
+            <button id="minimize-btn" class="btn btn-sm btn-outline-secondary"><</button>
+            <div class="todo-content">
+                <h4>To-do List:</h4>
+                <div class="add-items d-flex mb-2">
+                    <form class="form w-100">
+                        <div class="form-group d-flex">
+                            <textarea class="form-control todo-list-input"
+                                      placeholder="Add To-do"
+                                      maxlength="200"></textarea>
+                            <button type="submit" class="btn btn-primary todo-list-add-btn" id="add-task">
+                                Add
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="list-wrapper">
+                    <ul class="todo-list"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+        .late-time {
+        color: red;
+        font-weight: bold;
+        }
+        .table-container {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #f9f9f9;
+        }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .table thead {
+            background: #f1f1f1;
+            font-weight: bold;
+        }
+        z
+        .right-section {
+            width: 350px;
+            position: absolute;
+            right: 20px; 
+            top: 80px;
+        }
+
+        .button-section {
+        position: absolute;
+        right: 5%;
+        top: 30%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px; 
+        }
+
+        .top-row, .bottom-row {
+            display: flex;
+            gap: 10px; 
+            justify-content: center; /* Align center */
+            width: 100%; /* Ensure full width */
+        }
+
+       .info-box {
+        background: #4b49ac;
+        padding: 15px 25px;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        width: 150px; 
+        }
+
+        .info-box span {
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .info-box a {
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .info-box a:hover {
+            color: #3b5bdb; 
+         }
+
+        /* Ensure Leave Requests text appears stacked */
+.info-box a[href*="Leave Requests"] {
+    display: block; /* Forces text to stack */
+    text-align: center; /* Keeps it aligned properly */
+    white-space: pre-line; /* Ensures line breaks */
+}
+
+    /* Adjust To-Do Container Width */
+    .todo-container {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        width: 350px;
+    }
+
+    .right-section {
+        position: absolute;
+        right: 0;
+        top: 80px;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .todo-container {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 5px;
+        box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        width: 350px;
+        transition: transform 0.3s ease-in-out;
+        position: relative;
+        right: 0;
+    }
+
+    .todo-content {
+        transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
+        overflow: hidden;
+    }
+
+    .minimized {
+        transform: translateX(100%);
+        width: 50px;
+        padding: 5px;
+        background: transparent;
+        box-shadow: none;
+    }
+
+        .minimized .todo-content {
+            height: 0;
+            opacity: 0;
+            visibility: hidden;
+        }
+
+    #minimize-btn {
+        position: absolute;
+        left: -40px;
+        top: 10px;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: lightgray;
+        border: none;
+        cursor: pointer;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    /* Ensure Proper List Item Alignment */
+    .todo-list li {
+        background: #fffa90;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
+        word-break: break-word;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        position: relative;
+    }
+
+        /* Delete Button Adjustments */
+        .todo-list li .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            width: 50px;
+            height: 25px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .todo-list li .delete-btn:hover {
+                background: darkred;
+            }
+
+
+
+        /* Completed task effect */
+        .todo-list li.completed span {
+            text-decoration: line-through;
+            color: gray;
+        }
+
+    .list-wrapper {
+        max-width: 100%;
+        max-height: 200px;
+        overflow-y: auto;
+        margin-top: 10px;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const minimizeBtn = document.getElementById("minimize-btn");
+        const todoContainer = document.querySelector(".todo-container");
+
+        minimizeBtn.addEventListener("click", function () {
+            todoContainer.classList.toggle("minimized");
+            minimizeBtn.textContent = todoContainer.classList.contains("minimized") ? "<" : ">";
+        });
+    });
+</script>
+<script>
+    function updateButtons() {
+        var now = new Date();
+        var currentHour = now.getHours();
+
+        var timeInVal = $('#timeIn').val();
+        var breakInVal = $('#breakIn').val();
+        var breakOutVal = $('#breakOut').val();
+        var timeOutVal = $('#timeOut').val();
+
+        var btn1 = $('#btn1');
+        var btn2 = $('#btn2');
+
+        console.log("Time Values:", { timeInVal, breakInVal, breakOutVal, timeOutVal }); // Debugging Log
+        console.log("Current Hour:", currentHour); // Debugging Log
+
+        if (currentHour < 12) {
+            // Morning Shift: Time In & Break In
+            if (!timeInVal) {
+                console.log("Enable Time In Button");
+                btn1.text("Time In").val("TimeIn").prop("disabled", false);
+                btn2.text("Time Out").val("BreakIn").prop("disabled", true);
+            } else if (timeInVal && !breakInVal) {
+                console.log("Enable Break In Button");
+                btn1.prop("disabled", true);
+                btn2.text("Time Out").val("BreakIn").prop("disabled", false);
+            } else {
+                console.log("Disable Morning Buttons");
+                btn1.prop("disabled", true);
+                btn2.prop("disabled", true);
+            }
+        } else {
+            // Afternoon Shift: Break Out & Time Out
+            if (!breakOutVal) {
+                console.log("Enable Break Out Button");
+                btn1.text("Time In").val("BreakOut").prop("disabled", false);
+                btn2.text("Time Out").val("TimeOut").prop("disabled", true);
+            } else if (breakOutVal && !timeOutVal) {
+                console.log("Enable Time Out Button");
+                btn1.prop("disabled", true);
+                btn2.text("Time Out").val("TimeOut").prop("disabled", false);
+            } else {
+                console.log("Disable Afternoon Buttons");
+                btn1.prop("disabled", true);
+                btn2.prop("disabled", true);
+            }
+        }
+    }
+
+    // Run button update on page load
+    $(document).ready(function () {
+        updateButtons();
+        setInterval(updateButtons, 1000);
+    });
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let inputField = document.querySelector(".todo-list-input");
+        let addButton = document.querySelector("#add-task");
+        let todoList = document.querySelector(".todo-list");
+
+        // Auto-resize textarea
+        inputField.addEventListener("input", function () {
+            this.style.height = "auto"; // Reset height first
+            this.style.height = this.scrollHeight + "px"; // Adjust height dynamically
+        });
+
+        // Ensure the Add button remains fixed in size
+        addButton.style.flexShrink = "0";
+        addButton.style.width = "80px";
+        addButton.style.height = "40px";
+        addButton.style.padding = "10px";
+
+        document.querySelector("#add-task").addEventListener("click", function (event) {
+            event.preventDefault();
+            let taskText = inputField.value.trim();
+            if (taskText !== "") {
+                let newTask = document.createElement("li");
+                newTask.style.position = "relative"; // Ensure proper positioning
+                newTask.style.display = "flex";
+                newTask.style.alignItems = "center";
+                newTask.style.justifyContent = "space-between";
+                newTask.style.paddingRight = "50px"; // Space for delete button
+
+                // Get current date in mm/dd/yyyy format
+                let currentDate = new Date();
+                let formattedDate = (currentDate.getMonth() + 1).toString().padStart(2, '0') + "/" +
+                                    currentDate.getDate().toString().padStart(2, '0') + "/" +
+                                    currentDate.getFullYear();
+
+                // Date element
+                let dateElement = document.createElement("div");
+                dateElement.textContent = formattedDate;
+                dateElement.style.fontSize = "12px";
+                dateElement.style.fontWeight = "bold";
+                dateElement.style.marginBottom = "5px";
+
+                // Checkbox
+                let checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.style.marginRight = "10px";
+                checkbox.addEventListener("change", function () {
+                    newTask.classList.toggle("completed", this.checked);
+                });
+
+                // Task text
+                let taskSpan = document.createElement("span");
+                taskSpan.textContent = taskText;
+                taskSpan.style.flexGrow = "1";
+
+                // Delete button (Fixed Small, Right Side)
+                let deleteBtn = document.createElement("button");
+                deleteBtn.textContent = "Delete";
+                deleteBtn.classList.add("delete-btn");
+                deleteBtn.style.width = "50px";
+                deleteBtn.style.height = "25px";
+                deleteBtn.style.fontSize = "12px";
+                deleteBtn.style.padding = "0";
+                deleteBtn.style.borderRadius = "5px";
+                deleteBtn.style.background = "red";
+                deleteBtn.style.color = "white";
+                deleteBtn.style.border = "none";
+                deleteBtn.style.cursor = "pointer";
+                deleteBtn.style.marginLeft = "10px";
+
+                // Create a container for date and task
+                let taskContainer = document.createElement("div");
+                taskContainer.appendChild(dateElement);
+                taskContainer.appendChild(newTask);
+
+                deleteBtn.addEventListener("click", function () {
+                    taskContainer.remove(); // Remove both date and task
+                });
+
+                newTask.appendChild(checkbox);
+                newTask.appendChild(taskSpan);
+                newTask.appendChild(deleteBtn);
+
+                // Insert the new task at the top
+                todoList.prepend(taskContainer);
+
+                inputField.value = "";
+                inputField.style.height = "40px"; // Reset textarea height
+            }
+        });
+    });
+
+    function updateClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+
+        // Convert 24-hour format to 12-hour format
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Convert 0 to 12
+
+        // Corrected template literal usage (Use backticks `` instead of quotes)
+        document.getElementById("digitalClock").textContent = 
+            `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
+
+        document.getElementById("liveDate").textContent = now.toDateString();
+
+        // Ensure drawAnalogClock function exists before calling it
+        if (typeof drawAnalogClock === "function") {
+            drawAnalogClock(hours, minutes, seconds);
+        }
+    }
+
+    // Ensure updateClock runs every second
+    setInterval(updateClock, 1000);
+    updateClock(); // Call immediately to avoid delay
+
+
+
+    function drawAnalogClock(hours, minutes, seconds) {
+        const canvas = document.getElementById("analogClock");
+        const ctx = canvas.getContext("2d");
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.translate(canvas.width / 2, canvas.height / 2);
+
+        function drawHand(length, width, angle, color = "black") {
+            ctx.save();
+            ctx.rotate(angle * (Math.PI / 180));
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(0, -length);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        drawHand(50, 6, (hours % 12) * 30 + minutes * 0.5);
+        drawHand(70, 4, minutes * 6);
+        drawHand(90, 2, seconds * 6, "red");
+
+        ctx.restore();
+    }
+
+    setInterval(updateClock, 1000);
+</script>

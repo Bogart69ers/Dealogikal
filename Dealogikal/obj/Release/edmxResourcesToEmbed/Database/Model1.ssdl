@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DeologikalDTRModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="dtrRecords">
+    <Key>
+      <PropertyRef Name="recordId" />
+    </Key>
+    <Property Name="recordId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="date" Type="date" Nullable="false" />
+    <Property Name="timeIn" Type="datetime" />
+    <Property Name="breakOut" Type="datetime" />
+    <Property Name="breakIn" Type="datetime" />
+    <Property Name="timeOut" Type="datetime" />
+    <Property Name="createdAt" Type="datetime" />
+    <Property Name="workMode" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="employeeInfo">
+    <Key>
+      <PropertyRef Name="employeeId" />
+    </Key>
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="firstName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="lastName" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="email" Type="nvarchar" MaxLength="255" />
+    <Property Name="birthdate" Type="date" />
+    <Property Name="phone" Type="nvarchar" MaxLength="20" />
+    <Property Name="position" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="department" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="corporation" Type="nvarchar" MaxLength="100" />
+    <Property Name="address" Type="nvarchar(max)" />
+    <Property Name="barangay" Type="nvarchar" MaxLength="255" />
+    <Property Name="city" Type="nvarchar" MaxLength="255" />
+    <Property Name="status" Type="int" />
+    <Property Name="dateHired" Type="date" Nullable="false" />
+    <Property Name="createdAt" Type="datetime" />
+    <Property Name="leaveCount" Type="int" />
+  </EntityType>
+  <EntityType Name="feedback">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="nvarchar" MaxLength="100" />
+    <Property Name="feedbackType" Type="nvarchar" MaxLength="255" />
+    <Property Name="feedbackMessage" Type="nvarchar(max)" />
+    <Property Name="dateCreated" Type="datetime" />
+    <Property Name="status" Type="int" />
+  </EntityType>
+  <EntityType Name="images">
+    <Key>
+      <PropertyRef Name="mediaId" />
+    </Key>
+    <Property Name="mediaId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" />
+    <Property Name="imageFile" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="leaveRequest">
+    <Key>
+      <PropertyRef Name="requestId" />
+    </Key>
+    <Property Name="requestId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" />
+    <Property Name="leaveStart" Type="date" />
+    <Property Name="leaveEnd" Type="date" />
+    <Property Name="leaveType" Type="nvarchar" MaxLength="100" />
+    <Property Name="leaveReason" Type="nvarchar(max)" />
+    <Property Name="dateFiled" Type="datetime" Nullable="false" />
+    <Property Name="status" Type="int" />
+    <Property Name="leaveRequestType" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="overtimeRequest">
+    <Key>
+      <PropertyRef Name="requestId" />
+    </Key>
+    <Property Name="requestId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" />
+    <Property Name="overtimeStart" Type="datetime" />
+    <Property Name="overtimeEnd" Type="datetime" />
+    <Property Name="overtimeDate" Type="date" />
+    <Property Name="overtimeReason" Type="nvarchar(max)" />
+    <Property Name="dateFiled" Type="datetime" Nullable="false" />
+    <Property Name="status" Type="int" />
+  </EntityType>
+  <EntityType Name="role">
+    <Key>
+      <PropertyRef Name="roleId" />
+    </Key>
+    <Property Name="roleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="roleName" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="todoLists">
+    <Key>
+      <PropertyRef Name="contentId" />
+    </Key>
+    <Property Name="contentId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" />
+    <Property Name="contents" Type="nvarchar(max)" />
+    <Property Name="status" Type="int" />
+    <Property Name="dateCreated" Type="datetime" />
+  </EntityType>
+  <EntityType Name="userAccount">
+    <Key>
+      <PropertyRef Name="userId" />
+    </Key>
+    <Property Name="userId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="password" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="role" Type="int" Nullable="false" />
+    <Property Name="createdAt" Type="datetime" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="vw_Role">
+    <Key>
+      <PropertyRef Name="userId" />
+      <PropertyRef Name="employeeId" />
+    </Key>
+    <Property Name="userId" Type="int" Nullable="false" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" Nullable="false" />
+    <Property Name="roleName" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <Association Name="FK_dtrRecords_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="dtrRecords" Type="Self.dtrRecords" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="dtrRecords">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_images_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="images" Type="Self.images" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="images">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_leaveRequest_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="leaveRequest" Type="Self.leaveRequest" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="leaveRequest">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_overtimeRequest_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="overtimeRequest" Type="Self.overtimeRequest" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="overtimeRequest">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_todoLists_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="todoLists" Type="Self.todoLists" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="todoLists">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_userAccount_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="userAccount" Type="Self.userAccount" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="userAccount">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_userAccount_role">
+    <End Role="role" Type="Self.role" Multiplicity="1" />
+    <End Role="userAccount" Type="Self.userAccount" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="role">
+        <PropertyRef Name="roleId" />
+      </Principal>
+      <Dependent Role="userAccount">
+        <PropertyRef Name="role" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DeologikalDTRModelStoreContainer">
+    <EntitySet Name="dtrRecords" EntityType="Self.dtrRecords" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="employeeInfo" EntityType="Self.employeeInfo" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="feedback" EntityType="Self.feedback" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="images" EntityType="Self.images" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="leaveRequest" EntityType="Self.leaveRequest" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="overtimeRequest" EntityType="Self.overtimeRequest" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="role" EntityType="Self.role" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="todoLists" EntityType="Self.todoLists" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="userAccount" EntityType="Self.userAccount" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="vw_Role" EntityType="Self.vw_Role" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vw_Role].[userId] AS [userId], 
+    [vw_Role].[employeeId] AS [employeeId], 
+    [vw_Role].[roleName] AS [roleName]
+    FROM [dbo].[vw_Role] AS [vw_Role]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_dtrRecords_employeeInfo" Association="Self.FK_dtrRecords_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="dtrRecords" EntitySet="dtrRecords" />
+    </AssociationSet>
+    <AssociationSet Name="FK_images_employeeInfo" Association="Self.FK_images_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="images" EntitySet="images" />
+    </AssociationSet>
+    <AssociationSet Name="FK_leaveRequest_employeeInfo" Association="Self.FK_leaveRequest_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="leaveRequest" EntitySet="leaveRequest" />
+    </AssociationSet>
+    <AssociationSet Name="FK_overtimeRequest_employeeInfo" Association="Self.FK_overtimeRequest_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="overtimeRequest" EntitySet="overtimeRequest" />
+    </AssociationSet>
+    <AssociationSet Name="FK_todoLists_employeeInfo" Association="Self.FK_todoLists_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="todoLists" EntitySet="todoLists" />
+    </AssociationSet>
+    <AssociationSet Name="FK_userAccount_employeeInfo" Association="Self.FK_userAccount_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="userAccount" EntitySet="userAccount" />
+    </AssociationSet>
+    <AssociationSet Name="FK_userAccount_role" Association="Self.FK_userAccount_role">
+      <End Role="role" EntitySet="role" />
+      <End Role="userAccount" EntitySet="userAccount" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

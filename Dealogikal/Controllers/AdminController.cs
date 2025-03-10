@@ -266,7 +266,7 @@ namespace Dealogikal.Controllers
             var model = new AccountViewModel
             {
                 employeeInfos = _AccManager.GetAllEmployee(), 
-                dtrRecords = _DtrManager.GetAllDtr()
+                dtrRecords = _DtrManager.GetAllDtrDesc()
             };
 
             return View(model);
@@ -389,23 +389,38 @@ namespace Dealogikal.Controllers
             return View();
         }
 
-        [Authorize]
         [HttpPost]
-        public ActionResult CreateTodo(todoLists tl)
+        public ActionResult CreateTodo(string contents)
         {
-            tl.employeeId = User.Identity.Name;
-            tl.status = 0;
-            tl.dateCreated = DateTime.Now;
+            Console.WriteLine("🔍 CreateTodo was hit!");
+            Console.WriteLine("📝 Received contents: " + contents);
 
-            if(_TodoManager.CreateTodo(tl , ref ErrorMessage) != ErrorCode.Error)
+            if (string.IsNullOrWhiteSpace(contents))
             {
-                ModelState.AddModelError(String.Empty, ErrorMessage);
-                return View();
+                Console.WriteLine("❌ Todo contents are empty!");
+                return Json(new { success = false, message = "Todo cannot be empty" });
             }
 
-            ModelState.AddModelError(String.Empty, ErrorMessage);
-            return RedirectToAction("AdminDashboard");
+            todoLists todo = new todoLists
+            {
+                contents = contents,
+                employeeId = User.Identity.Name,
+                status = 0,
+                dateCreated = DateTime.Now
+            };
+
+            string errorMessage = "";
+            if (_TodoManager.Createtodo(todo, ref errorMessage) == ErrorCode.Error)
+            {
+                Console.WriteLine("❌ Todo creation failed: " + errorMessage);
+                return Json(new { success = false, message = errorMessage });
+            }
+
+            Console.WriteLine("✅ Todo created successfully!");
+            return Json(new { success = true, message = "Todo created successfully!" });
         }
+
+
 
 
 

@@ -145,11 +145,11 @@ else
             <div class="todo-content">
                 <h4>To-do List:</h4>
                 <div class="add-items d-flex mb-2">
-                    <form class="form w-100">
+                    <form id="todoForm" class="form w-100" action="@Url.Action("CreateTodo", "Admin")" method="post">
                         <div class="form-group d-flex">
                             <textarea class="form-control todo-list-input"
                                       placeholder="Add To-do"
-                                      maxlength="200"></textarea>
+                                      maxlength="200" name="contents"></textarea>
                             <button type="submit" class="btn btn-primary todo-list-add-btn" id="add-task">
                                 Add
                             </button>
@@ -443,6 +443,32 @@ else
 
 
 <script>
+    $("#todoForm").submit(function(event) {
+        event.preventDefault(); // Stop default submission to check
+
+        let formData = $(this).serialize();
+        console.log("Submitting Form Data:", formData); // Log form data
+
+        $.ajax({
+            url: $(this).attr("action"),
+            type: $(this).attr("method"),
+            data: formData,
+            success: function(response) {
+                console.log("Todo successfully submitted!");
+                alert("Todo added successfully!");
+                window.location.reload(); // Reload the page to reflect changes
+            },
+            error: function(xhr, status, error) {
+                console.error("Error submitting todo:", error);
+                alert("Error submitting todo. Check console for details.");
+            }
+        });
+    });
+
+
+
+
+
     document.addEventListener("DOMContentLoaded", function () {
         let inputField = document.querySelector(".todo-list-input");
         let addButton = document.querySelector("#add-task");

@@ -42,6 +42,12 @@ namespace Dealogikal.Repository
         {
             return _employeeInf._table.FirstOrDefault(m => m.employeeId == employeeId);
         }
+
+        public List<employeeInfo> GetEmployeebyEmployeeIdDesc(string employeeId)
+        {
+            return _employeeInf._table.Where(m => m.employeeId == employeeId).OrderByDescending(e => e.createdAt).ToList();
+
+        }
         public employeeInfo CreateOrRetrieve(String employeeId , ref String err)
         {
             var user = GetUserByEmployeeId(employeeId);

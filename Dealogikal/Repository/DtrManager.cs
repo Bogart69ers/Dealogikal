@@ -33,6 +33,10 @@ namespace Dealogikal.Repository
         {
             return _dtrRecords.GetAll();
         }
+        public List<dtrRecords> GetAllDtrDesc()
+        {
+            return _dtrRecords.GetAll().OrderByDescending(d => d.createdAt).ToList();
+        }
 
         public List<dtrRecords> GetDtrHistoryByEmployeeId(string employeeId)
         {

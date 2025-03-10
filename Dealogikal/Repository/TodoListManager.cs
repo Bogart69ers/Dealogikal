@@ -27,7 +27,7 @@ namespace Dealogikal.Repository
             return _todo._table.FirstOrDefault(e => e.employeeId == employeeId);
         }
 
-        public ErrorCode CreateTodo(todoLists td, ref string errMsg)
+        public ErrorCode Createtodo(todoLists td, ref string errMsg)
         {
             try
             {
