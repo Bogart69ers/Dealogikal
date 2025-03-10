@@ -282,17 +282,7 @@ namespace Dealogikal.Controllers
                     ViewBag.ErrorMessage = errMsg;
                     return View("LeaveRequest");
                 }
-
-                // If Leave is "With Pay", Deduct Leave Count
-                if (lr.leaveType == "leavewithpay")
-                {
-                    if (_AccManager.UpdateEmployeeLeaveCount(user, ref errMsg) != ErrorCode.Success)
-                    {
-                        ViewBag.ErrorMessage = errMsg;
-                        return View("LeaveRequest");
-                    }
-                }
-
+                
                 return RedirectToAction("LeaveRequest");
             }
             catch (Exception ex)
@@ -301,6 +291,7 @@ namespace Dealogikal.Controllers
                 return View("LeaveRequest");
             }
         }
+
 
 
         [Authorize]
@@ -416,19 +407,35 @@ namespace Dealogikal.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult LeaveApproval(leaveRequest lr, string employeeId ,int requestId, string action)
+        public ActionResult LeaveApproval(leaveRequest lr, string employeeId, int requestId, string action)
         {
             string errMsg = string.Empty;
             ErrorCode result;
 
             if (action == "Accept")
             {
-                // Create a new record for the morning Time In.
+                // Approve Leave Request
                 result = _RequestManager.ApproveLeaveRequest(employeeId, requestId, ref errMsg);
                 if (result != ErrorCode.Success)
                 {
                     ViewBag.Error = "Error Updating Leave Request: " + errMsg;
                     return RedirectToAction("LeaveApproval");
+                }
+
+                // Retrieve leave request to check if it's leave with pay
+                var request = _RequestManager.GetLeaveRequestByRequestId(requestId);
+                if (request != null && request.leaveType == "leavewithpay")
+                {
+                    int daysToDeduct = (request.leaveEnd.Value - request.leaveStart.Value).Days + 1;
+
+                    // Deduct days from employee's leave count
+                    result = _AccManager.UpdateEmployeeLeaveCount(request.employeeId, daysToDeduct, ref errMsg);
+
+                    if (result != ErrorCode.Success)
+                    {
+                        ViewBag.Error = "Error deducting leave count: " + errMsg;
+                        return RedirectToAction("LeaveApproval");
+                    }
                 }
             }
             else if (action == "Decline")
@@ -441,9 +448,9 @@ namespace Dealogikal.Controllers
                 }
             }
 
-
             return RedirectToAction("LeaveApproval");
         }
+
 
         [Authorize]
         public ActionResult OvertimeApproval()

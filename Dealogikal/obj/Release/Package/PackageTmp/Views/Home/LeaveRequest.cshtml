@@ -372,4 +372,65 @@
         showPage(currentPage); // Show first page on load
     });
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let leaveType = document.getElementById("leaveType");
+        let leaveStart = document.getElementById("leaveStart");
+        let leaveEnd = document.getElementById("leaveEnd");
+
+        // This comes from the server-side ViewBag
+        let leaveCount = @leavecount;
+
+        function updateLeaveEndMaxDate() {
+            let leaveTypeValue = leaveType.value;
+            let startDateValue = leaveStart.value;
+
+            if (!startDateValue) {
+                leaveEnd.value = '';
+                leaveEnd.removeAttribute('max');
+                return;
+            }
+
+            let startDate = new Date(startDateValue);
+
+            if (leaveTypeValue === "leavewithpay" && leaveCount > 0) {
+                // Set max end date based on leaveCount
+                let maxDate = new Date(startDate);
+                maxDate.setDate(maxDate.getDate() + leaveCount - 1); // minus 1 to count the start day as one leave day
+                let maxDateStr = maxDate.toISOString().split('T')[0];
+
+                leaveEnd.max = maxDateStr;
+
+                // Optional: If the current leaveEnd is beyond max, reset it
+                if (leaveEnd.value && new Date(leaveEnd.value) > maxDate) {
+                    leaveEnd.value = maxDateStr;
+                }
+
+            } else {
+                leaveEnd.removeAttribute('max');
+            }
+        }
+
+        // When Leave Type changes
+        leaveType.addEventListener('change', function () {
+            updateLeaveEndMaxDate();
+        });
+
+        // When Leave Start date changes
+        leaveStart.addEventListener('change', function () {
+            // Make sure leaveEnd can't be before leaveStart
+            if (leaveStart.value) {
+                leaveEnd.min = leaveStart.value;
+            } else {
+                leaveEnd.removeAttribute('min');
+            }
+
+            updateLeaveEndMaxDate();
+        });
+
+        // Initialize on page load
+        updateLeaveEndMaxDate();
+    });
+
+</script>
 

@@ -8,12 +8,17 @@ using Dealogikal.Utils;
 using System.Web.Security;
 using Dealogikal.Database;
 using Dealogikal.ViewModel;
+using ClosedXML.Excel;
+using System.Globalization;
+
+
 
 namespace Dealogikal.Controllers
 {
     [Authorize(Roles = "HR")]
     public class AdminController : BaseController
     {
+
         [Authorize]
         public ActionResult Index()
         {
@@ -421,7 +426,103 @@ namespace Dealogikal.Controllers
         }
 
 
+        [Authorize]
+        public ActionResult DownloadEmployeeDTRExcel(string employeeId, int month, string cutoff)
+        {
+            // Example: Fetch the DTR records for this employee based on filters
+            var dtrRecords = _DtrManager.GetEmployeeDTR(employeeId, month, cutoff);
+            var employee = _AccManager.GetEmployeebyEmployeeId(employeeId);
 
+            if (dtrRecords == null || !dtrRecords.Any())
+            {
+                TempData["Error"] = "No DTR records found.";
+                return RedirectToAction("EmployeeDtr");
+            }
+
+            string initials = $"{employee.firstName?.FirstOrDefault()}{employee.lastName?.FirstOrDefault()}".ToUpper();
+            string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
+            int year = dtrRecords.First().date.Year;
+
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("DTR");
+
+                // TITLE ROW
+                worksheet.Range("B1:J1").Merge();
+                worksheet.Cell("B1").Value = "Bi-Weekly TimeSheet Calculator";
+                worksheet.Cell("B1").Style.Font.SetBold();
+                worksheet.Cell("B1").Style.Font.FontSize = 16;
+                worksheet.Cell("B1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                // COMPANY NAME
+                worksheet.Range("B2:J2").Merge();
+                worksheet.Cell("B2").Value = "DEALOGIKAL CORP.";
+                worksheet.Cell("B2").Style.Font.SetBold();
+                worksheet.Cell("B2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                // EMPLOYEE INFO
+                worksheet.Cell("B3").Value = "Employee Name:";
+                worksheet.Cell("C3").Value = $"{employee.firstName} {employee.lastName}";
+
+                worksheet.Cell("B4").Value = "Department:";
+                worksheet.Cell("C4").Value = employee.department;
+
+                worksheet.Cell("B5").Value = "Paid Overtime:";
+                worksheet.Cell("C5").Value = "No"; // Customize as needed
+
+                // LEAVE GAP
+                int startRow = 7;
+
+                // HEADERS
+                worksheet.Cell(startRow, 2).Value = "Month";
+                worksheet.Cell(startRow, 3).Value = "Date";
+                worksheet.Cell(startRow, 4).Value = "Weekend";
+                worksheet.Cell(startRow, 5).Value = "Time In";
+                worksheet.Cell(startRow, 6).Value = "Break In";
+                worksheet.Cell(startRow, 7).Value = "Break Out";
+                worksheet.Cell(startRow, 8).Value = "Time In";  // (Maybe you meant Time Out here?)
+                worksheet.Cell(startRow, 9).Value = "Break";
+
+                worksheet.Range(startRow, 2, startRow, 9).Style.Font.Bold = true;
+                worksheet.Range(startRow, 2, startRow, 9).Style.Fill.BackgroundColor = XLColor.LightGray;
+                worksheet.Range(startRow, 2, startRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+
+                int row = startRow + 1;
+
+                foreach (var dtr in dtrRecords)
+                {
+                    worksheet.Cell(row, 2).Value = dtr.date.ToString("MMMM"); // Month name
+                    worksheet.Cell(row, 3).Value = dtr.date.Day.ToString("00"); // Date (day number)
+                    worksheet.Cell(row, 4).Value = dtr.date.DayOfWeek.ToString(); // Weekend indicator (Day Name)
+
+                    worksheet.Cell(row, 5).Value = dtr.timeIn.HasValue ? dtr.timeIn.Value.ToString("HH:mm") : "--";
+                    worksheet.Cell(row, 6).Value = dtr.breakIn.HasValue ? dtr.breakIn.Value.ToString("HH:mm") : "--";
+                    worksheet.Cell(row, 7).Value = dtr.breakOut.HasValue ? dtr.breakOut.Value.ToString("HH:mm") : "--";
+                    worksheet.Cell(row, 8).Value = dtr.timeOut.HasValue ? dtr.timeOut.Value.ToString("HH:mm") : "--";
+                    worksheet.Cell(row, 9).Value = "1.0"; // Break duration (hardcoded for now)
+
+                    // Color weekends (Sat & Sun)
+                    if (dtr.date.DayOfWeek == DayOfWeek.Saturday || dtr.date.DayOfWeek == DayOfWeek.Sunday)
+                    {
+                        worksheet.Range(row, 2, row, 9).Style.Fill.BackgroundColor = XLColor.LightPink;
+                    }
+
+                    row++;
+                }
+
+                worksheet.Columns().AdjustToContents();
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+
+                    string fileName = $"DTR_{employee.lastName}_{monthName}_{year}_Cutoff-{cutoff}.xlsx";
+
+                    return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
+                }
+            }
+        }
 
 
 

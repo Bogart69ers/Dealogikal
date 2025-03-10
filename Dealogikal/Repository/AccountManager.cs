@@ -91,7 +91,7 @@ namespace Dealogikal.Repository
                 return ErrorCode.Error; ;
             }
         }
-        public ErrorCode UpdateEmployeeLeaveCount(string employeeId, ref string errMsg)
+        public ErrorCode UpdateEmployeeLeaveCount(string employeeId, int daysToDeduct, ref string errMsg)
         {
             try
             {
@@ -102,15 +102,14 @@ namespace Dealogikal.Repository
                     return ErrorCode.Error;
                 }
 
-                // Prevent negative leave balance
-                if (userInfo.leaveCount <= 0)
+                if (userInfo.leaveCount < daysToDeduct)
                 {
                     errMsg = "Insufficient leave balance.";
                     return ErrorCode.Error;
                 }
 
-                // Deduct leave count
-                userInfo.leaveCount -= 1;
+                userInfo.leaveCount -= daysToDeduct;
+
                 return _employeeInf.Update(employeeId, userInfo, out errMsg);
             }
             catch (Exception ex)
@@ -119,6 +118,7 @@ namespace Dealogikal.Repository
                 return ErrorCode.Error;
             }
         }
+
 
         public ErrorCode UpdateEmployeeInformation(employeeInfo empinf , ref string errMsg)
         {

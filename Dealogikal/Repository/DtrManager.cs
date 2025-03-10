@@ -43,6 +43,48 @@ namespace Dealogikal.Repository
             return _dtrRecords._table.Where(e => e.employeeId == employeeId).OrderByDescending(e => e.date).ToList();
         }
 
+        public List<dtrRecords> GetEmployeeDTR(string employeeId, int month, string cutoff)
+        {
+            // Get today's year or pass as parameter if needed
+            int year = DateTime.Now.Year;
+
+            var startDate = new DateTime(year, month, 1);
+
+            DateTime cutoffStartDate;
+            DateTime cutoffEndDate;
+
+            if (cutoff == "9-23")
+            {
+                // 9 - 23 of the selected month
+                cutoffStartDate = new DateTime(startDate.Year, startDate.Month, 9);
+                cutoffEndDate = new DateTime(startDate.Year, startDate.Month, 23);
+            }
+            else
+            {
+                // 24 - end of selected month and 1 - 8 of next month
+                cutoffStartDate = new DateTime(startDate.Year, startDate.Month, 24);
+
+                if (month == 12)
+                {
+                    cutoffEndDate = new DateTime(startDate.Year + 1, 1, 8);
+                }
+                else
+                {
+                    cutoffEndDate = new DateTime(startDate.Year, startDate.Month + 1, 8);
+                }
+            }
+
+            // Query from _dtrRecords._table (BaseRepository LINQ IQueryable)
+            var records = _dtrRecords._table
+                .Where(d => d.employeeId == employeeId &&
+                            d.date >= cutoffStartDate &&
+                            d.date <= cutoffEndDate)
+                .OrderBy(d => d.date)
+                .ToList();
+
+            return records;
+        }
+
 
         public ErrorCode UpdateDtr(dtrRecords dtr, ref string errMsg)
         {

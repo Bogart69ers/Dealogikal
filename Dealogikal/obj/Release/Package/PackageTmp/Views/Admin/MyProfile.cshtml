@@ -1,10 +1,9 @@
 ﻿@model Dealogikal.ViewModel.AccountViewModel
-
-
 @{
     ViewBag.Title = "MyProfile";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+
 <style>
     .profile-info-wrapper {
         display: flex;
@@ -17,8 +16,8 @@
         flex-direction: column;
         align-items: center;
         margin-top: 10px;
-        margin-left:25px;
-        margin-right:25px;
+        margin-left: 25px;
+        margin-right: 25px;
     }
 
         .profile-section img {
@@ -27,7 +26,7 @@
             border-radius: 50%;
             object-fit: cover;
             margin-bottom: 10px;
-            border:solid 1px;
+            border: solid 1px;
         }
 
     .info-grid {
@@ -35,7 +34,7 @@
         grid-template-columns: 1fr 1fr;
         gap: 15px 50px;
         flex: 1; /* Take available space next to image */
-        text-align
+        text-align;
     }
 
     .info-item {
@@ -73,7 +72,7 @@
                                     <!-- Profile Picture Section -->
                                     <div class="profile-section">
                                         <img src="@(!string.IsNullOrEmpty(ViewBag.ProfilePicture) ? Url.Content("~/UploadedFiles/" + ViewBag.ProfilePicture) : Url.Content("~/Assets/img/profile.jpg"))"
-                                             alt="profile" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover;">                                        
+                                             alt="profile" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover;">
                                         <input type="file" id="fileInput" style="display: none;" accept="image/*" />
                                         <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editProfileModal">Edit Details</button>
                                     </div>
@@ -165,11 +164,11 @@
                                     <div class="form-group">
                                         <label for="lastName">Last Name</label>
                                         <input type="text" class="form-control" id="lastName" name="lastName" value="@Model.employeeInfo.lastName" readonly>
-                                    </div> 
+                                    </div>
                                     <div class="form-group">
                                         <label for="dateHired">Date Hired</label>
                                         <input type="date" class="form-control" id="dateHired" name="dateHired" value="@(Model.employeeInfo.dateHired == default(DateTime) ? "" : Model.employeeInfo.dateHired.ToString("yyyy-MM-dd"))" readonly>
-                                    </div>                                  
+                                    </div>
                                     <div class="form-group">
                                         <label for="phone">Phone Number</label>
                                         <input type="text" class="form-control" id="phone" name="phone" value="@Model.employeeInfo.phone" required>
@@ -183,7 +182,7 @@
                                         <input type="text" class="form-control" id="barangay" name="barangay" value="@Model.employeeInfo.barangay" required>
                                     </div>
                                 </div>
-                                <div class="col-md-6">                                   
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="department">Department</label>
                                         <input type="text" class="form-control" id="department" name="department" value="@Model.employeeInfo.department" readonly>
@@ -200,7 +199,7 @@
                                     <div class="form-group">
                                         <label for="email">Email</label>
                                         <input type="email" class="form-control" id="email" name="email" value="@Model.employeeInfo.email" required>
-                                    </div>                                   
+                                    </div>
                                     <div class="form-group">
                                         <label for="city">City</label>
                                         <input type="text" class="form-control" id="city" name="city" value="@Model.employeeInfo.city" required>
