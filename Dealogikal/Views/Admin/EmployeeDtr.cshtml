@@ -46,14 +46,45 @@
                             <div class="row">
                                 <div class="col-12">
 
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <!-- Download All Button -->
-                                        <button class="btn btn-outline-info btn-sm">
-                                            <i class="ti-download"></i> Download All Employee DTR
-                                        </button>
-                                        <!-- Search Bar -->
-                                        <input type="text" id="searchInput" class="form-control w-25" placeholder="Search Employees...">
+                                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap">
+
+                                        <!-- Left Side: Download Button & Dropdowns -->
+                                        <div class="d-flex align-items-center gap-2">
+                                            <!-- Download All Button -->
+                                            <button class="btn btn-outline-info btn-sm" onclick="downloadAllEmployeeDTR()">
+                                                <i class="ti-download"></i> Download All Employee DTR
+                                            </button>
+
+
+                                            <!-- Month Dropdown -->
+                                            <select id="allMonthSelect" class="form-select form-select-sm" style="width: 150px; margin-left:10px; border-radius:5px;">
+                                                <option value="1">January</option>
+                                                <option value="2">February</option>
+                                                <option value="3">March</option>
+                                                <option value="4">April</option>
+                                                <option value="5">May</option>
+                                                <option value="6">June</option>
+                                                <option value="7">July</option>
+                                                <option value="8">August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">October</option>
+                                                <option value="11">November</option>
+                                                <option value="12">December</option>
+                                            </select>
+
+                                            <!-- Cutoff Dropdown -->
+                                            <select id="allCutoffSelect" class="form-select form-select-sm" style="width: 120px; margin-left:10px; border-radius:5px;">
+                                                <option value="9-23">9 - 23</option>
+                                                <option value="24-8">24 - 8</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Right Side: Search Bar -->
+                                        <div class="d-flex align-items-center">
+                                            <input type="text" id="searchInput" class="form-control form-control-sm w-100" placeholder="Search Employees..." style="min-width: 200px;">
+                                        </div>
                                     </div>
+
 
                                     <div class="table-responsive">
                                         <table id="employeeTable" class="table table-bordered">
@@ -95,7 +126,7 @@
                                                                     <div class="d-flex justify-content-between mb-3" style="gap: 10px;">
                                                                         <div>
                                                                             <label>Month:</label>
-                                                                            <select class="monthSelect form-select form-select-sm">
+                                                                            <select class="monthSelect form-select form-select-sm" style="border-radius:5px;">
                                                                                 <option value="1">January</option>
                                                                                 <option value="2">February</option>
                                                                                 <option value="3">March</option>
@@ -112,7 +143,7 @@
                                                                         </div>
                                                                         <div>
                                                                             <label>Cut-off:</label>
-                                                                            <select class="cutoffSelect form-select form-select-sm">
+                                                                            <select class="cutoffSelect form-select form-select-sm" style="border-radius:5px;">
                                                                                 <option value="9-23">9 - 23</option>
                                                                                 <option value="24-8">24 - 8</option>
                                                                             </select>
@@ -407,4 +438,22 @@ function editInfo(employeeId) {
         // Redirect to download the Excel file
         window.location.href = url;
     }
+</script>
+<script>
+    function downloadAllEmployeeDTR() {
+        const month = document.getElementById("allMonthSelect").value;
+        const cutoff = document.getElementById("allCutoffSelect").value;
+
+        if (!month || !cutoff) {
+            alert("Please select both Month and Cut-off before downloading.");
+            return;
+        }
+
+        const url = `/Admin/DownloadAllEmployeeDTR?month=${month}&cutoff=${cutoff}`;
+
+        window.location.href = url;
+    }
+
+    
+
 </script>

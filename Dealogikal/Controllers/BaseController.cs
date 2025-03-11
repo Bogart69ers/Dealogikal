@@ -34,6 +34,23 @@ namespace Dealogikal.Controllers
             _NotifManager = new NotificationManager();
         }
 
+        private string GetAvatarUrl(string employeeId)
+        {
+            // 1) If userId = 0 or invalid, return a default image or handle as needed
+            if (employeeId == null)
+                return Url.Content("~/Assets/img/profile.jpg");
+
+            // 2) Use your image manager to get user’s image
+            var userImage = _ImgManager.ListImageByEmployeeId(employeeId).FirstOrDefault();
+            if (userImage == null || string.IsNullOrEmpty(userImage.imageFile))
+            {
+                // fallback to default
+                return Url.Content("~/Assets/img/profile.jpg");
+            }
+            // 3) Otherwise return the actual path
+            return Url.Content("~/UploadedFiles/" + userImage.imageFile);
+        }
+
         protected override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             base.OnActionExecuting(filterContext);
@@ -44,7 +61,15 @@ namespace Dealogikal.Controllers
                 if (userAccount != null)
                 {
                     var employeeInfo = _AccManager.CreateOrRetrieve(userAccount.employeeId, ref ErrorMessage);
+                    var notifications = _NotifManager.GetNotificationByemployeeId(userAccount.employeeId);
 
+                    var notificationViewModels = notifications
+                        .Select(n => new AccountViewModel
+                        {
+                            notif = n,
+                            AvatarUrl = GetAvatarUrl((string)n.senderId)
+                        })
+                        .ToList();
                     // Create the AccountViewModel instance
                     var accountViewModel = new AccountViewModel
                     {
@@ -56,6 +81,8 @@ namespace Dealogikal.Controllers
                     ViewBag.AccountViewModel = accountViewModel;
                     // Optionally, you can pass the employee info directly if your layout references it:
                     ViewBag.EmployeeInfo = employeeInfo;
+
+                    ViewBag.Notifications = notificationViewModels;
 
                     var profileImage = _ImgManager.ListImageByEmployeeId(employeeInfo.employeeId).FirstOrDefault();
                     ViewBag.ProfilePicture = profileImage != null ? profileImage.imageFile : null;

@@ -74,6 +74,19 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="notification">
+      <EntityTypeMapping TypeName="DeologikalDTRModel.notification">
+        <MappingFragment StoreEntitySet="notification">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="title" ColumnName="title" />
+          <ScalarProperty Name="message" ColumnName="message" />
+          <ScalarProperty Name="employeeId" ColumnName="employeeId" />
+          <ScalarProperty Name="isRead" ColumnName="isRead" />
+          <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+          <ScalarProperty Name="senderId" ColumnName="senderId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="overtimeRequest">
       <EntityTypeMapping TypeName="DeologikalDTRModel.overtimeRequest">
         <MappingFragment StoreEntitySet="overtimeRequest">

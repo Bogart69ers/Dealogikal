@@ -83,6 +83,7 @@
           <Property Name="employeeId" Type="nvarchar" MaxLength="100" />
           <Property Name="isRead" Type="bit" />
           <Property Name="createdAt" Type="datetime" />
+          <Property Name="senderId" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="overtimeRequest">
           <Key>
@@ -389,6 +390,7 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
           <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="isRead" Type="Boolean" />
           <Property Name="createdAt" Type="DateTime" Precision="3" />
+          <Property Name="senderId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="employeeInfo" Relationship="Self.FK_notification_employeeInfo" FromRole="notification" ToRole="employeeInfo" />
         </EntityType>
         <EntityType Name="overtimeRequest">
@@ -688,6 +690,7 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
                 <ScalarProperty Name="employeeId" ColumnName="employeeId" />
                 <ScalarProperty Name="isRead" ColumnName="isRead" />
                 <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+                <ScalarProperty Name="senderId" ColumnName="senderId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

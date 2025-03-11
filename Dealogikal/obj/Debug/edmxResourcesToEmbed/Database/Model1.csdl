@@ -88,6 +88,7 @@
     <Property Name="employeeId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <Property Name="isRead" Type="Boolean" />
     <Property Name="createdAt" Type="DateTime" Precision="3" />
+    <Property Name="senderId" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
     <NavigationProperty Name="employeeInfo" Relationship="Self.FK_notification_employeeInfo" FromRole="notification" ToRole="employeeInfo" />
   </EntityType>
   <EntityType Name="overtimeRequest">

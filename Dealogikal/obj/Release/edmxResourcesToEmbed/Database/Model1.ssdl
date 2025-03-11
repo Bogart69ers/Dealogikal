@@ -68,6 +68,18 @@
     <Property Name="status" Type="int" />
     <Property Name="leaveRequestType" Type="nvarchar" MaxLength="100" />
   </EntityType>
+  <EntityType Name="notification">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="title" Type="nvarchar(max)" />
+    <Property Name="message" Type="nvarchar(max)" />
+    <Property Name="employeeId" Type="nvarchar" MaxLength="100" />
+    <Property Name="isRead" Type="bit" />
+    <Property Name="createdAt" Type="datetime" />
+    <Property Name="senderId" Type="nvarchar" MaxLength="100" />
+  </EntityType>
   <EntityType Name="overtimeRequest">
     <Key>
       <PropertyRef Name="requestId" />
@@ -161,6 +173,20 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_notification_employeeInfo">
+    <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
+      <OnDelete Action="Cascade" />
+    </End>
+    <End Role="notification" Type="Self.notification" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="employeeInfo">
+        <PropertyRef Name="employeeId" />
+      </Principal>
+      <Dependent Role="notification">
+        <PropertyRef Name="employeeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Association Name="FK_overtimeRequest_employeeInfo">
     <End Role="employeeInfo" Type="Self.employeeInfo" Multiplicity="0..1">
       <OnDelete Action="Cascade" />
@@ -221,6 +247,7 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
     <EntitySet Name="feedback" EntityType="Self.feedback" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="images" EntityType="Self.images" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="leaveRequest" EntityType="Self.leaveRequest" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="notification" EntityType="Self.notification" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="overtimeRequest" EntityType="Self.overtimeRequest" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="role" EntityType="Self.role" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="todoLists" EntityType="Self.todoLists" Schema="dbo" store:Type="Tables" />
@@ -243,6 +270,10 @@ warning 6002: The table/view 'DeologikalDTR.dbo.vw_Role' does not have a primary
     <AssociationSet Name="FK_leaveRequest_employeeInfo" Association="Self.FK_leaveRequest_employeeInfo">
       <End Role="employeeInfo" EntitySet="employeeInfo" />
       <End Role="leaveRequest" EntitySet="leaveRequest" />
+    </AssociationSet>
+    <AssociationSet Name="FK_notification_employeeInfo" Association="Self.FK_notification_employeeInfo">
+      <End Role="employeeInfo" EntitySet="employeeInfo" />
+      <End Role="notification" EntitySet="notification" />
     </AssociationSet>
     <AssociationSet Name="FK_overtimeRequest_employeeInfo" Association="Self.FK_overtimeRequest_employeeInfo">
       <End Role="employeeInfo" EntitySet="employeeInfo" />

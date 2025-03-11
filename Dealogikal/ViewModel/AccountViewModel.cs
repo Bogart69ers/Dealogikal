@@ -35,10 +35,10 @@ namespace Dealogikal.ViewModel
 
         public List<images> images { get; set; }
 
-        public todoLists todoList { get; set; }
+        public notification notif { get; set; }
 
-        public List<todoLists> todoLists { get; set; } = new List<todoLists>();
+        public List<notification> notifs { get; set; }
 
-
+        public string AvatarUrl { get; set; }
     }
 }

@@ -83,6 +83,7 @@
           <ScalarProperty Name="employeeId" ColumnName="employeeId" />
           <ScalarProperty Name="isRead" ColumnName="isRead" />
           <ScalarProperty Name="createdAt" ColumnName="createdAt" />
+          <ScalarProperty Name="senderId" ColumnName="senderId" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

@@ -282,7 +282,27 @@ namespace Dealogikal.Controllers
                     ViewBag.ErrorMessage = errMsg;
                     return View("LeaveRequest");
                 }
-                
+
+                var notifManager = new NotificationManager();
+                var deptHead = _AccManager.GetDepartmentHeadByDepartment(userInfo.department);
+
+                if (deptHead != null)
+                {
+                    notifManager.CreateNotification(
+                    deptHead.employeeId,                    // receiver
+                    userInfo.employeeId,                    // sender (the employee making the request)
+                    "Leave Request Submitted",
+                    $"{userInfo.firstName} {userInfo.lastName} has submitted a leave request.",
+                    ref errMsg
+                );
+
+                }
+                else
+                {
+                    // Optional: handle no department head found
+                    Console.WriteLine($"No department head found for department: {userInfo.department}");
+                }
+
                 return RedirectToAction("LeaveRequest");
             }
             catch (Exception ex)
@@ -316,7 +336,6 @@ namespace Dealogikal.Controllers
 
         [Authorize]
         [HttpPost]
-
         public ActionResult OvertimeRequest(overtimeRequest ot)
         {
             try
@@ -331,15 +350,34 @@ namespace Dealogikal.Controllers
                     return View("OvertimeRequest");
                 }
 
-                if (_RequestManager.CreateOvertime(ot, user,  ref errMsg) != ErrorCode.Success)
+                if (_RequestManager.CreateOvertime(ot, user, ref errMsg) != ErrorCode.Success)
                 {
                     ViewBag.ErrorMessage = errMsg;
                     return View("OvertimeRequest");
                 }
 
-                return RedirectToAction("OvertimeRequest");
-                
+                // 🔔 Notify Department Head
+                var notifManager = new NotificationManager();
+                var deptHead = _AccManager.GetDepartmentHeadByDepartment(userInfo.department);
 
+                if (deptHead != null)
+                {
+                    notifManager.CreateNotification(
+                        deptHead.employeeId,                    // receiver
+                        userInfo.employeeId,                    // sender (the employee making the request)
+                        "Overtime Request Submitted",
+                        $"{userInfo.firstName} {userInfo.lastName} has submitted an overtime request.",
+                        ref errMsg
+                    );
+
+                }
+                else
+                {
+                    Console.WriteLine("No department head found for department: " + userInfo.department);
+                }
+
+
+                return RedirectToAction("OvertimeRequest");
             }
             catch (Exception ex)
             {
@@ -347,6 +385,7 @@ namespace Dealogikal.Controllers
                 return View("OvertimeRequest");
             }
         }
+
 
         [Authorize]
         public ActionResult DTRHistory()
@@ -437,15 +476,33 @@ namespace Dealogikal.Controllers
                         return RedirectToAction("LeaveApproval");
                     }
                 }
+                _NotifManager.CreateNotification(
+                   request.employeeId,                     // receiver
+                   User.Identity.Name,                     // sender (the department head approving)
+                   "Leave Request Approved",
+                   "Your leave request has been approved by the Department Head.",
+                   ref errMsg
+                );
+
             }
             else if (action == "Decline")
             {
+                var request = _RequestManager.GetLeaveRequestByRequestId(requestId);
+
                 result = _RequestManager.DeclineLeaveRequest(employeeId, requestId, ref errMsg);
                 if (result != ErrorCode.Success)
                 {
                     ViewBag.Error = "Error Updating Leave Request: " + errMsg;
                     return RedirectToAction("LeaveApproval");
                 }
+                _NotifManager.CreateNotification(
+                   request.employeeId,                             // receiver
+                   User.Identity.Name,                     // sender (the department head declining)
+                   "Leave Request Declined",
+                   "Your leave request has been declined by the Department Head.",
+                   ref errMsg
+                );
+
             }
 
             return RedirectToAction("LeaveApproval");
@@ -466,34 +523,58 @@ namespace Dealogikal.Controllers
 
         [Authorize]
         [HttpPost]
-        public ActionResult OvertimeApproval(overtimeRequest or, string employeeId ,int requestId, string action)
+        public ActionResult OvertimeApproval(overtimeRequest or, string employeeId, int requestId, string action)
         {
             string errMsg = string.Empty;
             ErrorCode result;
 
+            var notifManager = new NotificationManager();
+
             if (action == "Accept")
             {
-                // Create a new record for the morning Time In.
+                // ✅ Approve the overtime request
                 result = _RequestManager.ApproveOvertimeRequest(employeeId, requestId, ref errMsg);
                 if (result != ErrorCode.Success)
                 {
                     ViewBag.Error = "Error Updating Overtime Request: " + errMsg;
                     return RedirectToAction("OvertimeApproval");
                 }
+
+                // ✅ Notify Employee of Approval
+                _NotifManager.CreateNotification(
+                    employeeId,                            // receiver
+                    User.Identity.Name,                    // sender (the department head approving)
+                    "Overtime Request Approved",
+                    "Your overtime request has been approved by the Department Head.",
+                    ref errMsg
+                );
+
             }
-            else if ( action == "Decline")
+            else if (action == "Decline")
             {
+                // ✅ Decline the overtime request
                 result = _RequestManager.DeclineOvertimeRequest(employeeId, requestId, ref errMsg);
                 if (result != ErrorCode.Success)
                 {
                     ViewBag.Error = "Error Updating Overtime Request: " + errMsg;
                     return RedirectToAction("OvertimeApproval");
                 }
+
+                // ✅ Notify Employee of Decline
+                _NotifManager.CreateNotification(
+                    employeeId,                            // receiver
+                    User.Identity.Name,                    // sender (the department head declining)
+                    "Overtime Request Declined",
+                    "Your overtime request has been declined by the Department Head.",
+                    ref errMsg
+                );
+
             }
 
-
+            TempData["SuccessMessage"] = "Overtime request updated successfully!";
             return RedirectToAction("OvertimeApproval");
         }
+
 
         [Authorize]
         public ActionResult MyProfile()
@@ -644,5 +725,17 @@ namespace Dealogikal.Controllers
             return View(model);
         }
 
+
+        [HttpGet]
+        public JsonResult GetUnreadNotificationCount()
+        {
+            var employee = User.Identity.Name;
+            var account = _AccManager.GetEmployeebyEmployeeId(employee);
+            var notification = _NotifManager.GetNotificationByemployeeId(employee);
+
+            var unreadCount = notification.Count(n => n.isRead == false);
+
+            return Json(new { unreadCount }, JsonRequestBehavior.AllowGet);
+        }
     }
 }

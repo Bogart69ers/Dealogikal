@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Dealogikal.ViewModel
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -20,7 +21,41 @@
     <link rel="stylesheet" href="~/Assets/css/vertical-layout-light/style.css">
     <!-- endinject -->
     <link rel="shortcut icon" href="~/Assets/img/dealogikal-logo.ico" />
-    
+    <style>
+        
+        .icon-bell {
+            font-size: 28px;
+            position: relative;
+        }
+
+        /* Adjust the count badge */
+        .notif-count {
+            position: absolute;
+            top: -4px;
+            right: -8px;
+            background-color: red;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 3px 6px;
+            border-radius: 50%;
+            height: 20px;
+            min-width: 20px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+
+        /* Optional: Adjust icon container for alignment */
+        .count-indicator {
+            position: relative;
+            display: inline-block;
+        }
+    </style>
 </head>
 <body>
     <div class="container-scroller">
@@ -45,54 +80,139 @@
                 <ul class="navbar-nav mr-lg-2">
                 </ul>
                 <ul class="navbar-nav navbar-nav-right">
+                    @{
+                        var notifications = ViewBag.Notifications as List<AccountViewModel>;
+
+                        int unreadCount = 0;
+
+                        if (notifications != null)
+                        {
+                            unreadCount = notifications.Count(n => n.notif.isRead == false);
+                        }
+
+                        // Separate unread and read notifications
+                        List<AccountViewModel> unreadNotifications = notifications != null
+                            ? notifications.Where(n => !(n.notif.isRead ?? false)).ToList()
+                            : new List<AccountViewModel>();
+
+                        List<AccountViewModel> readNotifications = notifications != null
+                            ? notifications.Where(n => (n.notif.isRead ?? false)).ToList()
+                            : new List<AccountViewModel>();
+
+                    }
+
                     <li class="nav-item dropdown">
                         <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
-                            <i class="icon-bell mx-0"></i>
-                            <span class="count"></span>
+                            <i class="icon-bell bell mx-0"></i>
+                            @if (unreadCount > 0)
+                            {
+                                if (unreadCount > 9)
+                                {
+                                    <span class="notif-count">9+</span>
+                                }
+                                else
+                                {
+                                    <span class="notif-count">@unreadCount</span>
+                                }
+                            }
                         </a>
+
                         <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
                             <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-success">
-                                        <i class="ti-info-alt mx-0"></i>
+
+                            @if (notifications != null && notifications.Any())
+                            {
+                                // Unread Notifications
+                                if (unreadNotifications.Any())
+                                {
+                                    foreach (var notif in unreadNotifications)
+                                    {
+                                        <a class="dropdown-item preview-item">
+                                            <div class="preview-thumbnail">
+                                                <div class="preview-icon bg-success">
+                                                    <img src="@notif.AvatarUrl" alt="Avatar" style="width:50px;height:50px;border-radius:100%" />
+                                                </div>
+                                            </div>
+                                            <div class="preview-item-content">
+                                                <h6 class="preview-subject font-weight-normal">@notif.notif.title</h6>
+                                                <p class="font-weight-light small-text mb-0 text-muted">@notif.notif.message</p>
+                                                <span class="notification-time text-muted small">@GetTimeAgo(notif.notif.createdAt)</span>
+                                            </div>
+                                        </a>
+                                    }
+                                }
+                                else
+                                {
+                                    <a class="dropdown-item preview-item">                                      
+                                        <div class="preview-item-content">
+                                            <p class="font-weight-light small-text mb-0 text-muted">No Notification Available</p>
+                                        </div>
+                                    </a>
+                                }
+
+                                // Read Notifications (History)
+                                if (readNotifications.Any())
+                                {
+                                    <div class="dropdown-divider"></div>
+                                    <p class="mb-0 font-weight-normal float-left dropdown-header">Read Notifications</p>
+
+                                    foreach (var notif in readNotifications)
+                                    {
+                                        <a class="dropdown-item preview-item">
+                                            <div class="preview-thumbnail">
+                                                <div class="preview-icon bg-secondary">
+                                                    <img src="@notif.AvatarUrl" alt="Avatar" style="width:50px;height:50px;border-radius:100%" />
+                                                </div>
+                                            </div>
+                                            <div class="preview-item-content">
+                                                <h6 class="preview-subject font-weight-normal">@notif.notif.title</h6>
+                                                <p class="font-weight-light small-text mb-0 text-muted">@notif.notif.message</p>
+                                                <span class="notification-time text-muted small">@GetTimeAgo(notif.notif.createdAt)</span>
+                                            </div>
+                                        </a>
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                <a class="dropdown-item preview-item">
+                                    <div class="preview-item-content">
+                                        <p class="font-weight-light small-text mb-0 text-muted">No Notification Available</p>
                                     </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <h6 class="preview-subject font-weight-normal">Application Error</h6>
-                                    <p class="font-weight-light small-text mb-0 text-muted">
-                                        Just now
-                                    </p>
-                                </div>
-                            </a>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-warning">
-                                        <i class="ti-settings mx-0"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <h6 class="preview-subject font-weight-normal">Settings</h6>
-                                    <p class="font-weight-light small-text mb-0 text-muted">
-                                        Private message
-                                    </p>
-                                </div>
-                            </a>
-                            <a class="dropdown-item preview-item">
-                                <div class="preview-thumbnail">
-                                    <div class="preview-icon bg-info">
-                                        <i class="ti-user mx-0"></i>
-                                    </div>
-                                </div>
-                                <div class="preview-item-content">
-                                    <h6 class="preview-subject font-weight-normal">New user registration</h6>
-                                    <p class="font-weight-light small-text mb-0 text-muted">
-                                        2 days ago
-                                    </p>
-                                </div>
-                            </a>
+                                </a>
+                            }
                         </div>
                     </li>
+
+                    @functions {
+                        private string GetTimeAgo(DateTime? dateTime)
+                        {
+                            if (!dateTime.HasValue)
+                                return "just now";
+
+                            var ts = DateTime.Now - dateTime.Value;
+                            double delta = ts.TotalSeconds;
+
+                            if (delta < 0) return "just now";
+                            if (delta < 60) return ts.Seconds == 1 ? "1 second ago" : ts.Seconds + " seconds ago";
+                            if (delta < 120) return "1 minute ago";
+                            if (delta < 3600) return ts.Minutes + " minutes ago";
+                            if (delta < 7200) return "1 hour ago";
+                            if (delta < 86400) return ts.Hours + " hours ago";
+                            if (delta < 172800) return "yesterday";
+                            if (delta < 2592000) return ts.Days + " days ago";
+                            if (delta < 31104000)
+                            {
+                                int months = Convert.ToInt32(Math.Floor((double)ts.Days / 30));
+                                return (months <= 1) ? "1 month ago" : months + " months ago";
+                            }
+
+                            int years = Convert.ToInt32(Math.Floor((double)ts.Days / 365));
+                            return (years <= 1) ? "1 year ago" : years + " years ago";
+                        }
+                    }
+
+
                     <li class="nav-item nav-profile dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" id="profileDropdown">
                             <img src="@(!string.IsNullOrEmpty(ViewBag.ProfilePicture) ? Url.Content("~/UploadedFiles/" + ViewBag.ProfilePicture) : Url.Content("~/Assets/img/profile.jpg"))"

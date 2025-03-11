@@ -78,6 +78,7 @@
     <Property Name="employeeId" Type="nvarchar" MaxLength="100" />
     <Property Name="isRead" Type="bit" />
     <Property Name="createdAt" Type="datetime" />
+    <Property Name="senderId" Type="nvarchar" MaxLength="100" />
   </EntityType>
   <EntityType Name="overtimeRequest">
     <Key>

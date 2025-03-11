@@ -9,32 +9,22 @@ namespace Dealogikal.Repository
     public class NotificationManager
     {
         private readonly BaseRepository<notification> _notif;
-        private readonly ImageManager _ImageManager;
 
         public NotificationManager()
         {
             _notif = new BaseRepository<notification>();
-            _ImageManager = new ImageManager();
         }
 
-        // ✅ Get single notification by Id
         public notification GetNotificationById(int id)
         {
             return _notif.Get(id);
         }
 
-        public List<notification> GetUnreadNotifications(string employeeId = null)
+        public List<notification> GetNotificationByemployeeId(string employeeId)
         {
-            var query = _notif.GetAll().Where(n => n.isRead == false);
-
-            if (!string.IsNullOrEmpty(employeeId))
-            {
-                query = query.Where(n => n.employeeId == employeeId);
-            }
-
-            return query.OrderByDescending(n => n.createdAt).ToList();
+            return _notif._table.Where(m => m.employeeId == employeeId).OrderByDescending(m => m.createdAt).ToList();
         }
-    
+        
         public ErrorCode MarkAsRead(int notificationId, ref string errMsg)
         {
             try
@@ -57,59 +47,34 @@ namespace Dealogikal.Repository
             }
         }
 
-        // ✅ 3. Create a notification
-        public bool CreateNotification(string employeeId, string title, string message, ref string errorMessage)
+
+        public ErrorCode CreateNotification(string employeeId, string senderId, string title, string message, ref string errorMessage)
         {
             try
             {
                 var notification = new notification
                 {
-                    employeeId = employeeId,
+                    employeeId = employeeId,   
+                    senderId = senderId,  
                     title = title,
                     message = message,
-                    isRead = false, // new notifications are unread
+                    isRead = false,
                     createdAt = DateTime.Now
                 };
 
-                return _notif.Create(notification, out errorMessage) == ErrorCode.Success;
+                return _notif.Create(notification, out errorMessage);
             }
             catch (Exception ex)
             {
-                errorMessage = ex.Message;
-                return false;
+                errorMessage = $"An error occurred: {ex.Message}";
+                return ErrorCode.Error;
             }
         }
 
-        public List<notification> GetAllNotifications(string employeeId, int page = 1, int pageSize = 10)
+        public ErrorCode UpdateNotification(notification nt, out string errMsg)
         {
-            var query = _notif._table.Where(e => e.employeeId == employeeId)
-                                     .OrderByDescending(n => n.createdAt);
-
-            return query.Skip((page - 1) * pageSize)
-                        .Take(pageSize)
-                        .ToList();
+            // You pass in the entity's ID, etc.
+            return _notif.Update(nt.id, nt, out errMsg);
         }
-
-
-        public IEnumerable<object> GetNotificationsWithProfile(string employeeId, bool unreadOnly = true)
-        {
-            var notifications = unreadOnly ? GetUnreadNotifications(employeeId) : GetAllNotifications(employeeId);
-
-            var employeeImage = _ImageManager.ListImageByEmployeeId(employeeId)?.FirstOrDefault();
-
-            string profilePicture = employeeImage != null
-                ? employeeImage.imageFile
-                : "profile.jpg";
-
-            return notifications.Select(n => new
-            {
-                id = n.id,
-                title = n.title,
-                message = n.message,
-                createdAt = n.createdAt?.ToString("MMM dd, yyyy hh:mm tt"),
-                employeePictureUrl = "/UploadedFiles/" + profilePicture
-            });
-        }
-
     }
 }

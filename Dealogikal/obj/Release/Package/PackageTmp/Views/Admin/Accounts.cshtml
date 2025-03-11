@@ -168,6 +168,110 @@
     </div>
 </div>
 
+<!-- Edit Employee Info Modal -->
+<div class="modal fade" id="editEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="editEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <!-- Wider modal -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editEmployeeModalLabel">Edit Employee Info</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <form id="editEmployeeForm" action="@Url.Action("EditEmployee", "Admin")" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <!-- Profile Picture Upload Section -->
+                        <div class="col-md-4 text-center d-flex flex-column align-items-center justify-content-center">
+                            <label>Profile Picture</label>
+                            <div class="profile-pic-container">
+                                <img id="employeeProfilePreview" src="@Url.Content("~/Assets/img/profile.jpg")" alt="Profile Picture"
+                                     class="rounded-circle" style="width: 150px; height: 150px; border: 1px solid #ddd; object-fit: cover;">
+                            </div>
+                            <input type="file" id="employeeProfileImageInput" name="profilePicture" class="d-none" accept="image/*" />
+                            <button type="button" class="btn btn-primary mt-3" onclick="document.getElementById('employeeProfileImageInput').click()">
+                                Upload Photo
+                            </button>
+                        </div>
+
+                        <!-- Employee Details -->
+                        <div class="col-md-8">
+                            <input type="hidden" id="editEmployeeId" name="employeeId" />
+
+                            <div class="row">
+                                <!-- Left Column -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="editFirstName">First Name</label>
+                                        <input type="text" class="form-control" id="editFirstName" name="firstName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editLastName">Last Name</label>
+                                        <input type="text" class="form-control" id="editLastName" name="lastName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editDateHired">Date Hired</label>
+                                        <input type="date" class="form-control" id="editDateHired" name="dateHired" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editPhone">Phone Number</label>
+                                        <input type="text" class="form-control" id="editPhone" name="phone">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editAddress">Address</label>
+                                        <input type="text" class="form-control" id="editAddress" name="address">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editBarangay">Barangay</label>
+                                        <input type="text" class="form-control" id="editBarangay" name="barangay">
+                                    </div>
+                                </div>
+
+                                <!-- Right Column -->
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="editDepartment">Department</label>
+                                        <input type="text" class="form-control" id="editDepartment" name="department" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editPosition">Position</label>
+                                        <input type="text" class="form-control" id="editPosition" name="position" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editBirthdate">Date of Birth</label>
+                                        <input type="date" class="form-control" id="editBirthdate" name="birthdate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editEmail">Email</label>
+                                        <input type="email" class="form-control" id="editEmail" name="email">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editCity">City</label>
+                                        <input type="text" class="form-control" id="editCity" name="city">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="editCorporation">Corporation</label>
+                                        <input type="text" class="form-control" id="editCorporation" name="corporation" required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" form="editEmployeeForm">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     let currentPage = 1;
@@ -275,11 +379,71 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
 
-    function editInfo(employeeId) {
-    window.location.href = "/Admin/EditEmployee?employeeId=" + employeeId;
-    }
-
     function addEmployee() {
         window.location.href = '/Admin/CreateAccount';
     }
 </script>
+
+<script>
+    // Assuming employeeData is injected from Razor into JS (placed near the bottom of your view)
+    const employeeData = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(
+    Model.employeeInfos,
+    new Newtonsoft.Json.JsonSerializerSettings
+    {
+        ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+    }
+));
+
+const employeeImages = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.images, new Newtonsoft.Json.JsonSerializerSettings
+                  {
+                      ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+                  }
+                  ));
+
+
+    function editInfo(employeeId) {
+        const employee = employeeData.find(e => e.employeeId === employeeId);
+        const employeeImage = employeeImages.find(img => img.employeeId === employeeId);
+
+        if (!employee) return;
+
+        // Fill inputs
+        document.getElementById('editEmployeeId').value = employee.employeeId;
+        document.getElementById('editFirstName').value = employee.firstName || '';
+        document.getElementById('editLastName').value = employee.lastName || '';
+        document.getElementById('editDateHired').value = employee.dateHired ? employee.dateHired.split('T')[0] : '';
+        document.getElementById('editPhone').value = employee.phone || '';
+        document.getElementById('editAddress').value = employee.address || '';
+        document.getElementById('editBarangay').value = employee.barangay || '';
+        document.getElementById('editDepartment').value = employee.department || '';
+        document.getElementById('editPosition').value = employee.position || '';
+        document.getElementById('editBirthdate').value = employee.birthdate ? employee.birthdate.split('T')[0] : '';
+        document.getElementById('editEmail').value = employee.email || '';
+        document.getElementById('editCity').value = employee.city || '';
+        document.getElementById('editCorporation').value = employee.corporation || '';
+
+        // Handle profile image preview
+        const imgPath = employeeImage && employeeImage.imageFile
+            ? '/UploadedFiles/' + employeeImage.imageFile
+            : '/Assets/img/profile.jpg';
+
+        document.getElementById('employeeProfilePreview').src = imgPath;
+
+        // Show modal (Bootstrap 5 way)
+        const modal = new bootstrap.Modal(document.getElementById('editEmployeeModal'));
+        modal.show();
+    }
+
+    // Optional: Preview uploaded image
+    document.getElementById('employeeProfileImageInput').addEventListener('change', function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById('employeeProfilePreview').src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+

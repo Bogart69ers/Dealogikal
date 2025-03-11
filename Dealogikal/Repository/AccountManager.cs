@@ -37,6 +37,11 @@ namespace Dealogikal.Repository
         {
             return _employeeInf.GetAll();
         }
+        public employeeInfo GetDepartmentHeadByDepartment(string department)
+        {
+            return _employeeInf._table
+                .FirstOrDefault(e => e.department == department && e.position == "Department Head");
+        }
 
         public employeeInfo GetEmployeebyEmployeeId(string employeeId)
         {
@@ -218,7 +223,7 @@ namespace Dealogikal.Repository
                 empInfo.city = city;
                 empInfo.phone = phone;
                 empInfo.birthdate = birthdate;
-                empInfo.leaveCount = 2;
+                empInfo.leaveCount = 7;
                 empInfo.corporation = corporation;
 
                 _employeeInf.Create(empInfo, out err);

@@ -20,6 +20,7 @@ namespace Dealogikal.Database
         public string employeeId { get; set; }
         public Nullable<bool> isRead { get; set; }
         public Nullable<System.DateTime> createdAt { get; set; }
+        public string senderId { get; set; }
     
         public virtual employeeInfo employeeInfo { get; set; }
     }
