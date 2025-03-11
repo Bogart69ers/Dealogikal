@@ -119,7 +119,7 @@ namespace Dealogikal.Controllers
                 }
 
                 // Validate User Role
-                if (user.role == null)
+                if (user.role1 == null)
                 {
                     ViewBag.Error = "User role is not defined.";
                     return View();

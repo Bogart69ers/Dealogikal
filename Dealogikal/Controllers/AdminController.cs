@@ -394,119 +394,142 @@ namespace Dealogikal.Controllers
             return View();
         }
 
-        [HttpPost]
-        public ActionResult CreateTodo(string contents)
-        {
-            Console.WriteLine("🔍 CreateTodo was hit!");
-            Console.WriteLine("📝 Received contents: " + contents);
-
-            if (string.IsNullOrWhiteSpace(contents))
-            {
-                Console.WriteLine("❌ Todo contents are empty!");
-                return Json(new { success = false, message = "Todo cannot be empty" });
-            }
-
-            todoLists todo = new todoLists
-            {
-                contents = contents,
-                employeeId = User.Identity.Name,
-                status = 0,
-                dateCreated = DateTime.Now
-            };
-
-            string errorMessage = "";
-            if (_TodoManager.Createtodo(todo, ref errorMessage) == ErrorCode.Error)
-            {
-                Console.WriteLine("❌ Todo creation failed: " + errorMessage);
-                return Json(new { success = false, message = errorMessage });
-            }
-
-            Console.WriteLine("✅ Todo created successfully!");
-            return Json(new { success = true, message = "Todo created successfully!" });
-        }
-
 
         [Authorize]
         public ActionResult DownloadEmployeeDTRExcel(string employeeId, int month, string cutoff)
         {
-            // Example: Fetch the DTR records for this employee based on filters
             var dtrRecords = _DtrManager.GetEmployeeDTR(employeeId, month, cutoff);
             var employee = _AccManager.GetEmployeebyEmployeeId(employeeId);
 
-            if (dtrRecords == null || !dtrRecords.Any())
+            if (employee == null)
             {
-                TempData["Error"] = "No DTR records found.";
+                TempData["Error"] = "Employee not found.";
                 return RedirectToAction("EmployeeDtr");
             }
 
             string initials = $"{employee.firstName?.FirstOrDefault()}{employee.lastName?.FirstOrDefault()}".ToUpper();
             string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(month);
-            int year = dtrRecords.First().date.Year;
+
+            // Get the cutoff date range
+            List<DateTime> cutoffDates = GenerateCutoffDates(month, cutoff);
+            int year = cutoffDates.First().Year;
 
             using (var workbook = new XLWorkbook())
             {
-                var worksheet = workbook.Worksheets.Add("DTR");
+                var worksheet = workbook.Worksheets.Add(initials);
 
                 // TITLE ROW
-                worksheet.Range("B1:J1").Merge();
-                worksheet.Cell("B1").Value = "Bi-Weekly TimeSheet Calculator";
-                worksheet.Cell("B1").Style.Font.SetBold();
-                worksheet.Cell("B1").Style.Font.FontSize = 16;
-                worksheet.Cell("B1").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Range("B1:J1").Merge().Value = "Bi-Weekly TimeSheet Calculator";
+                worksheet.Cell("B1").Style.Font.SetBold().Font.FontSize = 16;
+                worksheet.Cell("B1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
                 // COMPANY NAME
-                worksheet.Range("B2:J2").Merge();
-                worksheet.Cell("B2").Value = "DEALOGIKAL CORP.";
+                worksheet.Range("B2:J2").Merge().Value = "DEALOGIKAL CORP.";
                 worksheet.Cell("B2").Style.Font.SetBold();
-                worksheet.Cell("B2").Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Cell("B2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
                 // EMPLOYEE INFO
-                worksheet.Cell("B3").Value = "Employee Name:";
-                worksheet.Cell("C3").Value = $"{employee.firstName} {employee.lastName}";
+                worksheet.Cell("C3").Value = "Employee Name:";
+                worksheet.Cell("D3").Value = $"{employee.firstName} {employee.lastName}";
 
-                worksheet.Cell("B4").Value = "Department:";
-                worksheet.Cell("C4").Value = employee.department;
+                worksheet.Cell("C4").Value = "Department:";
+                worksheet.Cell("D4").Value = employee.department;
 
-                worksheet.Cell("B5").Value = "Paid Overtime:";
-                worksheet.Cell("C5").Value = "No"; // Customize as needed
+                worksheet.Cell("C5").Value = "Paid Overtime:";
+                worksheet.Cell("D5").Value = "No";
 
-                // LEAVE GAP
-                int startRow = 7;
+                worksheet.Cell("C7").Value = "Year";
+                worksheet.Cell("C8").Value = year;
+
+                worksheet.Cell("D7").Value = "Month";
+                worksheet.Cell("D8").Value = monthName;
+
+                worksheet.Cell("E7").Value = "Weekend";
+                worksheet.Cell("E8").Value = "Sat & Sun";
+
+                worksheet.Cell("E7").Style.Fill.BackgroundColor = XLColor.LightPink;
+                worksheet.Range(7, 3, 7, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Range(8, 3, 8, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Range(7, 3, 7, 4).Style.Fill.BackgroundColor = XLColor.LightBlue;
+                worksheet.Range(7, 3, 8, 5).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                worksheet.Range(7, 3, 8, 5).Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+
+
+                int startRow = 11;
 
                 // HEADERS
-                worksheet.Cell(startRow, 2).Value = "Month";
+                worksheet.Cell(startRow, 2).Value = "Day";
                 worksheet.Cell(startRow, 3).Value = "Date";
-                worksheet.Cell(startRow, 4).Value = "Weekend";
-                worksheet.Cell(startRow, 5).Value = "Time In";
-                worksheet.Cell(startRow, 6).Value = "Break In";
-                worksheet.Cell(startRow, 7).Value = "Break Out";
-                worksheet.Cell(startRow, 8).Value = "Time In";  // (Maybe you meant Time Out here?)
-                worksheet.Cell(startRow, 9).Value = "Break";
+                worksheet.Cell(startRow, 4).Value = "Time In";
+                worksheet.Cell(startRow, 5).Value = "Break In";
+                worksheet.Cell(startRow, 6).Value = "Break Out";
+                worksheet.Cell(startRow, 7).Value = "Time Out";
+                worksheet.Cell(startRow, 8).Value = "Break";
 
-                worksheet.Range(startRow, 2, startRow, 9).Style.Font.Bold = true;
-                worksheet.Range(startRow, 2, startRow, 9).Style.Fill.BackgroundColor = XLColor.LightGray;
-                worksheet.Range(startRow, 2, startRow, 9).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                worksheet.Range(startRow, 2, startRow, 8).Style.Font.SetBold().Font.FontColor = XLColor.DarkBlue;
+                worksheet.Range(startRow, 2, startRow, 8).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                worksheet.Range(startRow, 2, startRow, 8).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                worksheet.Range(startRow, 2, startRow, 8).Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
                 int row = startRow + 1;
 
-                foreach (var dtr in dtrRecords)
+                // Create a dictionary for quick lookup of DTR records by date
+                var dtrDict = dtrRecords.ToDictionary(d => d.date.Date, d => d);
+
+                foreach (var date in cutoffDates)
                 {
-                    worksheet.Cell(row, 2).Value = dtr.date.ToString("MMMM"); // Month name
-                    worksheet.Cell(row, 3).Value = dtr.date.Day.ToString("00"); // Date (day number)
-                    worksheet.Cell(row, 4).Value = dtr.date.DayOfWeek.ToString(); // Weekend indicator (Day Name)
+                    worksheet.Cell(row, 2).Value = date.DayOfWeek.ToString();
+                    worksheet.Cell(row, 3).Value = date.Day.ToString("00");
 
-                    worksheet.Cell(row, 5).Value = dtr.timeIn.HasValue ? dtr.timeIn.Value.ToString("HH:mm") : "--";
-                    worksheet.Cell(row, 6).Value = dtr.breakIn.HasValue ? dtr.breakIn.Value.ToString("HH:mm") : "--";
-                    worksheet.Cell(row, 7).Value = dtr.breakOut.HasValue ? dtr.breakOut.Value.ToString("HH:mm") : "--";
-                    worksheet.Cell(row, 8).Value = dtr.timeOut.HasValue ? dtr.timeOut.Value.ToString("HH:mm") : "--";
-                    worksheet.Cell(row, 9).Value = "1.0"; // Break duration (hardcoded for now)
+                    bool isSaturday = date.DayOfWeek == DayOfWeek.Saturday;
+                    bool isSunday = date.DayOfWeek == DayOfWeek.Sunday;
 
-                    // Color weekends (Sat & Sun)
-                    if (dtr.date.DayOfWeek == DayOfWeek.Saturday || dtr.date.DayOfWeek == DayOfWeek.Sunday)
+                    dtrRecords dtr;
+
+                    if (dtrDict.TryGetValue(date.Date, out dtr))
                     {
-                        worksheet.Range(row, 2, row, 9).Style.Fill.BackgroundColor = XLColor.LightPink;
+                        worksheet.Cell(row, 4).Value = dtr.timeIn.HasValue ? dtr.timeIn.Value.ToString("HH:mm") : "--";
+                        worksheet.Cell(row, 5).Value = dtr.breakIn.HasValue ? dtr.breakIn.Value.ToString("HH:mm") : "--";
+                        worksheet.Cell(row, 6).Value = dtr.breakOut.HasValue ? dtr.breakOut.Value.ToString("HH:mm") : "--";
+                        worksheet.Cell(row, 7).Value = dtr.timeOut.HasValue ? dtr.timeOut.Value.ToString("HH:mm") : "--";
+                        worksheet.Cell(row, 8).Value = "1.0"; // Or calculate dynamically
+                    }
+                    else
+                    {
+                        // No DTR record, mark as ABSENT
+                        worksheet.Cell(row, 4).Value = "ABSENT";
+                        worksheet.Cell(row, 5).Value = "--";
+                        worksheet.Cell(row, 6).Value = "--";
+                        worksheet.Cell(row, 7).Value = "--";
+                        worksheet.Cell(row, 8).Value = "--";
+
+                        // Fill LightPink for ABSENT days
+                        worksheet.Range(row, 2, row, 8).Style.Fill.BackgroundColor = XLColor.LightPink;
                     }
 
+                    // Weekend formatting
+                    if (isSaturday)
+                    {
+                        worksheet.Range(row, 2, row, 8).Style.Fill.BackgroundColor = XLColor.LightPink;
+                    }
+
+                    if (isSunday)
+                    {
+                        worksheet.Range(row, 2, row, 8).Style.Fill.BackgroundColor = XLColor.LightPink;
+
+                        // Mark as WEEKEND on Time In and clear others
+                        worksheet.Cell(row, 4).Value = "WEEKEND";
+                        worksheet.Cell(row, 5).Value = "--";
+                        worksheet.Cell(row, 6).Value = "--";
+                        worksheet.Cell(row, 7).Value = "--";
+                        worksheet.Cell(row, 8).Value = "--";
+                    }
+
+                    // Center alignment for all columns in this row
+                    worksheet.Range(row, 2, row, 8).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    worksheet.Range(startRow + 1, 2, row - 1, 8).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                    worksheet.Range(startRow + 1, 2, row - 1, 8).Style.Border.InsideBorder = XLBorderStyleValues.Thin;
                     row++;
                 }
 
@@ -522,6 +545,37 @@ namespace Dealogikal.Controllers
                     return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
                 }
             }
+        }
+        private List<DateTime> GenerateCutoffDates(int month, string cutoff)
+        {
+            List<DateTime> dates = new List<DateTime>();
+            int year = DateTime.Now.Year; // Default year (or pass it from the front end)
+
+            if (cutoff == "9-23")
+            {
+                for (int day = 9; day <= 23; day++)
+                {
+                    dates.Add(new DateTime(year, month, day));
+                }
+            }
+            else if (cutoff == "24-8")
+            {
+                int daysInCurrentMonth = DateTime.DaysInMonth(year, month);
+                for (int day = 24; day <= daysInCurrentMonth; day++)
+                {
+                    dates.Add(new DateTime(year, month, day));
+                }
+
+                int nextMonth = month == 12 ? 1 : month + 1;
+                int nextYear = month == 12 ? year + 1 : year;
+
+                for (int day = 1; day <= 8; day++)
+                {
+                    dates.Add(new DateTime(nextYear, nextMonth, day));
+                }
+            }
+
+            return dates;
         }
 
 

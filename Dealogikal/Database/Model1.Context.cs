@@ -30,6 +30,7 @@ namespace Dealogikal.Database
         public virtual DbSet<feedback> feedback { get; set; }
         public virtual DbSet<images> images { get; set; }
         public virtual DbSet<leaveRequest> leaveRequest { get; set; }
+        public virtual DbSet<notification> notification { get; set; }
         public virtual DbSet<overtimeRequest> overtimeRequest { get; set; }
         public virtual DbSet<role> role { get; set; }
         public virtual DbSet<todoLists> todoLists { get; set; }
