@@ -28,11 +28,11 @@ namespace Dealogikal.Repository
             return _leaveReq._table.Where(l => l.employeeId == employeeId).OrderByDescending(l => l.dateFiled).ToList();
         }
 
-        public List<leaveRequest> GetAllLeaveRequestsDesc() // Better naming
+        public List<leaveRequest> GetAllLeaveRequestsDesc() 
         {
             return _leaveReq.GetAll()
-                            .OrderBy(l => l.status != 0) // status 0 first (false < true)
-                            .ThenByDescending(l => l.dateFiled) // newest dateFiled first
+                            .OrderBy(l => l.status != 0) 
+                            .ThenByDescending(l => l.dateFiled) 
                             .ToList();
         }
 

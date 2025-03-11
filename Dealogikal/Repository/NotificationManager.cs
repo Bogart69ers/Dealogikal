@@ -23,7 +23,6 @@ namespace Dealogikal.Repository
             return _notif.Get(id);
         }
 
-        // ✅ 1. Get unread notifications (optionally by employeeId)
         public List<notification> GetUnreadNotifications(string employeeId = null)
         {
             var query = _notif.GetAll().Where(n => n.isRead == false);
@@ -35,8 +34,6 @@ namespace Dealogikal.Repository
 
             return query.OrderByDescending(n => n.createdAt).ToList();
         }
-
-        // ✅ 2. Mark notification as read
     
         public ErrorCode MarkAsRead(int notificationId, ref string errMsg)
         {
