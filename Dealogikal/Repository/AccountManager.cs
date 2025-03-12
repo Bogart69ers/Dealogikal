@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using Dealogikal.Utils;
 using Dealogikal.Database;
+using BCrypt.Net;
 
 namespace Dealogikal.Repository
 {
@@ -137,22 +138,51 @@ namespace Dealogikal.Repository
 
         public ErrorCode SignIn(string employeeId, string password, ref string errMsg)
         {
+            // ✅ Get the user by employee ID
             var userSignIn = GetUserByEmployeeId(employeeId);
+
             if (userSignIn == null)
             {
-                errMsg = "Employee Id or Password is incorrect";
+                errMsg = "Employee ID or Password is incorrect";
                 return ErrorCode.Error;
             }
 
-            if (!userSignIn.password.Equals(password))
+            bool isPasswordCorrect = false;
+
+            // ✅ Check if the stored password is hashed (starts with $2, $2a, $2b)
+            if (userSignIn.password.StartsWith("$2"))
             {
-                errMsg = "Employee Id or Password is incorrect";
+                // Hashed password: Verify using BCrypt
+                isPasswordCorrect = BCrypt.Net.BCrypt.Verify(password, userSignIn.password);
+            }
+            else
+            {
+                // Legacy plain-text password check
+                isPasswordCorrect = userSignIn.password.Equals(password);
+
+                // OPTIONAL: Upgrade to hashed password if it was plain text and correct
+                if (isPasswordCorrect)
+                {
+                    userSignIn.password = BCrypt.Net.BCrypt.HashPassword(password);
+                    string updateMsg = "";
+                    if (UpdateUser(userSignIn, ref updateMsg) != ErrorCode.Success)
+                    {
+                        errMsg = "Failed to upgrade password security.";
+                        return ErrorCode.Error;
+                    }
+                }
+            }
+
+            if (!isPasswordCorrect)
+            {
+                errMsg = "Employee ID or Password is incorrect";
                 return ErrorCode.Error;
             }
 
-            errMsg = "Login Successful";
+            errMsg = "Login successful";
             return ErrorCode.Success;
         }
+
 
         public ErrorCode CreateEmployee(userAccount ua, string department, ref string errMsg)
         {

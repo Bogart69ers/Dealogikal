@@ -10,6 +10,7 @@ using Dealogikal.Repository;
 using System.Globalization;
 using Dealogikal.Utils;
 using Dealogikal.ViewModel;
+using BCrypt.Net;
 
 
 

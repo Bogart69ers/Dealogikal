@@ -53,6 +53,10 @@
             text-align: left;
             word-break: break-word;
         }
+
+    .swal2-border-radius {
+        border-radius: 12px !important;
+    }
 </style>
 
 <div class="content-wrapper">
@@ -134,26 +138,18 @@
             <div class="modal-body">
                 <form id="editProfileForm" action="@Url.Action("MyProfile", "Admin")" method="post" enctype="multipart/form-data">
                     <div class="row">
-                        <!-- Left Column - Profile Picture Upload -->
-                        <!-- Left Column - Profile Picture Upload (Centered Lower) -->
                         <div class="col-md-4 text-center d-flex flex-column align-items-center justify-content-center">
                             <label>Profile Picture</label>
                             <div class="profile-pic-container">
                                 <img id="profilePreview" src="@(!string.IsNullOrEmpty(ViewBag.ProfilePicture) ? Url.Content("~/UploadedFiles/" + ViewBag.ProfilePicture) : Url.Content("~/Assets/img/profile.jpg"))" alt="Profile Picture"
                                      class="rounded-circle" style="width: 150px; height: 150px; border: 1px solid #ddd; object-fit: cover;">
                             </div>
-                            <!-- Hidden file input -->
                             <input type="file" id="profileImageInput" name="profilePicture" class="d-none" accept="image/*">
 
-                            <!-- Custom upload button -->
                             <button type="button" class="btn btn-primary mt-3" onclick="document.getElementById('profileImageInput').click()">
                                 Upload Photo
                             </button>
                         </div>
-
-
-                        <!-- Right Column - User Details -->
-                        <!-- Right Column - User Details -->
                         <div class="col-md-8">
                             <div class="row">
                                 <div class="col-md-6">
@@ -226,30 +222,163 @@
 
 <!-- JavaScript for Image Preview -->
 <script>
-    document.getElementById('profileImageInput').addEventListener('change', function(event) {
+    document.getElementById('profileImageInput').addEventListener('change', function (event) {
         const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('profilePreview').src = e.target.result;
-            }
-            reader.readAsDataURL(file);
-        }
-    });
-</script>
+        const maxWidth = 1000;
+        const maxHeight = 1000;
+        const maxFileSize = 10 * 1024 * 1024; // 10MB
 
-<script>
-    //Script for Upload Profile Picture
-    document.getElementById('fileInput').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('profileImage').src = e.target.result;
+        if (!file) return;
+
+        const allowedExtensions = ['jpg', 'jpeg', 'png'];
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+
+        // Check file type
+        if (!allowedExtensions.includes(fileExtension)) {
+            showToast('Invalid file type. Only JPG and PNG files are allowed.', 'error');
+            event.target.value = '';
+            return;
+        }
+
+        // Check file size
+        if (file.size > maxFileSize) {
+            showToast('File size exceeds 10MB.', 'error');
+            event.target.value = '';
+            return;
+        }
+
+        const img = new Image();
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            img.src = e.target.result;
+        };
+
+        img.onload = function () {
+            let width = img.width;
+            let height = img.height;
+
+            // If the image is larger than allowed, resize it
+            if (width > maxWidth || height > maxHeight) {
+                const canvas = document.createElement('canvas');
+                let scale = Math.min(maxWidth / width, maxHeight / height);
+                width = width * scale;
+                height = height * scale;
+
+                canvas.width = width;
+                canvas.height = height;
+
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Compress the image to JPEG format (quality 0.8)
+                canvas.toBlob(function (blob) {
+                    if (blob.size > maxFileSize) {
+                        showToast('file size exceeds 10MB.', 'error');
+                        event.target.value = '';
+                        return;
+                    }
+
+                    const resizedUrl = URL.createObjectURL(blob);
+                    document.getElementById('profilePreview').src = resizedUrl;
+
+                    // We need to append this new blob as file to form submission
+                    uploadResizedImage(blob);
+
+                    showToast('Image ready to upload!', 'success');
+
+                }, 'image/jpeg', 0.8); // Compress to JPEG with 80% quality
+
+            } else {
+                // If the image is within size limits, just show the preview and use original file
+                document.getElementById('profilePreview').src = img.src;
+
+                // Original file will be uploaded
+                uploadOriginalFile(file);
+
+                showToast('Image ready to upload!', 'success');
             }
-            reader.readAsDataURL(file);
+        };
+
+        img.onerror = function () {
+            showToast('Invalid image file.', 'error');
+            event.target.value = '';
+        };
+
+        reader.readAsDataURL(file);
+    });
+
+
+    function uploadResizedImage(blob) {
+        const fileInput = document.getElementById('profileImageInput');
+        const dataTransfer = new DataTransfer();
+
+        const file = new File([blob], 'resized-profile.jpg', { type: 'image/jpeg' });
+        dataTransfer.items.add(file);
+
+        // Attach the new file to the input (replacing the old one)
+        fileInput.files = dataTransfer.files;
+    }
+
+    function uploadOriginalFile(file) {
+        const fileInput = document.getElementById('profileImageInput');
+        const dataTransfer = new DataTransfer();
+
+        dataTransfer.items.add(file);
+
+        // Attach the original file to the input
+        fileInput.files = dataTransfer.files;
+    }
+
+
+    document.getElementById('profileImageInput').addEventListener('change', function(event) {
+    // ... your main image resize logic here ...
+});
+
+        function uploadResizedImage(blob) {
+            const fileInput = document.getElementById('profileImageInput');
+            const dataTransfer = new DataTransfer();
+
+            const file = new File([blob], 'resized-profile.jpg', { type: 'image/jpeg' });
+            dataTransfer.items.add(file);
+
+            // Attach the new file to the input (replacing the old one)
+            fileInput.files = dataTransfer.files;
+        }
+
+        function uploadOriginalFile(file) {
+            const fileInput = document.getElementById('profileImageInput');
+            const dataTransfer = new DataTransfer();
+
+            dataTransfer.items.add(file);
+
+            // Attach the original file to the input
+            fileInput.files = dataTransfer.files;
+        }
+
+        function showToast(message, icon) {
+            // SweetAlert2 toast code here
+        }
+</script>
+<script>
+    function showToast(message, icon) {
+    Swal.fire({
+        toast: true,
+        position: 'bottom-start', // bottom left
+        icon: icon,               // success / error / warning / info / question
+        title: message,
+        showConfirmButton: false,
+        timer: 4000,
+        timerProgressBar: true,
+        customClass: {
+            popup: 'swal2-border-radius'
+        },
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
         }
     });
+}
 </script>
 
 <script>
@@ -278,5 +407,3 @@
         });
     });
 </script>
-
-

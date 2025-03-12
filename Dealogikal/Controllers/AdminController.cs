@@ -10,7 +10,7 @@ using Dealogikal.Database;
 using Dealogikal.ViewModel;
 using ClosedXML.Excel;
 using System.Globalization;
-
+using BCrypt.Net; 
 
 
 namespace Dealogikal.Controllers
@@ -111,6 +111,9 @@ namespace Dealogikal.Controllers
                 {
                     return View("CreateAccount");
                 }
+
+                ua.password = BCrypt.Net.BCrypt.HashPassword(ua.password);
+
 
                 if (_AccManager.EmployeeInfoSignup(birthdate, position, department, ua.employeeId, email, firstName, lastName, phone, address, city, barangay, dateHired, corporation, ref ErrorMessage) != ErrorCode.Success)
                 {
@@ -319,7 +322,7 @@ namespace Dealogikal.Controllers
             return View(model);
         }
 
-        
+
         [Authorize]
         [HttpPost]
         public ActionResult MyProfile(string phone, string email, string address, string barangay, string city, HttpPostedFileBase profilePicture)
@@ -346,15 +349,24 @@ namespace Dealogikal.Controllers
                     if (!Directory.Exists(uploadsFolderPath))
                         Directory.CreateDirectory(uploadsFolderPath);
 
-                    var profileFileName = Path.GetFileName(profilePicture.FileName);
-                    var profileSavePath = Path.Combine(uploadsFolderPath, profileFileName);
+                    string fileExtension = Path.GetExtension(profilePicture.FileName);
+                    string profileFileName = $"{employee.employeeId}_{DateTime.Now.ToString("yyyyMMdd")}{fileExtension}";
+                    string profileSavePath = Path.Combine(uploadsFolderPath, profileFileName);
+
+                    if (image != null && !string.IsNullOrEmpty(image.imageFile))
+                    {
+                        var oldImagePath = Path.Combine(uploadsFolderPath, image.imageFile);
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath); // **Deletes old profile picture**
+                        }
+                    }
                     profilePicture.SaveAs(profileSavePath);
 
-                    var existingImage = _ImgManager.ListImageByEmployeeId(employee.employeeId).FirstOrDefault();
-                    if (existingImage != null)
+                    if (image != null)
                     {
-                        existingImage.imageFile = profileFileName;
-                        if (_ImgManager.UpdateImg(existingImage, ref ErrorMessage) == ErrorCode.Error)
+                        image.imageFile = profileFileName;
+                        if (_ImgManager.UpdateImg(image, ref ErrorMessage) == ErrorCode.Error)
                         {
                             ModelState.AddModelError(String.Empty, ErrorMessage);
                             return View();
@@ -374,7 +386,6 @@ namespace Dealogikal.Controllers
                             return View();
                         }
                     }
-
                 }
 
                 // Update Employee Information ONLY IF new values are provided
@@ -511,12 +522,20 @@ namespace Dealogikal.Controllers
                     {
                         if (dtrDict.TryGetValue(date.Date, out dtr))
                         {
-                            // Saturday with DTR ➡️ Show normal DTR entries
-                            worksheet.Cell(row, 4).Value = dtr.timeIn.HasValue ? dtr.timeIn.Value.ToString("HH:mm") : "--";
-                            worksheet.Cell(row, 5).Value = dtr.breakIn.HasValue ? dtr.breakIn.Value.ToString("HH:mm") : "--";
-                            worksheet.Cell(row, 6).Value = dtr.breakOut.HasValue ? dtr.breakOut.Value.ToString("HH:mm") : "--";
-                            worksheet.Cell(row, 7).Value = dtr.timeOut.HasValue ? dtr.timeOut.Value.ToString("HH:mm") : "--";
-                            worksheet.Cell(row, 8).Value = "1.0"; // You can compute dynamically if needed
+                            worksheet.Cell(row, 4).Value = dtr.timeIn.HasValue ? dtr.timeIn.Value : (object)"--";
+                            worksheet.Cell(row, 5).Value = dtr.breakIn.HasValue ? dtr.breakIn.Value : (object)"--";
+                            worksheet.Cell(row, 6).Value = dtr.breakOut.HasValue ? dtr.breakOut.Value : (object)"--";
+                            worksheet.Cell(row, 7).Value = dtr.timeOut.HasValue ? dtr.timeOut.Value : (object)"--";
+                            worksheet.Cell(row, 8).Value = "1.0";
+
+                            if (dtr.timeIn.HasValue)
+                                worksheet.Cell(row, 4).Style.DateFormat.Format = "HH:mm";
+                            if (dtr.breakIn.HasValue)
+                                worksheet.Cell(row, 5).Style.DateFormat.Format = "HH:mm";
+                            if (dtr.breakOut.HasValue)
+                                worksheet.Cell(row, 6).Style.DateFormat.Format = "HH:mm";
+                            if (dtr.timeOut.HasValue)
+                                worksheet.Cell(row, 7).Style.DateFormat.Format = "HH:mm";
                         }
                         else
                         {
@@ -535,11 +554,20 @@ namespace Dealogikal.Controllers
                         // Normal weekdays (Mon to Fri)
                         if (dtrDict.TryGetValue(date.Date, out dtr))
                         {
-                            worksheet.Cell(row, 4).Value = dtr.timeIn.HasValue ? dtr.timeIn.Value.ToString("HH:mm") : "--";
-                            worksheet.Cell(row, 5).Value = dtr.breakIn.HasValue ? dtr.breakIn.Value.ToString("HH:mm") : "--";
-                            worksheet.Cell(row, 6).Value = dtr.breakOut.HasValue ? dtr.breakOut.Value.ToString("HH:mm") : "--";
-                            worksheet.Cell(row, 7).Value = dtr.timeOut.HasValue ? dtr.timeOut.Value.ToString("HH:mm") : "--";
+                            worksheet.Cell(row, 4).Value = dtr.timeIn.HasValue ? dtr.timeIn.Value : (object)"--";
+                            worksheet.Cell(row, 5).Value = dtr.breakIn.HasValue ? dtr.breakIn.Value : (object)"--";
+                            worksheet.Cell(row, 6).Value = dtr.breakOut.HasValue ? dtr.breakOut.Value : (object)"--";
+                            worksheet.Cell(row, 7).Value = dtr.timeOut.HasValue ? dtr.timeOut.Value : (object)"--";
                             worksheet.Cell(row, 8).Value = "1.0";
+
+                            if (dtr.timeIn.HasValue)
+                                worksheet.Cell(row, 4).Style.DateFormat.Format = "HH:mm";
+                            if (dtr.breakIn.HasValue)
+                                worksheet.Cell(row, 5).Style.DateFormat.Format = "HH:mm";
+                            if (dtr.breakOut.HasValue)
+                                worksheet.Cell(row, 6).Style.DateFormat.Format = "HH:mm";
+                            if (dtr.timeOut.HasValue)
+                                worksheet.Cell(row, 7).Style.DateFormat.Format = "HH:mm";
                         }
                         else
                         {
@@ -733,11 +761,20 @@ namespace Dealogikal.Controllers
                         {
                             if (dtrDict.TryGetValue(date.Date, out dtr))
                             {
-                                worksheet.Cell(row, 4).Value = dtr.timeIn.HasValue ? dtr.timeIn.Value.ToString("HH:mm") : "--";
-                                worksheet.Cell(row, 5).Value = dtr.breakIn.HasValue ? dtr.breakIn.Value.ToString("HH:mm") : "--";
-                                worksheet.Cell(row, 6).Value = dtr.breakOut.HasValue ? dtr.breakOut.Value.ToString("HH:mm") : "--";
-                                worksheet.Cell(row, 7).Value = dtr.timeOut.HasValue ? dtr.timeOut.Value.ToString("HH:mm") : "--";
+                                worksheet.Cell(row, 4).Value = dtr.timeIn.HasValue ? dtr.timeIn.Value : (object)"--";
+                                worksheet.Cell(row, 5).Value = dtr.breakIn.HasValue ? dtr.breakIn.Value : (object)"--";
+                                worksheet.Cell(row, 6).Value = dtr.breakOut.HasValue ? dtr.breakOut.Value : (object)"--";
+                                worksheet.Cell(row, 7).Value = dtr.timeOut.HasValue ? dtr.timeOut.Value : (object)"--";
                                 worksheet.Cell(row, 8).Value = "1.0";
+
+                                if (dtr.timeIn.HasValue)
+                                    worksheet.Cell(row, 4).Style.DateFormat.Format = "HH:mm";
+                                if (dtr.breakIn.HasValue)
+                                    worksheet.Cell(row, 5).Style.DateFormat.Format = "HH:mm";
+                                if (dtr.breakOut.HasValue)
+                                    worksheet.Cell(row, 6).Style.DateFormat.Format = "HH:mm";
+                                if (dtr.timeOut.HasValue)
+                                    worksheet.Cell(row, 7).Style.DateFormat.Format = "HH:mm";
                             }
                             else
                             {
@@ -753,11 +790,20 @@ namespace Dealogikal.Controllers
                         {
                             if (dtrDict.TryGetValue(date.Date, out dtr))
                             {
-                                worksheet.Cell(row, 4).Value = dtr.timeIn.HasValue ? dtr.timeIn.Value.ToString("HH:mm") : "--";
-                                worksheet.Cell(row, 5).Value = dtr.breakIn.HasValue ? dtr.breakIn.Value.ToString("HH:mm") : "--";
-                                worksheet.Cell(row, 6).Value = dtr.breakOut.HasValue ? dtr.breakOut.Value.ToString("HH:mm") : "--";
-                                worksheet.Cell(row, 7).Value = dtr.timeOut.HasValue ? dtr.timeOut.Value.ToString("HH:mm") : "--";
+                                worksheet.Cell(row, 4).Value = dtr.timeIn.HasValue ? dtr.timeIn.Value : (object)"--";
+                                worksheet.Cell(row, 5).Value = dtr.breakIn.HasValue ? dtr.breakIn.Value : (object)"--";
+                                worksheet.Cell(row, 6).Value = dtr.breakOut.HasValue ? dtr.breakOut.Value : (object)"--";
+                                worksheet.Cell(row, 7).Value = dtr.timeOut.HasValue ? dtr.timeOut.Value : (object)"--";
                                 worksheet.Cell(row, 8).Value = "1.0";
+
+                                if (dtr.timeIn.HasValue)
+                                    worksheet.Cell(row, 4).Style.DateFormat.Format = "HH:mm";
+                                if (dtr.breakIn.HasValue)
+                                    worksheet.Cell(row, 5).Style.DateFormat.Format = "HH:mm";
+                                if (dtr.breakOut.HasValue)
+                                    worksheet.Cell(row, 6).Style.DateFormat.Format = "HH:mm";
+                                if (dtr.timeOut.HasValue)
+                                    worksheet.Cell(row, 7).Style.DateFormat.Format = "HH:mm";
                             }
                             else
                             {
@@ -812,6 +858,8 @@ namespace Dealogikal.Controllers
 
             return Json(new { unreadCount }, JsonRequestBehavior.AllowGet);
         }
+
+       
 
         [Authorize]
         [HttpPost]

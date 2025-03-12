@@ -53,3 +53,5 @@ C:\Users\Intern\Documents\GitHub\Dealogikal\Dealogikal\bin\Newtonsoft.Json.dll
 C:\Users\Intern\Documents\GitHub\Dealogikal\Dealogikal\bin\ClosedXML.pdb
 C:\Users\Intern\Documents\GitHub\Dealogikal\Dealogikal\bin\ClosedXML.xml
 C:\Users\Intern\Documents\GitHub\Dealogikal\Dealogikal\bin\Newtonsoft.Json.xml
+C:\Users\Intern\Documents\GitHub\Dealogikal\Dealogikal\bin\BCrypt.Net-Next.dll
+C:\Users\Intern\Documents\GitHub\Dealogikal\Dealogikal\bin\BCrypt.Net-Next.xml
