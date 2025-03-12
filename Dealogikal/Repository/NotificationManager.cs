@@ -24,7 +24,37 @@ namespace Dealogikal.Repository
         {
             return _notif._table.Where(m => m.employeeId == employeeId).OrderByDescending(m => m.createdAt).ToList();
         }
-        
+
+        public ErrorCode MarkAllAsRead(string employeeId, ref string errMsg)
+        {
+            try
+            {
+                var notifications = _notif._table
+                    .Where(n => n.employeeId == employeeId && n.isRead == false);
+
+                if (!notifications.Any())
+                {
+                    errMsg = "No unread notifications found.";
+                    return ErrorCode.Success;
+                }
+
+                foreach (var notif in notifications)
+                {
+                    notif.isRead = true;
+                }
+
+                return _notif.Save(out errMsg); // ✅ Make sure your repository Save method matches this!
+            }
+            catch (Exception ex)
+            {
+                errMsg = $"An error occurred: {ex.Message}";
+                return ErrorCode.Error;
+            }
+        }
+
+
+
+
         public ErrorCode MarkAsRead(int notificationId, ref string errMsg)
         {
             try

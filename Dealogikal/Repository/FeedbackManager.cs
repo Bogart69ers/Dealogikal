@@ -18,7 +18,7 @@ namespace Dealogikal.Repository
             _feedback = new BaseRepository<feedback>();
         }
 
-        public List<feedback> GetAllDtrDesc()
+        public List<feedback> GetAllFeedbackDesc()
         {
             return _feedback.GetAll()
                             .OrderBy(l => l.status != 0) // status 0 first (false < true)
@@ -26,9 +26,14 @@ namespace Dealogikal.Repository
                             .ToList();
         }
 
-        public List<feedback> GetAllDtr()
+        public List<feedback> GetAllFeedback()
         {
             return _feedback.GetAll();
+        }
+
+        public feedback GetFeedbackById(int id)
+        {
+            return _feedback.Get(id);
         }
 
         public ErrorCode CreateFeedback(feedback fb, ref string errMsg)
@@ -43,6 +48,28 @@ namespace Dealogikal.Repository
 
                 return ErrorCode.Success;
 
+            }
+            catch (Exception ex)
+            {
+                errMsg = ex.Message;
+                return ErrorCode.Error;
+            }
+        }
+
+        public ErrorCode UpdateFeedbackStatus(int id, ref string errMsg)
+        {
+            try
+            {
+                var feedback = GetFeedbackById(id);
+                if (feedback == null)
+                {
+                    errMsg = "No Feedback Information found.";
+                    return ErrorCode.Error;
+                }
+
+                feedback.status = 1;
+
+                return _feedback.Update(id, feedback, out errMsg);
             }
             catch (Exception ex)
             {

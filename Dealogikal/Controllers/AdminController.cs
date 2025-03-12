@@ -906,6 +906,21 @@ namespace Dealogikal.Controllers
             }
         }
 
+        [Authorize]
+        [HttpPost]
+        public JsonResult MarkAllNotificationsAsRead()
+        {
+            string errorMessage = string.Empty;
+            var currentUserId = User.Identity.Name;
 
+            var result = _NotifManager.MarkAllAsRead(currentUserId, ref errorMessage);
+
+            if (result == ErrorCode.Error)
+            {
+                return Json(new { success = false, message = errorMessage });
+            }
+
+            return Json(new { success = true, message = "All notifications marked as read!" });
+        }
     }
 }

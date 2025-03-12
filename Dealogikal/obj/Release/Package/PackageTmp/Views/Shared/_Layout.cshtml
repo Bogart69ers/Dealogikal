@@ -102,7 +102,7 @@
                     }
 
                     <li class="nav-item dropdown">
-                        <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown">
+                        <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-toggle="dropdown" onclick="markAllNotificationsAsRead()">
                             <i class="icon-bell bell mx-0"></i>
                             @if (unreadCount > 0)
                             {
@@ -117,7 +117,9 @@
                             }
                         </a>
 
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="notificationDropdown">
+                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list"
+                             aria-labelledby="notificationDropdown"
+                             style="max-height: 400px; overflow-y: auto;">
                             <p class="mb-0 font-weight-normal float-left dropdown-header">Notifications</p>
 
                             @if (notifications != null && notifications.Any())
@@ -143,7 +145,7 @@
                                 }
                                 else
                                 {
-                                    <a class="dropdown-item preview-item">                                      
+                                    <a class="dropdown-item preview-item">
                                         <div class="preview-item-content">
                                             <p class="font-weight-light small-text mb-0 text-muted">No Notification Available</p>
                                         </div>
@@ -454,7 +456,39 @@
             });
         });
     </script>
+    <script>
+        function markAllNotificationsAsRead() {
+            fetch('@Url.Action("MarkAllNotificationsAsRead", "Home")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    console.log(data.message);
+                    const notifCount = document.querySelector('.notif-count');
+                    if (notifCount) {
+                        notifCount.style.display = 'none';
+                    }
 
+                } else {
+                    console.error('Failed to mark notifications:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+    </script>
 
     <!-- Bootstrap JS (Ensure Bootstrap is included in your project) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

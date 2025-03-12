@@ -37,8 +37,32 @@
         margin-top: 15px;
     }
 
+    .swal2-popup.colored-toast {
+        background-color: #f0f0f0 !important; /* Light grey background */
+        color: #000000 !important; /* Black text */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        border: 1px solid #d9d9d9; /* Optional light border */
+        border-radius: 8px; /* Optional: soften the edges */
     }
+
+    .swal2-icon.swal2-success {
+        color: #198754 !important; /* Bootstrap green for success */
+        border-color: #198754 !important;
+    }
+
+    .swal2-icon.swal2-error {
+        color: #dc3545 !important; /* Bootstrap red for error */
+        border-color: #dc3545 !important;
+    }
+
+    .swal2-title {
+        color: #000000 !important; /* Black title text */
+        font-size: 14px;
+    }
+
 </style>
+@Html.AntiForgeryToken()
+
 <div class="content-wrapper">
     <div class="row">
         <div class="col-md-12 grid-margin">
@@ -77,8 +101,8 @@
                                                         <td>@feedback.name</td>
                                                         <td>@feedback.feedbackType</td>
                                                         <td>
-                                                            <label class="badge @(feedback.status == 0 ? "badge-warning" : feedback.status == 1 ? "badge-success" : "badge-danger")">
-                                                                @(feedback.status == 0 ? "Unsolved" : feedback.status == 1 ? "Accepted" : "Unsolved")
+                                                            <label id="status-badge-@feedback.id" class="badge @(feedback.status == 0 ? "badge-warning" : feedback.status == 1 ? "badge-success" : "badge-danger")">
+                                                                @(feedback.status == 0 ? "Unsolved" : feedback.status == 1 ? "Solved" : "Unsolved")
                                                             </label>
                                                         </td>
                                                         <td style="text-align:center;">
@@ -94,14 +118,22 @@
                                                             <div class="employee-details-container">
                                                                 <!-- Employee Info -->
                                                                 <div class="info-section">
-                                                                    <div class="info-grid">
-                                                                        <p><strong>Date Filed: </strong>@(feedback.dateCreated == default(DateTime) ? "No Information" : feedback.dateCreated.Value.ToString("MMMM dd, yyyy"))</p>
-                                                                        <p><strong>Review Type: </strong> @feedback.feedbackType</p>
-                                                                        <p><strong>Name: </strong> @(string.IsNullOrEmpty(feedback.name) ? "No Information" : feedback.name)</p>
-                                                                        <p><strong>Message: </strong> @(string.IsNullOrEmpty(feedback.feedbackMessage) ? "No Information" : feedback.feedbackMessage)</p>
-                                                                    </div>
-                                                                    <!-- Edit Info Button -->
-                                                                    <button class="btn btn-primary btn-sm edit-button" onclick="editInfo('@feedback.id')">Solved</button>
+                                                                        <div class="info-grid">
+                                                                            <p><strong>Date Filed: </strong>@(feedback.dateCreated == default(DateTime) ? "No Information" : feedback.dateCreated.Value.ToString("MMMM dd, yyyy"))</p>
+                                                                            <p><strong>Review Type: </strong> @feedback.feedbackType</p>
+                                                                            <p><strong>Name: </strong> @(string.IsNullOrEmpty(feedback.name) ? "No Information" : feedback.name)</p>
+                                                                            <p><strong>Message: </strong> @(string.IsNullOrEmpty(feedback.feedbackMessage) ? "No Information" : feedback.feedbackMessage)</p>
+                                                                        </div>
+                                                                        <!-- Edit Info Button -->
+                                                                    @if (feedback.status == 0) // 0 = Unsolved, show button
+                                                                    {
+                                                                        <button id="solve-button-@feedback.id"
+                                                                                type="button"
+                                                                                class="btn btn-primary btn-sm edit-button"
+                                                                                onclick="solveFeedback(@feedback.id)">
+                                                                            Solve
+                                                                        </button>
+                                                                    }                      
                                                                 </div>
                                                             </div>
                                                         </td>
@@ -232,14 +264,66 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-
-    function editInfo(employeeId) {
-    window.location.href = "/Admin/EditEmployee?employeeId=" + employeeId;
+    function showToast(message, icon = 'success', position = 'bottom-end') {
+        Swal.fire({
+            toast: true,
+            position: position,
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: false,
+            icon: icon,
+            title: message,
+            customClass: {
+                popup: 'colored-toast'
+            },
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
     }
 
-    function addEmployee() {
-        window.location.href = '/Admin/CreateAccount';
+    function solveFeedback(id) {
+        fetch('@Url.Action("UpdateFeedback", "Home")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({ id: id })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                updateFeedbackRow(id);
+                showToast(data.message, 'success', 'bottom-end');
+            } else {
+                showToast(data.message, 'error', 'bottom-end');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('An unexpected error occurred.', 'error', 'bottom-end');
+        });
     }
+
+        function updateFeedbackRow(id) {
+            const badge = document.getElementById(`status-badge-${id}`);
+            badge.className = "badge badge-success";
+            badge.textContent = "Solved";
+
+            const solveButton = document.getElementById(`solve-button-${id}`);
+            if (solveButton) {
+                solveButton.remove(); // ✅ Completely remove the button from the DOM
+            }
+        }
+        
 </script>
-

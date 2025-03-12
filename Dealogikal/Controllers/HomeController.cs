@@ -291,7 +291,7 @@ namespace Dealogikal.Controllers
                     notifManager.CreateNotification(
                     deptHead.employeeId,                    // receiver
                     userInfo.employeeId,                    // sender (the employee making the request)
-                    "Leave Request Submitted",
+                    "Pending Leave Request",
                     $"{userInfo.firstName} {userInfo.lastName} has submitted a leave request.",
                     ref errMsg
                 );
@@ -365,7 +365,7 @@ namespace Dealogikal.Controllers
                     notifManager.CreateNotification(
                         deptHead.employeeId,                    // receiver
                         userInfo.employeeId,                    // sender (the employee making the request)
-                        "Overtime Request Submitted",
+                        "Pending Overtime Request",
                         $"{userInfo.firstName} {userInfo.lastName} has submitted an overtime request.",
                         ref errMsg
                     );
@@ -713,7 +713,7 @@ namespace Dealogikal.Controllers
             var currentUser = User.Identity.Name;
             var employee = _AccManager.GetEmployeebyEmployeeId(currentUser);
             var user = _AccManager.GetUserByEmployeeId(currentUser);
-            var feed = _FeedbackManager.GetAllDtr();
+            var feed = _FeedbackManager.GetAllFeedback();
 
             var model = new AccountViewModel
             {
@@ -737,5 +737,40 @@ namespace Dealogikal.Controllers
 
             return Json(new { unreadCount }, JsonRequestBehavior.AllowGet);
         }
+
+        [Authorize]
+        [HttpPost]
+        public JsonResult UpdateFeedback(int id)
+        {
+            string errorMessage = string.Empty;
+
+            if (_FeedbackManager.UpdateFeedbackStatus(id, ref errorMessage) == ErrorCode.Error)
+            {
+                return Json(new { success = false, message = errorMessage });
+            }
+
+            return Json(new { success = true, message = "Feedback successfully updated!" });
+        }
+
+
+        [Authorize]
+        [HttpPost]
+        public JsonResult MarkAllNotificationsAsRead()
+        {
+            string errorMessage = string.Empty;
+            var currentUserId = User.Identity.Name;
+
+            var result = _NotifManager.MarkAllAsRead(currentUserId, ref errorMessage);
+
+            if (result == ErrorCode.Error)
+            {
+                return Json(new { success = false, message = errorMessage });
+            }
+
+            return Json(new { success = true, message = "All notifications marked as read!" });
+        }
+
+
+
     }
 }

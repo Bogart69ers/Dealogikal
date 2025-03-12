@@ -88,9 +88,21 @@ namespace Dealogikal.Repository
             }
         }
 
-        public void Save()
+        public ErrorCode Save(out string errorMsg)
         {
-            _db.SaveChanges();
+            errorMsg = string.Empty;
+            try
+            {
+                _db.SaveChanges();
+                errorMsg = "Saved successfully.";
+                return ErrorCode.Success;
+            }
+            catch (Exception ex)
+            {
+                errorMsg = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return ErrorCode.Error;
+            }
         }
+
     }
 }
