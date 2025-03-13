@@ -79,6 +79,7 @@
                                              alt="profile" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover;">
                                         <input type="file" id="fileInput" style="display: none;" accept="image/*" />
                                         <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editProfileModal">Edit Details</button>
+                                        <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#editPasswordModal" style="margin-top: 10px;">Change Password</button>
                                     </div>
 
                                     <div class="info-grid">
@@ -220,6 +221,42 @@
     </div>
 </div>
 
+<!-- Change Password Modal -->
+<div class="modal fade" id="editPasswordModal" tabindex="-1" role="dialog" aria-labelledby="editPasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form id="changePasswordForm" action="@Url.Action("ChangePassword", "Admin")" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPasswordModalLabel">Change Password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Old Password -->
+                    <div class="form-group">
+                        <label for="oldPassword">Old Password</label>
+                        <input type="password" class="form-control" id="oldPassword" name="OldPassword" placeholder="Enter your old password" required>
+                    </div>
+                    <!-- New Password -->
+                    <div class="form-group">
+                        <label for="newPassword">New Password</label>
+                        <input type="password" class="form-control" id="newPassword" name="NewPassword" placeholder="Enter your new password" required>
+                    </div>
+                    <!-- Confirm New Password -->
+                    <div class="form-group">
+                        <label for="confirmNewPassword">Confirm New Password</label>
+                        <input type="password" class="form-control" id="confirmNewPassword" name="ConfirmNewPassword" placeholder="Confirm your new password" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Change Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 <!-- JavaScript for Image Preview -->
 <script>
     document.getElementById('profileImageInput').addEventListener('change', function (event) {
@@ -405,5 +442,23 @@
                 field.value = "";
             }
         });
+    });
+</script>
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        @if (TempData["Success"] != null)
+        {
+            <text>
+                showToast("@TempData["Success"]", "success");
+            </text>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <text>
+                showToast("@TempData["Error"]", "error");
+            </text>
+        }
     });
 </script>

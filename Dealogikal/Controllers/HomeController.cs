@@ -771,7 +771,66 @@ namespace Dealogikal.Controllers
             return Json(new { success = true, message = "All notifications marked as read!" });
         }
 
+        [HttpPost]
+        [Authorize]
+        public ActionResult ChangePassword(string OldPassword, string NewPassword, string ConfirmNewPassword)
+        {
+            var employeeId = User.Identity.Name; // This is your EmployeeID
+            string errorMsg = string.Empty;
 
+            if (string.IsNullOrWhiteSpace(OldPassword) || string.IsNullOrWhiteSpace(NewPassword) || string.IsNullOrWhiteSpace(ConfirmNewPassword))
+            {
+                TempData["Error"] = "All fields are required.";
+                return RedirectToAction("MyProfile");
+            }
+
+            if (NewPassword != ConfirmNewPassword)
+            {
+                TempData["Error"] = "New password and confirmation do not match.";
+                return RedirectToAction("MyProfile");
+            }
+
+            var userAccount = _AccManager.GetUserByEmployeeId(employeeId);
+
+            if (userAccount == null)
+            {
+                TempData["Error"] = "User not found.";
+                return RedirectToAction("MyProfile");
+            }
+
+            // ✅ Verify old password (check if it is hashed or plain)
+            bool isOldPasswordCorrect = false;
+
+            if (userAccount.password.StartsWith("$2")) // bcrypt hashed
+            {
+                isOldPasswordCorrect = BCrypt.Net.BCrypt.Verify(OldPassword, userAccount.password);
+            }
+            else // Plaintext fallback (in case you have legacy passwords)
+            {
+                isOldPasswordCorrect = userAccount.password == OldPassword;
+            }
+
+            if (!isOldPasswordCorrect)
+            {
+                TempData["Error"] = "Old password is incorrect.";
+                return RedirectToAction("MyProfile");
+            }
+
+            // ✅ Hash and update the new password
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(NewPassword);
+            userAccount.password = hashedPassword;
+
+            if (_AccManager.UpdateUser(userAccount, ref errorMsg) == ErrorCode.Success)
+            {
+                TempData["Success"] = "Password changed successfully.";
+            }
+            else
+            {
+                TempData["Error"] = errorMsg;
+            }
+
+            return RedirectToAction("MyProfile");
+        }
 
     }
 }

@@ -436,8 +436,12 @@ namespace Dealogikal.Controllers
                 worksheet.Cell("B1").Style.Font.SetBold().Font.FontSize = 16;
                 worksheet.Cell("B1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-                // COMPANY NAME
-                worksheet.Range("B2:J2").Merge().Value = "DEALOGIKAL CORP.";
+                // Corporation Name (conditional)
+                var corporationName = employee.corporation == "KPEC"
+                    ? "Knotical Power and Energy Corporation"
+                    : "DEALOGIKAL CORP.";
+
+                worksheet.Range("B2:J2").Merge().Value = corporationName;
                 worksheet.Cell("B2").Style.Font.SetBold();
                 worksheet.Cell("B2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
@@ -455,15 +459,15 @@ namespace Dealogikal.Controllers
                 worksheet.Cell("C8").Value = year;
 
                 worksheet.Cell("D7").Value = "Month";
-                worksheet.Cell("D8").Value = monthName;
+                worksheet.Cell("D8").Value = monthName;  
 
                 worksheet.Cell("E7").Value = "Weekend";
                 worksheet.Cell("E8").Value = "Sat & Sun";
 
-                worksheet.Cell("E7").Style.Fill.BackgroundColor = XLColor.LightPink;
+                worksheet.Cell("E7").Style.Fill.BackgroundColor = XLColor.FromHtml("#C5D9F1");
                 worksheet.Range(7, 3, 7, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 worksheet.Range(8, 3, 8, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                worksheet.Range(7, 3, 7, 4).Style.Fill.BackgroundColor = XLColor.LightBlue;
+                worksheet.Range(7, 3, 7, 4).Style.Fill.BackgroundColor = XLColor.FromHtml("#DDEBF7");
                 worksheet.Range(7, 3, 8, 5).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
                 worksheet.Range(7, 3, 8, 5).Style.Border.InsideBorder = XLBorderStyleValues.Thin;
 
@@ -516,7 +520,7 @@ namespace Dealogikal.Controllers
                         worksheet.Cell(row, 7).Value = "--";
                         worksheet.Cell(row, 8).Value = "--";
 
-                        worksheet.Range(row, 2, row, 8).Style.Fill.BackgroundColor = XLColor.LightPink;
+                        worksheet.Range(row, 2, row, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#C5D9F1");
                     }
                     else if (isSaturday)
                     {
@@ -547,7 +551,7 @@ namespace Dealogikal.Controllers
                             worksheet.Cell(row, 8).Value = "--";
                         }
 
-                        worksheet.Range(row, 2, row, 8).Style.Fill.BackgroundColor = XLColor.LightPink;
+                        worksheet.Range(row, 2, row, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#C5D9F1");
                     }
                     else
                     {
@@ -688,7 +692,12 @@ namespace Dealogikal.Controllers
                     worksheet.Cell("B1").Style.Font.SetBold().Font.FontSize = 16;
                     worksheet.Cell("B1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-                    worksheet.Range("B2:J2").Merge().Value = "DEALOGIKAL CORP.";
+                    // Corporation Name (conditional)
+                    var corporationName = employee.corporation == "KPEC"
+                        ? "Knotical Power and Energy Corporation"
+                        : "DEALOGIKAL CORP.";
+
+                    worksheet.Range("B2:J2").Merge().Value = corporationName;
                     worksheet.Cell("B2").Style.Font.SetBold();
                     worksheet.Cell("B2").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
@@ -710,10 +719,10 @@ namespace Dealogikal.Controllers
                     worksheet.Cell("E7").Value = "Weekend";
                     worksheet.Cell("E8").Value = "Sat & Sun";
 
-                    worksheet.Cell("E7").Style.Fill.BackgroundColor = XLColor.LightPink;
+                    worksheet.Cell("E7").Style.Fill.BackgroundColor = XLColor.FromHtml("#C5D9F1");
                     worksheet.Range(7, 3, 7, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                     worksheet.Range(8, 3, 8, 5).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                    worksheet.Range(7, 3, 7, 4).Style.Fill.BackgroundColor = XLColor.LightBlue;
+                    worksheet.Range(7, 3, 7, 4).Style.Fill.BackgroundColor = XLColor.FromHtml("#DDEBF7");
 
 
                     // ----------- Table Headers -----------
@@ -755,7 +764,7 @@ namespace Dealogikal.Controllers
                             worksheet.Cell(row, 6).Value = "--";
                             worksheet.Cell(row, 7).Value = "--";
                             worksheet.Cell(row, 8).Value = "--";
-                            worksheet.Range(row, 2, row, 8).Style.Fill.BackgroundColor = XLColor.LightPink;
+                            worksheet.Range(row, 2, row, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#C5D9F1");
                         }
                         else if (isSaturday)
                         {
@@ -784,7 +793,7 @@ namespace Dealogikal.Controllers
                                 worksheet.Cell(row, 7).Value = "--";
                                 worksheet.Cell(row, 8).Value = "--";
                             }
-                            worksheet.Range(row, 2, row, 8).Style.Fill.BackgroundColor = XLColor.LightPink;
+                            worksheet.Range(row, 2, row, 8).Style.Fill.BackgroundColor = XLColor.FromHtml("#C5D9F1");
                         }
                         else
                         {
@@ -969,6 +978,67 @@ namespace Dealogikal.Controllers
             }
 
             return Json(new { success = true, message = "All notifications marked as read!" });
+        }
+
+        [HttpPost]
+        [Authorize]
+        public ActionResult ChangePassword(string OldPassword, string NewPassword, string ConfirmNewPassword)
+        {
+            var employeeId = User.Identity.Name; // This is your EmployeeID
+            string errorMsg = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(OldPassword) || string.IsNullOrWhiteSpace(NewPassword) || string.IsNullOrWhiteSpace(ConfirmNewPassword))
+            {
+                TempData["Error"] = "All fields are required.";
+                return RedirectToAction("MyProfile");
+            }
+
+            if (NewPassword != ConfirmNewPassword)
+            {
+                TempData["Error"] = "New password and confirmation do not match.";
+                return RedirectToAction("MyProfile");
+            }
+
+            var userAccount = _AccManager.GetUserByEmployeeId(employeeId);
+
+            if (userAccount == null)
+            {
+                TempData["Error"] = "User not found.";
+                return RedirectToAction("MyProfile");
+            }
+
+            // ✅ Verify old password (check if it is hashed or plain)
+            bool isOldPasswordCorrect = false;
+
+            if (userAccount.password.StartsWith("$2")) // bcrypt hashed
+            {
+                isOldPasswordCorrect = BCrypt.Net.BCrypt.Verify(OldPassword, userAccount.password);
+            }
+            else // Plaintext fallback (in case you have legacy passwords)
+            {
+                isOldPasswordCorrect = userAccount.password == OldPassword;
+            }
+
+            if (!isOldPasswordCorrect)
+            {
+                TempData["Error"] = "Old password is incorrect.";
+                return RedirectToAction("MyProfile");
+            }
+
+            // ✅ Hash and update the new password
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(NewPassword);
+            userAccount.password = hashedPassword;
+
+            if (_AccManager.UpdateUser(userAccount, ref errorMsg) == ErrorCode.Success)
+            {
+                TempData["Success"] = "Password changed successfully.";
+            }
+            else
+            {
+                TempData["Error"] = errorMsg;
+            }
+
+            return RedirectToAction("MyProfile");
         }
     }
 }
