@@ -1,8 +1,12 @@
 ﻿@model Dealogikal.ViewModel.AccountViewModel
+
 @{
     ViewBag.Title = "Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
     var name = ViewBag.Name;
 }
+
+<link href="~/Assets/css/Dashboard.css" rel="stylesheet" />
 
 @if (Model.dtr != null)
 {
@@ -19,239 +23,114 @@ else
     <input type="hidden" id="timeOut" value="" />
 }
 
+<div class="dashboard-wrapper">
+    <div class="content-wrapper">
+        <div class="row">
+            <h2 class="font-weight-bold text-left">Welcome @name</h2>
 
-<div class="content-wrapper">
-    <div class="row">
-        <h2 class="font-weight-bold text-left">Welcome @name</h2>
-        <div class="col-md-12 d-flex flex-column align-items-start" style="background-color:white;padding:30px;border-radius:20px">
-                <div class="d-flex flex-column align-items-start" style="margin-top: 10px;">
-                    <div class="d-flex align-items-center">
-                        <!-- Live Analog Clock and Digital Clock with Date -->
-                        <div class="d-flex flex-column align-items-center" style="margin-right: 20px;">
-                            <canvas id="analogClock" width="200" height="200" style="background: white; border-radius: 50%; box-shadow: 0px 0px 10px rgba(0,0,0,0.1);border:1px solid lightblue"></canvas>
-                            <div id="digitalClock" style="font-size: 18px; margin-top: 5px; font-weight: bold; text-align: center;"></div>
-                            <div id="liveDate" style="font-size: 16px; font-weight: bold; text-align: center; color: gray; margin-top: 5px;"></div>
+            <!-- CARD CONTAINER -->
+            <div class="col-md-12 d-flex flex-column align-items-start dashboard-container bg-white p-4 rounded-4 shadow-sm">
+
+                <!-- CLOCK + FORM SECTION -->
+                <div class="d-flex flex-wrap align-items-center justify-content-between w-100 dashboard-row">
+
+                    <!-- CLOCK -->
+                    <div class="d-flex flex-column align-items-center clock-container me-4">
+                        <canvas id="analogClock" width="200" height="200" style="background: white; border-radius: 50%; border: 1px solid #ddd;"></canvas>
+                        <div id="digitalClock" class="digital-clock mt-2 fw-bold"></div>
+                        <div id="liveDate" class="live-date text-muted"></div>
+                    </div>
+
+                    <!-- FORM CONTROLS -->
+                    <form class="form-sample d-flex flex-column align-items-center" action="@Url.Action("Dtr", "Home")" method="post">
+                        <input type="hidden" name="recordId" value="@(Model.dtr != null ? Model.dtr.recordId : 0)" />
+
+                        <div class="d-flex flex-column align-items-center gap-2 button-section">
+                            <select id="workMode" class="form-control w-100 text-center mb-2" name="workMode" required>
+                                @if (Model.dtr != null && Model.dtr.recordId > 0)
+                                {
+                                    <option value="Onsite" @(Model.dtr.workMode == "Onsite" ? "selected" : "")>Onsite</option>
+                                    <option value="WFH" @(Model.dtr.workMode == "WFH" ? "selected" : "")>Work from Home</option>
+                                }
+                                else
+                                {
+                                    <option value="" disabled selected>Work Mode</option>
+                                    <option value="Onsite">Onsite</option>
+                                    <option value="WFH">Work from Home</option>
+                                }
+                            </select>
+
+                            <div class="button-group">
+                                <button type="submit" id="btn1" class="btn btn-inverse-info" name="action" value="">Time In</button>
+                                <button type="submit" id="btn2" class="btn btn-inverse-dark" name="action" value="">Time In</button>
+                  
+                            </div>
                         </div>
-                        <form class="form-sample" action="@Url.Action("Dtr", "Home")" method="post">
+                    </form>
 
-                            <input type="hidden" name="recordId" value="@(Model.dtr != null ? Model.dtr.recordId : 0)" />
-
-                            <!-- Work Mode Dropdown and Buttons -->
-                            <div class="d-flex flex-column align-items-center" style="margin-right: 20px; margin-top: -10%;">
-                                <select id="workMode" class="form-control" name="workMode" style="margin-bottom: 5px; width: 200px; text-align: center; display:block" required>
-                                    @if (Model.dtr != null && Model.dtr.recordId > 0)
-                                    {
-                                        <option value="Onsite" @(Model.dtr.workMode == "Onsite" ? "selected" : "")>Onsite</option>
-                                        <option value="WFH" @(Model.dtr.workMode == "WFH" ? "selected" : "")>Work from Home</option>
-                                    }
-                                    else
-                                    {
-                                        <option value="" disabled selected>Work Mode</option>
-                                        <option value="Onsite">Onsite</option>
-                                        <option value="WFH">Work from Home</option>
-                                    }
-                                </select>
-                                <div class="d-flex justify-content-between" style="width: 100%; margin-top: 10%">
-                                    <button type="submit" id="btn1" class="btn btn-inverse-info btn-icon"
-                                            style="font-size: 15px; padding: 18px 38px; display: flex; justify-content: center; align-items: center; white-space: nowrap; width: 100%;"
-                                            name="action" value="">
-                                        Time In
-                                    </button>
-                                    &nbsp;
-                                    <button type="submit" id="btn2" class="btn btn-inverse-dark btn-icon"
-                                            style="font-size: 15px; padding: 18px 38px; display: flex; justify-content: center; align-items: center; white-space: nowrap; width: 100%;"
-                                            name="action" value="">
-                                        Time Out
-                                    </button>
-                                </div>
-
-                            </div>
-                            <div class="button-section">
-                                <div class="stacked-requests">
-                                    <div class="info-box">
-                                        <a href="~/Home/LeaveRequest">Pending Leave <br /> Request:</a>
-                                        <a href="~/Home/LeaveRequest">@Model.leaveRequests.Count(c => c.status == 0)</a>
-                                    </div>
-                                    <div class="info-box">
-                                        <a href="OvertimeRequest">Pending Overtime <br /> Request:</a>
-                                        <a href="OvertimeRequest">@Model.overtimeRequests.Count(o => o.status == 0)</a>
-                                    </div>
-                                </div>
-                            </div>
-                          </form>
-                        
+                    <!-- PENDING REQUESTS -->
+                    <div class="pending-requests">
+                        <div class="info-box">
+                            <a href="~/Home/LeaveRequest" class="d-block text-white fw-bold">Pending Leave Request:</a>
+                            <a href="~/Home/LeaveRequest" class="text-white fw-bold">@Model.leaveRequests.Count(c => c.status == 0)</a>
+                        </div>
+                        <div class="info-box">
+                            <a href="OvertimeRequest" class="d-block text-white fw-bold">Pending Overtime Request:</a>
+                            <a href="OvertimeRequest" class="text-white fw-bold">@Model.overtimeRequests.Count(o => o.status == 0)</a>
+                        </div>
                     </div>
                 </div>
-            <div class="table-container" style="margin-top: 20px; width: 100%;">
-                <table class="table table-bordered text-center" style="width: 100%; border-collapse: collapse;">
-                    <thead>
-                        <tr>
-                            <th rowspan="2">Date</th>
-                            <th colspan="2">Morning</th>
-                            <th colspan="2">Afternoon</th>
-                            <th rowspan="2">Work Mode</th>
-                        </tr>
-                        <tr>
-                            <th>Time In</th>
-                            <th>Time Out</th>
-                            <th>Time In</th>
-                            <th>Time Out</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model.dtr != null)
-                        {
+
+                <!-- DTR TABLE -->
+                <div class="table-container w-100 mt-4" style="overflow:scroll;">
+                    <table class="table table-bordered text-center">
+                        <thead>
                             <tr>
-                                <td>@Model.dtr.date.ToString("dd MMM yyyy")</td>
-                                <td class="@(Model.dtr.timeIn.HasValue && Model.dtr.timeIn.Value.TimeOfDay > new TimeSpan(8, 5, 0) ? "late-time" : "")">
-                                    @(Model.dtr.timeIn.HasValue ? Model.dtr.timeIn.Value.ToString("hh:mm tt") : "")
-                                </td><td>@(Model.dtr.breakIn.HasValue ? Model.dtr.breakIn.Value.ToString("hh:mm tt") : "")</td>
-                                <td>@(Model.dtr.breakOut.HasValue ? Model.dtr.breakOut.Value.ToString("hh:mm tt") : "")</td>
-                                <td>@(Model.dtr.timeOut.HasValue ? Model.dtr.timeOut.Value.ToString("hh:mm tt") : "")</td>
-                                <td>@Model.dtr.workMode</td>
+                                <th rowspan="2">Date</th>
+                                <th colspan="2">Morning</th>
+                                <th colspan="2">Afternoon</th>
+                                <th rowspan="2">Work Mode</th>
                             </tr>
-                        }
-                        else
-                        {
                             <tr>
-                                <td>@DateTime.Now.ToString("dd MMM yyyy")</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <th>Time In</th>
+                                <th>Time Out</th>
+                                <th>Time In</th>
+                                <th>Time Out</th>
                             </tr>
-                        }           
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @if (Model.dtr != null)
+                            {
+                                <tr>
+                                    <td>@Model.dtr.date.ToString("dd MMM yyyy")</td>
+                                    <td class="@(Model.dtr.timeIn.HasValue && Model.dtr.timeIn.Value.TimeOfDay > new TimeSpan(8, 5, 0) ? "late-time" : "")">
+                                        @(Model.dtr.timeIn.HasValue ? Model.dtr.timeIn.Value.ToString("hh:mm tt") : "")
+                                    </td>
+                                    <td>@(Model.dtr.breakIn.HasValue ? Model.dtr.breakIn.Value.ToString("hh:mm tt") : "")</td>
+                                    <td>@(Model.dtr.breakOut.HasValue ? Model.dtr.breakOut.Value.ToString("hh:mm tt") : "")</td>
+                                    <td>@(Model.dtr.timeOut.HasValue ? Model.dtr.timeOut.Value.ToString("hh:mm tt") : "")</td>
+                                    <td>@Model.dtr.workMode</td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>@DateTime.Now.ToString("dd MMM yyyy")</td>
+                                    <td colspan="5">No records</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
         </div>
     </div>
-    <!-- Table Section -->   
 </div>
 
-<style>
-      .late-time {
-    color: red;
-    font-weight: bold;
-    }
-    .table-container {
-        margin-top: 20px;
-        width: 100%;
-    }
-
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-        background: #f9f9f9;
-    }
-
-        .table th, .table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .table thead {
-            background: #f1f1f1;
-            font-weight: bold;
-        }
-</style>
-
-
-<style>
-    /* Move To-Do List Back to the Right Side */
-    .right-section {
-        width: 350px;
-        position: absolute;
-        right: 20px; /* Adjust to move it back to the right */
-        top: 80px;
-    }
-
-    .button-section {
-    position: absolute;
-    right: 15%;
-    top: 30%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px; /* Space between stacked items */
-}
-
-/* New stacked layout */
-.stacked-requests {
-    display: flex;
-    flex-direction: column; /* Stacks items vertically */
-    gap: 10px; /* Adds spacing between them */
-}
-
-/* Ensure consistent box sizing */
-.info-box {
-    background: #4b49ac;
-    padding: 15px 25px;
-    border-radius: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-    width: 180px; /* Adjust width for better spacing */
-}
-
-
-    /* Info Box Styling */
-    .info-box {
-        background: #4b49ac;
-        padding: 15px 25px;
-        border-radius: 8px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
-        width: 100%; /* Keep size consistent */
-    }
-        /* Label Styling */
-        .info-box span {
-            font-size: 14px;
-            font-weight: bold;
-            color: white;
-            margin-bottom: 5px;
-        }
-
-        /* Link Styling */
-        .info-box a {
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: bold;
-            color: white;
-            transition: color 0.3s ease;
-        }
-
-            .info-box a:hover {
-                color: #3b5bdb; /* Darker blue on hover */
-            }
-            .info-box a[href*="Leave Requests"] {
-    display: block; /* Forces text to stack */
-    text-align: center; /* Keeps it aligned properly */
-    white-space: pre-line; /* Ensures line breaks */
-}   
- 
-</style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const minimizeBtn = document.getElementById("minimize-btn");
-        const todoContainer = document.querySelector(".todo-container");
 
-        minimizeBtn.addEventListener("click", function () {
-            todoContainer.classList.toggle("minimized");
-            minimizeBtn.textContent = todoContainer.classList.contains("minimized") ? "<" : ">";
-        });
-    });
-</script>
 <script>
     function updateButtons() {
         var now = new Date();
@@ -264,9 +143,6 @@ else
 
         var btn1 = $('#btn1');
         var btn2 = $('#btn2');
-
-        console.log("Time Values:", { timeInVal, breakInVal, breakOutVal, timeOutVal }); // Debugging Log
-        console.log("Current Hour:", currentHour); // Debugging Log
 
         if (currentHour < 12) {
             // Morning Shift: Time In & Break In
@@ -304,11 +180,9 @@ else
     // Run button update on page load
     $(document).ready(function () {
         updateButtons();
-        setInterval(updateButtons, 1000); 
+        setInterval(updateButtons, 1000);
     });
 </script>
-
-
 
 <script>
     function updateClock() {
@@ -318,27 +192,20 @@ else
         const seconds = now.getSeconds();
         const ampm = hours >= 12 ? 'PM' : 'AM';
 
-        // Convert 24-hour format to 12-hour format
-        hours = hours % 12;
-        hours = hours ? hours : 12; // Convert 0 to 12
+        hours = hours % 12 || 12;
 
-        // Corrected template literal usage (Use backticks `` instead of quotes)
         document.getElementById("digitalClock").textContent =
             `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')} ${ampm}`;
 
         document.getElementById("liveDate").textContent = now.toDateString();
 
-        // Ensure drawAnalogClock function exists before calling it
         if (typeof drawAnalogClock === "function") {
             drawAnalogClock(hours, minutes, seconds);
         }
     }
 
-    // Ensure updateClock runs every second
     setInterval(updateClock, 1000);
-    updateClock(); // Call immediately to avoid delay
-
-
+    updateClock();
 
     function drawAnalogClock(hours, minutes, seconds) {
         const canvas = document.getElementById("analogClock");
@@ -365,7 +232,7 @@ else
         drawHand(90, 2, seconds * 6, "red");
 
         ctx.restore();
-    }
-
-    setInterval(updateClock, 1000);
+        }
+        setInterval(updateClock, 1000);
 </script>
+

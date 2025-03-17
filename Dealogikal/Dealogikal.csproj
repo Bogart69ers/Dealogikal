@@ -147,6 +147,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\css\404.css" />
+    <Content Include="Assets\css\AdminDashboard.css" />
+    <Content Include="Assets\css\Dashboard.css" />
+    <Content Include="Assets\css\MyProfile.css" />
     <Content Include="Assets\css\vertical-layout-light\style.css" />
     <Content Include="Assets\img\background.jpg" />
     <Content Include="Assets\img\dealogikal-logo.ico" />

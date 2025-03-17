@@ -55,6 +55,9 @@ namespace Dealogikal.Controllers
         {
             base.OnActionExecuting(filterContext);
 
+            var userAgent = filterContext.HttpContext.Request.UserAgent?.ToLower() ?? "";
+           
+
             if (User.Identity.IsAuthenticated)
             {
                 var userAccount = _AccManager.GetUserByEmployeeId(User.Identity.Name);
