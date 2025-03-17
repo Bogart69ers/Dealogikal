@@ -39,14 +39,6 @@
                                     <input type="text" id="otherLeaveType" class="form-control mt-2" placeholder="Specify other leave type..." style="display:none; min-width:100%">
                                 </div>
                                 <div class="form-group">
-                                    <label for="leaveStart">Leave Start:</label>
-                                    <input type="date" class="form-control" id="leaveStart" placeholder="dd/mm/yyyy" style="min-width:100%" name="leaveStart" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="leaveEnd">Leave End:</label>
-                                    <input type="date" class="form-control" id="leaveEnd" placeholder="dd/mm/yyyy" style="min-width:100%" name="leaveEnd" required>
-                                </div>
-                                <div class="form-group">
                                     <label for="leaveType">Leave Type:</label>
                                     <select id="leaveType" class="form-control" style="min-width:100%" name="leaveType" required>
                                         @if (leavecount > 0)
@@ -60,6 +52,15 @@
                                         }
                                     </select>
                                 </div>
+                                <div class="form-group">
+                                    <label for="leaveStart">Leave Start:</label>
+                                    <input type="date" class="form-control" id="leaveStart" placeholder="dd/mm/yyyy" style="min-width:100%" name="leaveStart" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="leaveEnd">Leave End:</label>
+                                    <input type="date" class="form-control" id="leaveEnd" placeholder="dd/mm/yyyy" style="min-width:100%" name="leaveEnd" required>
+                                </div>
+                                
                                 <div class="form-group flex-grow-1">
                                     <label for="leaveReason">Leave Reason:</label>
                                     <textarea id="leaveReason" class="form-control" placeholder="Enter reason..." style="height:75%; min-width:100%" name="leaveReason"></textarea>
